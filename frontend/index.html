@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>TERMINAL_DASHBOARD_v2.5.8</title>
+    <meta name="description" content="Personal finance and analytics terminal dashboard – budget, crypto, health, investments.">
+    <!-- Google Fonts: JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Design System CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<div class="shell">
+
+    <!-- ============================================================
+         SIDEBAR NAVIGATION
+         ============================================================ -->
+    <aside class="sidebar" id="sidebar">
+
+        <!-- Brand -->
+        <div class="sidebar-brand">
+            <div class="sidebar-brand-icon">
+                <i class="fa-solid fa-terminal"></i>
+            </div>
+            <div class="sidebar-brand-text">
+                <h2>TERMINAL</h2>
+                <p>v2.5.8</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="sidebar-nav" id="sidebar-nav">
+            <button class="nav-item active" id="nav-overview" data-tab="overview">
+                <span class="nav-item-left">
+                    <i class="fa-solid fa-border-all"></i>
+                    OVERVIEW
+                </span>
+                <span class="nav-arrow">›</span>
+            </button>
+            <button class="nav-item" id="nav-budget" data-tab="budget">
+                <span class="nav-item-left">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                    BUDGET
+                </span>
+            </button>
+            <button class="nav-item" id="nav-stella" data-tab="stella">
+                <span class="nav-item-left">
+                    <i class="fa-solid fa-child"></i>
+                    STELLA
+                </span>
+            </button>
+            <button class="nav-item" id="nav-crypto" data-tab="crypto">
+                <span class="nav-item-left">
+                    <i class="fa-brands fa-bitcoin"></i>
+                    CRYPTO
+                </span>
+            </button>
+            <button class="nav-item" id="nav-investments" data-tab="investments">
+                <span class="nav-item-left">
+                    <i class="fa-solid fa-chart-line"></i>
+                    INVESTMENTS
+                </span>
+            </button>
+            <button class="nav-item" id="nav-health" data-tab="health">
+                <span class="nav-item-left">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    HEALTH
+                </span>
+            </button>
+            <button class="nav-item" id="nav-news" data-tab="news">
+                <span class="nav-item-left">
+                    <i class="fa-solid fa-newspaper"></i>
+                    NEWS
+                </span>
+            </button>
+            <button class="nav-item" id="nav-utilities" data-tab="utilities">
+                <span class="nav-item-left">
+                    <i class="fa-solid fa-sliders"></i>
+                    UTILITIES
+                </span>
+            </button>
+        </nav>
+
+        <!-- Globe widget -->
+        <div class="sidebar-globe-wrap">
+            <div class="sidebar-globe-label">GLOBAL_NODES</div>
+            <canvas id="sidebar-globe"></canvas>
+        </div>
+
+        <!-- Footer status -->
+        <div class="sidebar-footer">
+            <div class="row">
+                <span>API</span>
+                <span id="sidebar-api-status" class="ok">CONNECTED</span>
+            </div>
+            <div class="row">
+                <span style="color:var(--muted)">KRAKEN</span>
+                <span id="sidebar-kraken-status" style="color:var(--gold);font-weight:700">MOCK</span>
+            </div>
+            <div class="row">
+                <span style="color:var(--muted)">SHEETS</span>
+                <span id="sidebar-sheets-status" style="color:var(--gold);font-weight:700">MOCK</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ============================================================
+         MAIN AREA
+         ============================================================ -->
+    <div class="main-area">
+
+        <!-- Top Header Bar -->
+        <header class="top-header">
+            <div class="header-title">
+                <h1 id="header-view-title">TERMINAL_DASHBOARD_v2.5.8</h1>
+                <p id="header-view-subtitle">&gt; System monitoring &amp; analytics platform | ULTRAWIDE_MODE | 3448x1440</p>
+            </div>
+            <div class="header-right">
+                <!-- Kraken status -->
+                <div class="status-pill" id="api-status-kraken">
+                    <span class="status-dot mock" id="status-dot-kraken"></span>
+                    <span>KRAKEN</span>
+                    <span style="font-weight:700;color:var(--gold)">MOCK</span>
+                </div>
+                <!-- Sheets status -->
+                <div class="status-pill" id="api-status-sheets">
+                    <span class="status-dot mock" id="status-dot-sheets"></span>
+                    <span>SHEETS</span>
+                    <span style="font-weight:700;color:var(--gold)">MOCK</span>
+                </div>
+                <!-- Refresh -->
+                <button class="refresh-btn" id="refresh-btn" title="Refresh data">
+                    <i class="fa-solid fa-rotate-right"></i>
+                </button>
+                <!-- Clock -->
+                <div class="clock-box">
+                    <div class="clock-label">SYSTEM_TIME</div>
+                    <div class="clock-time" id="system-clock">--:--:--</div>
+                    <div class="clock-date" id="system-date">--- ----</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content Scroll Area -->
+        <div class="content-scroll">
+
+            <!-- Mock Banner -->
+            <div class="mock-banner" id="global-mock-banner">
+                <span><i class="fa-solid fa-flask" style="margin-right:6px"></i>MOCK_MODE — Backend offline or API keys not configured. Displaying simulated data.</span>
+                <button onclick="checkAPIStatus()" style="background:none;border:1px solid var(--bronze);color:var(--gold);padding:3px 8px;border-radius:3px;font-size:10px;cursor:pointer;font-family:inherit">RETRY</button>
+            </div>
+
+            <!-- ====================================================
+                 VIEW: OVERVIEW (5-column grid)
+                 ==================================================== -->
+            <div class="view-panel active" id="view-overview">
+
+                <!-- COL 1: budget.sys -->
+                <div class="panel" id="panel-budget-sys" style="grid-column:1">
+
+                    <div class="panel-header">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-dots">
+                                <div class="dot dot-red"></div>
+                                <div class="dot dot-gold"></div>
+                                <div class="dot dot-green"></div>
+                            </div>
+                            <span class="panel-label"><i class="fa-solid fa-dollar-sign"></i>budget.sys</span>
+                        </div>
+                        <span style="font-size:10px;color:var(--muted);letter-spacing:0.06em">$ &gt;</span>
+                    </div>
+
+                    <!-- VARIABLE / FIXED tabs + month nav -->
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+                        <div class="tab-group">
+                            <button class="tab-btn active" id="budget-tab-variable" onclick="switchBudgetType('variable')">VARIABLE</button>
+                            <button class="tab-btn" id="budget-tab-fixed" onclick="switchBudgetType('fixed')">FIXED</button>
+                        </div>
+                        <div class="month-nav">
+                            <button id="budget-prev-month" onclick="budgetMonthNav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                            <span class="month-name" id="budget-month-label">May</span>
+                            <button id="budget-next-month" onclick="budgetMonthNav(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- OVERVIEW / ERIC / EMILIE sub-tabs -->
+                    <div class="sub-tabs">
+                        <button class="sub-tab active" id="sub-tab-overview" onclick="switchBudgetSub('overview')">OVERVIEW</button>
+                        <button class="sub-tab" id="sub-tab-eric" onclick="switchBudgetSub('eric')">ERIC</button>
+                        <button class="sub-tab" id="sub-tab-emilie" onclick="switchBudgetSub('emilie')">EMILIE</button>
+                    </div>
+
+                    <!-- Account mini cards -->
+                    <div class="mini-cards">
+                        <div class="mini-card">
+                            <div class="label">DESJARDINS</div>
+                            <div class="value">$4,250</div>
+                            <div class="sub text-green"><i class="fa-solid fa-arrow-up" style="font-size:10px"></i> +5.2%</div>
+                        </div>
+                        <div class="mini-card">
+                            <div class="label">MASTERCARD</div>
+                            <div class="value">$2,840</div>
+                            <div class="sub text-red"><i class="fa-solid fa-exclamation-triangle" style="font-size:10px"></i> BALANCE_DUE</div>
+                        </div>
+                    </div>
+
+                    <!-- Cashflow chart -->
+                    <div class="chart-box">
+                        <div class="chart-label">CASHFLOW:</div>
+                        <svg viewBox="0 0 300 80" style="width:100%;height:80px">
+                            <defs>
+                                <linearGradient id="cfGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="var(--bronze)" stop-opacity="0.3"/>
+                                    <stop offset="100%" stop-color="var(--bronze)" stop-opacity="0.0"/>
+                                </linearGradient>
+                            </defs>
+                            <!-- Grid lines -->
+                            <line x1="0" y1="16" x2="300" y2="16" stroke="var(--border)" stroke-width="0.5"/>
+                            <line x1="0" y1="40" x2="300" y2="40" stroke="var(--border)" stroke-width="0.5"/>
+                            <line x1="0" y1="64" x2="300" y2="64" stroke="var(--border)" stroke-width="0.5"/>
+                            <!-- Area fill -->
+                            <path d="M0,60 C25,55 40,30 60,35 C80,40 90,25 110,20 C130,15 140,28 160,32 C180,36 200,45 220,50 C240,55 260,50 280,58 L300,62 L300,80 L0,80 Z"
+                                  fill="url(#cfGrad)" />
+                            <!-- Line -->
+                            <path d="M0,60 C25,55 40,30 60,35 C80,40 90,25 110,20 C130,15 140,28 160,32 C180,36 200,45 220,50 C240,55 260,50 280,58 L300,62"
+                                  fill="none" stroke="var(--bronze)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- X axis labels -->
+                            <text x="0"   y="78" fill="var(--muted)" font-family="JetBrains Mono" font-size="8">Jan</text>
+                            <text x="50"  y="78" fill="var(--muted)" font-family="JetBrains Mono" font-size="8">Feb</text>
+                            <text x="100" y="78" fill="var(--muted)" font-family="JetBrains Mono" font-size="8">Mar</text>
+                            <text x="155" y="78" fill="var(--muted)" font-family="JetBrains Mono" font-size="8">Apr</text>
+                            <text x="210" y="78" fill="var(--muted)" font-family="JetBrains Mono" font-size="8">May</text>
+                            <text x="265" y="78" fill="var(--muted)" font-family="JetBrains Mono" font-size="8">Jun</text>
+                        </svg>
+                    </div>
+
+                    <!-- Category Breakdown -->
+                    <div class="breakdown-label">CATEGORY_BREAKDOWN:</div>
+                    <div class="breakdown-list" id="overview-budget-breakdown">
+                        <!-- Rendered by app.js -->
+                    </div>
+
+                </div><!-- end col1 -->
+
+
+                <!-- COL 2: crypto.sys + mail.sys stacked -->
+                <div class="col-stack" style="grid-column:2">
+
+                    <!-- crypto.sys -->
+                    <div class="panel" id="panel-crypto-sys">
+                        <div class="panel-header">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <div class="panel-dots">
+                                    <div class="dot dot-red"></div>
+                                    <div class="dot dot-gold"></div>
+                                    <div class="dot dot-green"></div>
+                                </div>
+                                <span class="panel-label"><i class="fa-solid fa-arrow-trend-up"></i>crypto.sys</span>
+                            </div>
+                        </div>
+
+                        <!-- Portfolio value -->
+                        <div>
+                            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">TOTAL_PORTFOLIO_VALUE</div>
+                            <div class="portfolio-value">$30,900</div>
+                            <div class="portfolio-change"><i class="fa-solid fa-arrow-up" style="font-size:10px"></i> +$1,842 (6.3%) 24h</div>
+                        </div>
+
+                        <!-- BTC Price + Fear & Greed row -->
+                        <div class="crypto-widgets-row">
+                            <div class="crypto-widget" id="overview-btc-price">
+                                <div class="widget-label">BTC_PRICE</div>
+                                <div class="widget-val" id="btc-price-val">--</div>
+                                <div class="widget-sub" id="btc-price-chg">--</div>
+                            </div>
+                            <div class="crypto-widget" id="overview-fear-greed">
+                                <div class="widget-label">FEAR_GREED</div>
+                                <div class="fg-track"><div class="fg-fill" id="fg-fill"></div></div>
+                                <div class="fg-value-row">
+                                    <span class="widget-val" id="fg-value">--</span>
+                                    <span class="widget-sub" id="fg-label">--</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sparkline chart -->
+                        <div class="chart-box" style="padding:8px">
+                            <svg viewBox="0 0 280 70" style="width:100%;height:70px">
+                                <defs>
+                                    <linearGradient id="cryptoGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="var(--bronze)" stop-opacity="0.25"/>
+                                        <stop offset="100%" stop-color="var(--bronze)" stop-opacity="0.0"/>
+                                    </linearGradient>
+                                </defs>
+                                <line x1="0" y1="15" x2="280" y2="15" stroke="var(--border)" stroke-width="0.5"/>
+                                <line x1="0" y1="35" x2="280" y2="35" stroke="var(--border)" stroke-width="0.5"/>
+                                <line x1="0" y1="55" x2="280" y2="55" stroke="var(--border)" stroke-width="0.5"/>
+                                <path d="M0,55 C20,52 35,40 55,30 C75,20 90,15 110,12 C130,9 145,14 165,18 C185,22 200,30 220,25 C240,20 260,15 280,10"
+                                      fill="url(#cryptoGrad)"/>
+                                <path d="M0,55 C20,52 35,40 55,30 C75,20 90,15 110,12 C130,9 145,14 165,18 C185,22 200,30 220,25 C240,20 260,15 280,10"
+                                      fill="none" stroke="var(--bronze)" stroke-width="1.5" stroke-linecap="round"/>
+                                <!-- Time labels -->
+                                <text x="0"   y="68" fill="var(--muted)" font-size="8" font-family="JetBrains Mono">00:00</text>
+                                <text x="55"  y="68" fill="var(--muted)" font-size="8" font-family="JetBrains Mono">04:00</text>
+                                <text x="110" y="68" fill="var(--muted)" font-size="8" font-family="JetBrains Mono">08:00</text>
+                                <text x="165" y="68" fill="var(--muted)" font-size="8" font-family="JetBrains Mono">12:00</text>
+                                <text x="220" y="68" fill="var(--muted)" font-size="8" font-family="JetBrains Mono">16:00</text>
+                            </svg>
+                        </div>
+
+                        <!-- Holdings list -->
+                        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">HOLDINGS:</div>
+                        <div class="holdings-list" id="overview-crypto-holdings">
+                            <!-- Rendered by app.js -->
+                        </div>
+                    </div><!-- end crypto.sys -->
+
+                    <!-- mail.sys -->
+                    <div class="panel" id="panel-mail-sys">
+                        <div class="panel-header">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <div class="panel-dots">
+                                    <div class="dot dot-red"></div>
+                                    <div class="dot dot-gold"></div>
+                                    <div class="dot dot-green"></div>
+                                </div>
+                                <span class="panel-label"><i class="fa-solid fa-envelope"></i>mail.sys</span>
+                            </div>
+                        </div>
+
+                        <!-- Mail counts -->
+                        <div class="mail-counts">
+                            <div class="mail-count-box">
+                                <div class="count-num">4</div>
+                                <div class="count-label">Total</div>
+                            </div>
+                            <div class="mail-count-box">
+                                <div class="count-num unread">2</div>
+                                <div class="count-label">Unread</div>
+                            </div>
+                            <div class="mail-count-box">
+                                <div class="count-num">3</div>
+                                <div class="count-label">Starred</div>
+                            </div>
+                        </div>
+
+                        <!-- Recent messages -->
+                        <div class="mail-section-label">RECENT_MESSAGES:</div>
+                        <div class="mail-list" id="overview-mail-messages">
+                            <!-- Rendered by app.js -->
+                        </div>
+
+                        <!-- Cleanup action -->
+                        <div class="mail-cleanup-section">
+                            <button class="mail-cleanup-btn" id="btn-mail-cleanup" onclick="mailCleanup()">
+                                <i class="fa-solid fa-broom"></i> CLEAN UP
+                            </button>
+                            <span class="mail-cleanup-result" id="mail-cleanup-result"></span>
+                        </div>
+                    </div><!-- end mail.sys -->
+
+                </div><!-- end col2 -->
+
+
+                <!-- COL 3: health.sys + calendar.sys stacked -->
+                <div class="col-stack" style="grid-column:3">
+
+                    <!-- health.sys -->
+                    <div class="panel" id="panel-health-sys">
+                        <div class="panel-header">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <div class="panel-dots">
+                                    <div class="dot dot-red"></div>
+                                    <div class="dot dot-gold"></div>
+                                    <div class="dot dot-green"></div>
+                                </div>
+                                <span class="panel-label"><i class="fa-solid fa-heart-pulse"></i>health.sys</span>
+                            </div>
+                        </div>
+
+                        <!-- Vital stats grid -->
+                        <div class="health-grid">
+                            <div class="health-stat">
+                                <div class="stat-label"><i class="fa-solid fa-heart-pulse" style="color:var(--red)"></i>HEART_RATE</div>
+                                <div class="stat-val text-slate">72 <span style="font-size:10px;font-weight:400;color:var(--muted)">BPM</span></div>
+                                <div class="stat-sub text-green">Normal</div>
+                            </div>
+                            <div class="health-stat">
+                                <div class="stat-label"><i class="fa-solid fa-shoe-prints" style="color:var(--gold)"></i>STEPS_TODAY</div>
+                                <div class="stat-val text-slate">11,340</div>
+                                <div class="stat-sub text-green">+13% vs avg</div>
+                            </div>
+                            <div class="health-stat">
+                                <div class="stat-label"><i class="fa-solid fa-fire" style="color:var(--bronze)"></i>CALORIES</div>
+                                <div class="stat-val text-slate">2,340</div>
+                                <div class="stat-sub text-muted">Goal: 2500</div>
+                            </div>
+                            <div class="health-stat">
+                                <div class="stat-label"><i class="fa-solid fa-glass-water" style="color:#5bafd4"></i>HYDRATION</div>
+                                <div class="stat-val text-slate">1.8<span style="font-size:10px;font-weight:400;color:var(--muted)">L</span></div>
+                                <div class="stat-sub text-muted">Goal: 2.5L</div>
+                            </div>
+                        </div>
+
+                        <!-- Weekly activity bar chart -->
+                        <div class="bar-chart-box">
+                            <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">WEEKLY_ACTIVITY:</div>
+                            <svg viewBox="0 0 240 70" style="width:100%;height:70px">
+                                <!-- Y axis grid -->
+                                <line x1="0" y1="12" x2="240" y2="12" stroke="var(--border)" stroke-width="0.5"/>
+                                <line x1="0" y1="32" x2="240" y2="32" stroke="var(--border)" stroke-width="0.5"/>
+                                <line x1="0" y1="52" x2="240" y2="52" stroke="var(--border)" stroke-width="0.5"/>
+                                <!-- Bars: Mon-Sun -->
+                                <rect x="5"   y="28" width="22" height="32" rx="2" fill="#c67f43" opacity="0.7"/>
+                                <rect x="38"  y="20" width="22" height="40" rx="2" fill="#c67f43" opacity="0.7"/>
+                                <rect x="71"  y="10" width="22" height="50" rx="2" fill="#e4a46a"/>
+                                <rect x="104" y="35" width="22" height="25" rx="2" fill="#c67f43" opacity="0.7"/>
+                                <rect x="137" y="15" width="22" height="45" rx="2" fill="#c67f43" opacity="0.7"/>
+                                <rect x="170" y="25" width="22" height="35" rx="2" fill="#c67f43" opacity="0.7"/>
+                                <rect x="203" y="40" width="22" height="20" rx="2" fill="#c67f43" opacity="0.4"/>
+                                <!-- X labels -->
+                                <text x="11"  y="68" fill="var(--muted)" font-size="8" font-family="JetBrains Mono">Mon</text>
+                                <text x="44"  y="68" fill="var(--muted)" font-size="8" font-family="JetBrains Mono">Tue</text>
+                                <text x="76"  y="68" fill="var(--muted)" font-size="8" font-family="JetBrains Mono">Wed</text>
+                                <text x="107" y="68" fill="var(--muted)" font-size="8" font-family="JetBrains Mono">Thu</text>
+                                <text x="140" y="68" fill="var(--muted)" font-size="8" font-family="JetBrains Mono">Fri</text>
+                                <text x="174" y="68" fill="var(--muted)" font-size="8" font-family="JetBrains Mono">Sat</text>
+                                <text x="207" y="68" fill="var(--muted)" font-size="8" font-family="JetBrains Mono">Sun</text>
+                            </svg>
+                        </div>
+
+                        <!-- Sleep analysis -->
+                        <div class="sleep-box">
+                            <div>
+                                <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">SLEEP_ANALYSIS:</div>
+                                <div style="font-size:16px;font-weight:700;color:var(--slate);margin-top:3px;line-height:1">7h 42m</div>
+                                <div style="font-size:10px;color:var(--muted);margin-top:2px">Last night</div>
+                            </div>
+                            <div style="text-align:right">
+                                <div style="font-size:13px;font-weight:700;color:var(--green)">Good</div>
+                                <div style="font-size:10px;color:var(--muted);margin-top:2px">Quality: 85%</div>
+                            </div>
+                        </div>
+                    </div><!-- end health.sys -->
+
+                    <!-- calendar.sys -->
+                    <div class="panel" id="panel-calendar-sys">
+                        <div class="panel-header">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <div class="panel-dots">
+                                    <div class="dot dot-red"></div>
+                                    <div class="dot dot-gold"></div>
+                                    <div class="dot dot-green"></div>
+                                </div>
+                                <span class="panel-label"><i class="fa-solid fa-calendar"></i>calendar.sys</span>
+                            </div>
+                        </div>
+
+                        <!-- Date display -->
+                        <div>
+                            <div class="cal-date-label">CURRENT_DATE:</div>
+                            <div class="cal-date-value" id="overview-cal-date">Thursday, June 4, 2026</div>
+                            <div class="cal-count">5 events scheduled</div>
+                        </div>
+
+                        <!-- Monthly calendar grid -->
+                        <div id="overview-cal-grid" class="cal-grid"></div>
+
+                        <!-- Today's schedule -->
+                        <div class="schedule-label">TODAY_SCHEDULE:</div>
+                        <div class="schedule-list" id="overview-calendar-schedule">
+                            <!-- Rendered by app.js -->
+                        </div>
+                    </div><!-- end calendar.sys -->
+
+                </div><!-- end col3 -->
+
+
+                <!-- COL 4: retirement_goal.sys -->
+                <div class="panel" id="panel-retirement-sys" style="grid-column:4">
+
+                    <div class="panel-header">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-dots">
+                                <div class="dot dot-red"></div>
+                                <div class="dot dot-gold"></div>
+                                <div class="dot dot-green"></div>
+                            </div>
+                            <span class="panel-label"><i class="fa-solid fa-piggy-bank"></i>retirement_goal.sys</span>
+                        </div>
+                    </div>
+
+                    <!-- Gauge ring -->
+                    <div class="gauge-wrap">
+                        <svg viewBox="0 0 160 160">
+                            <!-- Background track -->
+                            <circle cx="80" cy="80" r="65" fill="none" stroke="#222026" stroke-width="12"/>
+                            <!-- Progress arc — 23% of 2π*65 ≈ 94px -->
+                            <circle cx="80" cy="80" r="65"
+                                    fill="none"
+                                    stroke="var(--bronze)"
+                                    stroke-width="12"
+                                    stroke-linecap="round"
+                                    stroke-dasharray="94 314"
+                                    stroke-dashoffset="0"
+                                    transform="rotate(-90 80 80)"
+                                    style="filter:drop-shadow(0 0 6px rgba(198,127,67,0.5))"/>
+                        </svg>
+                        <div class="gauge-center">
+                            <div class="gauge-label">RETIREMENT_GOAL</div>
+                            <div class="gauge-pct">23.0%</div>
+                            <div class="gauge-goal">$344K / $1500K</div>
+                            <div class="gauge-rem">$1156K remaining</div>
+                        </div>
+                    </div>
+
+                    <!-- 4-card grid -->
+                    <div class="retirement-grid">
+                        <div class="ret-card">
+                            <div class="ret-label"><i class="fa-brands fa-bitcoin" style="color:var(--gold)"></i>CRYPTO</div>
+                            <div class="ret-val">$30,900</div>
+                        </div>
+                        <div class="ret-card">
+                            <div class="ret-label"><i class="fa-solid fa-landmark" style="color:var(--muted)"></i>ACCOUNT</div>
+                            <div class="ret-val">$45,800</div>
+                        </div>
+                        <div class="ret-card">
+                            <div class="ret-label"><i class="fa-solid fa-chart-area" style="color:var(--gold)"></i>STOCKS</div>
+                            <div class="ret-val">$127,500</div>
+                        </div>
+                        <div class="ret-card">
+                            <div class="ret-label"><i class="fa-solid fa-sack-dollar" style="color:var(--green)"></i>TOTAL_RRSP</div>
+                            <div class="ret-val">$145,000</div>
+                        </div>
+                    </div>
+
+                    <!-- RRSP breakdown -->
+                    <div class="rrsp-box">
+                        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">RRSP_BREAKDOWN:</div>
+                        <div class="rrsp-row">
+                            <span class="rname">Desjardins</span>
+                            <span class="rval">$89,200</span>
+                        </div>
+                        <div class="rrsp-row">
+                            <span class="rname">FTQ</span>
+                            <span class="rval">$43,500</span>
+                        </div>
+                        <div class="rrsp-row">
+                            <span class="rname">Ubisoft</span>
+                            <span class="rval">$12,300</span>
+                        </div>
+                    </div>
+
+                    <!-- Credit card balance -->
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--panel-alt);border:1px solid var(--border);border-radius:4px">
+                        <span style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em">CREDIT_CARD_BALANCE:</span>
+                        <span style="font-size:12px;font-weight:700;color:var(--red)">-$4,800</span>
+                    </div>
+
+                    <!-- Financial stats -->
+                    <div class="fin-stats">
+                        <div class="fin-row">
+                            <span class="flabel">YEARLY_GROWTH_ESTIMATE:</span>
+                            <span class="fval text-green">+$78,400</span>
+                        </div>
+                        <div class="fin-row">
+                            <span class="flabel">EST_YEARS_TO_GOAL:</span>
+                            <span class="fval text-gold">14.7 years</span>
+                        </div>
+                    </div>
+
+                    <!-- AI Analysis -->
+                    <div class="ai-retirement-section">
+                        <div style="display:flex;justify-content:space-between;align-items:center">
+                            <span class="breakdown-label">AI_ANALYSIS:</span>
+                            <span id="retirement-ai-mode"></span>
+                        </div>
+                        <div class="ai-ret-buttons">
+                            <button class="ai-ret-btn" id="btn-gen-plan" onclick="retirementAI('plan')">
+                                <i class="fa-solid fa-brain"></i> GENERATE PLAN
+                            </button>
+                            <button class="ai-ret-btn" id="btn-analyze" onclick="retirementAI('insights')">
+                                <i class="fa-solid fa-chart-pie"></i> ANALYZE
+                            </button>
+                        </div>
+                        <pre class="ai-ret-output" id="retirement-ai-output"></pre>
+                    </div>
+
+                </div><!-- end col4 -->
+
+
+                <!-- COL 5: ai_insights.sys + news.sys stacked -->
+                <div class="col-stack" style="grid-column:5">
+
+                    <!-- ai_insights.sys -->
+                    <div class="panel" id="panel-ai-insights">
+                        <div class="panel-header">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <div class="panel-dots">
+                                    <div class="dot dot-red"></div>
+                                    <div class="dot dot-gold"></div>
+                                    <div class="dot dot-green"></div>
+                                </div>
+                                <span class="panel-label"><i class="fa-solid fa-brain"></i>ai_insights.sys</span>
+                            </div>
+                        </div>
+
+                        <!-- AI status -->
+                        <div class="ai-status">
+                            <div class="ai-status-dot"></div>
+                            <div>
+                                <div class="ai-status-text">AI_STATUS: <span class="active">ACTIVE</span></div>
+                                <div class="ai-sub">Analyzing 4 patterns across all modules</div>
+                            </div>
+                        </div>
+
+                        <!-- Insights list -->
+                        <div class="insight-section-label">GENERATED_INSIGHTS:</div>
+                        <div class="insights-list" id="overview-ai-insights">
+                            <!-- Rendered by app.js -->
+                        </div>
+
+                        <!-- Predictions -->
+                        <div class="insight-section-label" style="margin-top:4px">AI_PREDICTIONS:</div>
+                        <div class="predictions-list" id="overview-ai-predictions">
+                            <!-- Rendered by app.js -->
+                        </div>
+
+                        <div class="next-analysis">NEXT_ANALYSIS: in 4h 23m</div>
+                    </div><!-- end ai_insights.sys -->
+
+                    <!-- news.sys -->
+                    <div class="panel" id="panel-news-sys">
+                        <div class="panel-header">
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <div class="panel-dots">
+                                    <div class="dot dot-red"></div>
+                                    <div class="dot dot-gold"></div>
+                                    <div class="dot dot-green"></div>
+                                </div>
+                                <span class="panel-label"><i class="fa-solid fa-newspaper"></i>news.sys</span>
+                            </div>
+                        </div>
+
+                        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">LATEST_HEADLINES:</div>
+                        <div class="news-list" id="overview-news-headlines">
+                            <!-- Rendered by app.js -->
+                        </div>
+                    </div><!-- end news.sys -->
+
+                </div><!-- end col5 -->
+
+            </div><!-- end view-overview -->
+
+
+            <!-- ====================================================
+                 VIEW: BUDGET
+                 ==================================================== -->
+            <div class="view-panel" id="view-budget">
+                <!-- Column 1: breakdown -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-dots">
+                                <div class="dot dot-red"></div>
+                                <div class="dot dot-gold"></div>
+                                <div class="dot dot-green"></div>
+                            </div>
+                            <span class="panel-label"><i class="fa-solid fa-list-check"></i>CATEGORIES_BREAKDOWN</span>
+                        </div>
+                    </div>
+                    <div class="breakdown-list" id="budget-breakdown-list">
+                        <!-- Rendered dynamically by app.js -->
+                    </div>
+                </div>
+                
+                <!-- Column 2: top categories & transactions -->
+                <div class="col-stack">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-label"><i class="fa-solid fa-chart-pie"></i>TOP_CATEGORIES</span>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:10px" id="budget-top-categories">
+                            <!-- Rendered dynamically by app.js -->
+                        </div>
+                    </div>
+                    
+                    <div class="panel" style="flex:1">
+                        <div class="panel-header">
+                            <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
+                                <span class="panel-label"><i class="fa-solid fa-clock-rotate-left"></i>TRANSACTION_LOG</span>
+                                <span id="budget-tx-counter" class="text-gold font-bold text-[9px]">0 TX</span>
+                            </div>
+                        </div>
+                        <div id="budget-transactions-list" style="display:flex;flex-direction:column;gap:6px;overflow-y:auto;max-height:280px">
+                            <!-- Rendered dynamically by app.js -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column 3: year table -->
+                <div class="panel" style="grid-column: span 1">
+                    <div class="panel-header">
+                        <span class="panel-label"><i class="fa-solid fa-table"></i>YEARLY_BREAKDOWN_2026</span>
+                    </div>
+                    <div style="overflow-x:auto;width:100%">
+                        <table style="width:100%;border-collapse:collapse;font-size:10px" class="mono text-left">
+                            <thead>
+                                <tr style="color:var(--muted);border-bottom:1px solid var(--border);text-align:center">
+                                    <th class="p-2 text-left">ACCOUNT</th>
+                                    <th class="p-1">JAN</th>
+                                    <th class="p-1">FEB</th>
+                                    <th class="p-1">MAR</th>
+                                    <th class="p-1">APR</th>
+                                    <th class="p-1">MAY</th>
+                                    <th class="p-1">JUN</th>
+                                    <th class="p-1">JUL</th>
+                                    <th class="p-1">AUG</th>
+                                    <th class="p-1">SEP</th>
+                                    <th class="p-1">OCT</th>
+                                    <th class="p-1">NOV</th>
+                                    <th class="p-1">DEC</th>
+                                    <th class="p-2 text-right">YTD</th>
+                                </tr>
+                            </thead>
+                            <tbody id="budget-year-table-body">
+                                <!-- Rendered dynamically by app.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====================================================
+                 VIEW: STELLA
+                 ==================================================== -->
+            <div class="view-panel" id="view-stella">
+                <div class="panel" style="grid-column:1/-1;padding:24px;min-height:200px">
+                    <div style="text-align:center">
+                        <div style="font-size:28px;color:var(--border);margin-bottom:12px"><i class="fa-solid fa-child"></i></div>
+                        <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em">STELLA MODULE — COMING SOON</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====================================================
+                 VIEW: CRYPTO
+                 ==================================================== -->
+            <div class="view-panel" id="view-crypto">
+
+                <!-- ROW 1: Top-Level Corporate Metrics -->
+                <div class="panel" style="grid-column:1/-1">
+                    <div class="panel-header">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-dots">
+                                <div class="dot dot-red"></div>
+                                <div class="dot dot-gold"></div>
+                                <div class="dot dot-green"></div>
+                            </div>
+                            <span class="panel-label"><i class="fa-brands fa-bitcoin"></i>TRADING_CO.SYS — EQUITY DASHBOARD</span>
+                        </div>
+                    </div>
+                    <div class="corp-metrics-row">
+                        <div class="corp-metric-box">
+                            <div class="corp-metric-label">SHARE_PRICE</div>
+                            <div class="corp-metric-val" id="corp-share-price">—</div>
+                            <div class="corp-metric-sub">10,000 SHARES ISSUED</div>
+                        </div>
+                        <div class="corp-metric-box">
+                            <div class="corp-metric-label">PORTFOLIO_VALUE</div>
+                            <div class="corp-metric-val" id="corp-portfolio-val">—</div>
+                            <div class="corp-metric-sub" id="corp-portfolio-chg">TOTAL CRYPTO ASSETS</div>
+                        </div>
+                        <div class="corp-metric-box">
+                            <div class="corp-metric-label">BTC_PRICE</div>
+                            <div class="corp-metric-val" id="corp-btc-price">—</div>
+                            <div class="corp-metric-sub" id="corp-btc-chg">— 24H</div>
+                        </div>
+                        <div class="corp-metric-box">
+                            <div class="corp-metric-label">MARKET_SENTIMENT</div>
+                            <div class="fg-track" style="margin:6px 0 4px"><div class="fg-fill" id="corp-fg-fill"></div></div>
+                            <div style="display:flex;justify-content:space-between;align-items:center">
+                                <span class="corp-metric-val" id="corp-fg-value">—</span>
+                                <span class="corp-metric-sub" id="corp-fg-label">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ROW 2: Charts -->
+                <div class="panel" style="grid-column:span 3">
+                    <div class="panel-header">
+                        <span class="panel-label"><i class="fa-solid fa-chart-area"></i>TOTAL_CORPORATE_ASSETS</span>
+                        <span style="font-size:10px;color:var(--muted)">30-DAY PORTFOLIO VALUE</span>
+                    </div>
+                    <div id="corp-assets-chart"></div>
+                </div>
+                <div class="panel" style="grid-column:4">
+                    <div class="panel-header">
+                        <span class="panel-label"><i class="fa-brands fa-bitcoin"></i>BTC/USD_MARKET</span>
+                        <span style="font-size:10px;color:var(--muted)">CANDLESTICK</span>
+                    </div>
+                    <div id="corp-btc-chart"></div>
+                </div>
+
+                <!-- ROW 3: Corporate Accounts -->
+                <div class="panel" style="grid-column:span 2;display:flex;flex-direction:column">
+                    <div class="panel-header">
+                        <span class="panel-label"><i class="fa-solid fa-building-columns"></i>KRAKEN_EXCHANGE_OPS</span>
+                        <span class="corp-status-badge" id="kraken-mode-badge">MOCK</span>
+                    </div>
+                    <div class="breakdown-label">EXCHANGE_BALANCES:</div>
+                    <div id="kraken-balance-row" class="corp-balance-row"></div>
+                    <div class="breakdown-label">RECENT_TRADE_LOG:</div>
+                    <div id="kraken-trade-log" class="corp-trade-log"></div>
+                    <div class="corp-action-row">
+                        <button class="corp-buy-btn" onclick="cryptoOrderStub('buy')"><i class="fa-solid fa-plus"></i> BUY ORDER</button>
+                        <button class="corp-sell-btn" onclick="cryptoOrderStub('sell')"><i class="fa-solid fa-minus"></i> SELL ORDER</button>
+                    </div>
+                </div>
+                <div class="panel" style="grid-column:3">
+                    <div class="panel-header">
+                        <span class="panel-label"><i class="fa-solid fa-hard-drive"></i>LEDGER_COLD_STORAGE</span>
+                    </div>
+                    <div class="breakdown-label">OFFLINE_BALANCES:</div>
+                    <div id="cold-storage-balances" style="display:flex;flex-direction:column;gap:6px;margin-bottom:4px"></div>
+                    <div class="breakdown-label" style="margin-top:6px">AUDIT_LOG:</div>
+                    <div id="cold-storage-log" class="corp-trade-log"></div>
+                </div>
+                <div class="panel" style="grid-column:4">
+                    <div class="panel-header">
+                        <span class="panel-label"><i class="fa-solid fa-boxes-stacked"></i>ASSET_INVENTORY</span>
+                        <span style="font-size:10px;color:var(--muted)">DCA TRACKING</span>
+                    </div>
+                    <div id="corp-inventory"></div>
+                </div>
+
+                <!-- ROW 4: Shareholder Cap Table -->
+                <div class="panel" style="grid-column:1/-1">
+                    <div class="panel-header">
+                        <span class="panel-label"><i class="fa-solid fa-users"></i>SHAREHOLDER_CAP_TABLE</span>
+                        <span style="font-size:10px;color:var(--muted)">CORPORATE EQUITY STRUCTURE</span>
+                    </div>
+                    <div id="corp-cap-table" class="corp-cap-table-row"></div>
+                </div>
+
+            </div>
+
+            <!-- ====================================================
+                 VIEW: INVESTMENTS
+                 ==================================================== -->
+            <div class="view-panel" id="view-investments">
+                <!-- Column 1: indexes list -->
+                <div class="panel" style="grid-column: 1">
+                    <div class="panel-header">
+                        <span class="panel-label"><i class="fa-solid fa-chart-line"></i>GLOBAL_MARKET_INDEXES</span>
+                    </div>
+                    <div id="investment-indexes-list" style="display:flex;flex-direction:column;gap:10px">
+                        <!-- Rendered dynamically by app.js -->
+                    </div>
+                </div>
+                
+                <!-- Column 2 & 3: accounts grid -->
+                <div class="panel" style="grid-column: span 2">
+                    <div class="panel-header">
+                        <span class="panel-label"><i class="fa-solid fa-vault"></i>PORTFOLIO_DESKS</span>
+                    </div>
+                    <div id="investment-accounts-grid" style="display:grid;grid-template-columns:repeat(2, 1fr);gap:12px">
+                        <!-- Rendered dynamically by app.js -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====================================================
+                 VIEW: HEALTH
+                 ==================================================== -->
+            <div class="view-panel" id="view-health">
+                <!-- Column 1: log activities -->
+                <div class="panel" style="grid-column: 1">
+                    <div class="panel-header">
+                        <span class="panel-label"><i class="fa-solid fa-heart-pulse"></i>BIOMETRIC_ACTIVITY_LOG</span>
+                    </div>
+                    <div id="health-log-activities" style="display:flex;flex-direction:column;gap:10px">
+                        <!-- Rendered dynamically by app.js -->
+                    </div>
+                </div>
+                
+                <!-- Column 2 & 3: nutrition grid -->
+                <div class="panel" style="grid-column: span 2">
+                    <div class="panel-header">
+                        <span class="panel-label"><i class="fa-solid fa-apple-whole"></i>WELLNESS_METRICS</span>
+                    </div>
+                    <div id="health-nutrition-grid" style="display:grid;grid-template-columns:repeat(2, 1fr);gap:12px">
+                        <!-- Rendered dynamically by app.js -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====================================================
+                 VIEW: NEWS
+                 ==================================================== -->
+            <div class="view-panel" id="view-news">
+                <!-- Column 1: Top Stories -->
+                <div class="panel" style="grid-column:1">
+                    <div class="panel-header">
+                        <span class="panel-label"><i class="fa-solid fa-newspaper"></i>TOP_STORIES</span>
+                        <span style="font-size:10px;color:var(--muted)">GENERAL &amp; MARKETS</span>
+                    </div>
+                    <div id="news-general-list" class="news-list"></div>
+                </div>
+                <!-- Column 2: Crypto News -->
+                <div class="panel" style="grid-column:2">
+                    <div class="panel-header">
+                        <span class="panel-label"><i class="fa-brands fa-bitcoin"></i>CRYPTO_FEED</span>
+                        <span style="font-size:10px;color:var(--muted)">DIGITAL ASSETS</span>
+                    </div>
+                    <div id="news-crypto-list" class="news-list"></div>
+                </div>
+                <!-- Column 3: Tech & AI News -->
+                <div class="panel" style="grid-column:3">
+                    <div class="panel-header">
+                        <span class="panel-label"><i class="fa-solid fa-microchip"></i>TECH_AI_FEED</span>
+                        <span style="font-size:10px;color:var(--muted)">TECHNOLOGY &amp; AI</span>
+                    </div>
+                    <div id="news-tech-list" class="news-list"></div>
+                </div>
+            </div>
+
+            <!-- ====================================================
+                 VIEW: UTILITIES
+                 ==================================================== -->
+            <div class="view-panel" id="view-utilities">
+                <div class="panel" style="grid-column:1/-1;padding:24px;min-height:200px">
+                    <div style="text-align:center">
+                        <div style="font-size:28px;color:var(--border);margin-bottom:12px"><i class="fa-solid fa-sliders"></i></div>
+                        <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em">UTILITIES MODULE — COMING SOON</div>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- end content-scroll -->
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <span>TERMINAL_DASHBOARD &copy; 2026 — SECURE SESSION ACTIVE</span>
+            <div class="footer-right">
+                <a href="#" class="footer-link" onclick="openModal('add-transaction'); return false;">+ NEW TRANSACTION</a>
+                <span class="footer-ok">● SYSTEM OK</span>
+                <span>v2.5.8</span>
+            </div>
+        </footer>
+
+    </div><!-- end main-area -->
+</div><!-- end shell -->
+
+
+<!-- ============================================================
+     MODAL: Add Transaction
+     ============================================================ -->
+<div class="modal-overlay hidden" id="modal-add-transaction">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="modal-title">
+                <i class="fa-solid fa-plus-circle"></i>
+                ADD_TRANSACTION
+            </div>
+            <button class="modal-close" onclick="closeModal('add-transaction')" title="Close">&times;</button>
+        </div>
+        <form id="transaction-form" onsubmit="submitTransaction(event)">
+            <div class="form-group">
+                <label class="form-label" for="txn-date">DATE</label>
+                <input type="date" class="form-input" id="txn-date" required>
+            </div>
+            <div class="form-grid-2">
+                <div class="form-group">
+                    <label class="form-label" for="txn-category">CATEGORY</label>
+                    <select class="form-select" id="txn-category">
+                        <option value="Cashflow">Cashflow</option>
+                        <option value="Food">Food</option>
+                        <option value="Media">Media</option>
+                        <option value="Resto">Resto</option>
+                        <option value="Stella">Stella</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Crypto">Crypto</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="txn-amount">AMOUNT ($)</label>
+                    <input type="number" step="0.01" class="form-input" id="txn-amount" placeholder="0.00" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="txn-label">LABEL / DESCRIPTION</label>
+                <input type="text" class="form-input" id="txn-label" placeholder="e.g. Grocery run — IGA" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="txn-type">TYPE</label>
+                <select class="form-select" id="txn-type">
+                    <option value="expense">EXPENSE (debit)</option>
+                    <option value="income">INCOME (credit)</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-primary" id="submit-txn-btn">
+                <i class="fa-solid fa-upload"></i>
+                SUBMIT_TO_SHEETS
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- App Logic -->
+<script src="app.js"></script>
+
+<!-- Init -->
+<script>
+    // Set today's date in the transaction modal
+    document.getElementById('txn-date').value = new Date().toISOString().split('T')[0];
+
+    // Set calendar date display
+    const calDate = document.getElementById('overview-cal-date');
+    if (calDate) {
+        calDate.textContent = new Date().toLocaleDateString('en-CA', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+    }
+
+    // Refresh button
+    document.getElementById('refresh-btn').addEventListener('click', () => {
+        checkAPIStatus();
+        triggerViewRender(activeTab);
+    });
+
+    // Modal helpers
+    function openModal(name) {
+        const el = document.getElementById(`modal-${name}`);
+        if (el) el.classList.remove('hidden');
+    }
+    function closeModal(name) {
+        const el = document.getElementById(`modal-${name}`);
+        if (el) el.classList.add('hidden');
+    }
+
+    // Close modal on backdrop click
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+        overlay.addEventListener('click', e => {
+            if (e.target === overlay) overlay.classList.add('hidden');
+        });
+    });
+
+    // Nav buttons — switch tabs using new CSS classes
+    document.querySelectorAll('#sidebar-nav button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tab = btn.getAttribute('data-tab');
+
+            // Update nav active state
+            document.querySelectorAll('#sidebar-nav button').forEach(b => {
+                b.classList.remove('active');
+                b.querySelector('.nav-arrow') && (b.querySelector('.nav-arrow').style.display = 'none');
+            });
+            btn.classList.add('active');
+            const arrow = btn.querySelector('.nav-arrow');
+            if (arrow) arrow.style.display = '';
+
+            // Switch view panels
+            document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+            const target = document.getElementById(`view-${tab}`);
+            if (target) target.classList.add('active');
+
+            // Update header
+            const title = document.getElementById('header-view-title');
+            const sub   = document.getElementById('header-view-subtitle');
+            if (tab === 'overview') {
+                title.textContent = 'TERMINAL_DASHBOARD_v2.5.8';
+                sub.textContent   = '> System monitoring & analytics platform | ULTRAWIDE_MODE | 3448x1440';
+            } else {
+                title.textContent = `DASHBOARD_SECTION // ${tab.toUpperCase()}.SYS`;
+                sub.textContent   = `> Active module stream: ${tab}.log | Secure node operations`;
+            }
+
+            activeTab = tab;
+            triggerViewRender(tab);
+        });
+    });
+
+    // Budget type + sub-tab helpers
+    function switchBudgetType(type) {
+        document.querySelectorAll('#panel-budget-sys .tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(`budget-tab-${type}`)?.classList.add('active');
+    }
+    function switchBudgetSub(sub) {
+        document.querySelectorAll('#panel-budget-sys .sub-tab').forEach(b => b.classList.remove('active'));
+        document.getElementById(`sub-tab-${sub}`)?.classList.add('active');
+    }
+    function budgetMonthNav(dir) {
+        const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const lbl = document.getElementById('budget-month-label');
+        let idx = months.indexOf(lbl.textContent);
+        idx = (idx + dir + 12) % 12;
+        lbl.textContent = months[idx];
+    }
+
+    // Submit transaction stub
+    function submitTransaction(e) {
+        e.preventDefault();
+        const btn = document.getElementById('submit-txn-btn');
+        btn.textContent = 'UPLOADING...';
+        btn.disabled = true;
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> SUBMITTED';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa-solid fa-upload"></i> SUBMIT_TO_SHEETS';
+                btn.disabled = false;
+                closeModal('add-transaction');
+            }, 1500);
+        }, 800);
+    }
+
+    // Boot sequence
+    setTimeout(() => {
+        renderOverviewScreen();
+        checkAPIStatus();
+    }, 100);
+</script>
+</body>
+</html>

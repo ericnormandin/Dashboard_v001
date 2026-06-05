@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mockup Color Picker</title>
+    <style>
+        body {
+            background: #111;
+            color: #eee;
+            font-family: monospace;
+            padding: 20px;
+        }
+        .color-box {
+            display: inline-block;
+            width: 50px;
+            height: 20px;
+            vertical-align: middle;
+            border: 1px solid #fff;
+            margin-right: 10px;
+        }
+        .color-item {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mockup Color Analysis</h1>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <div id="results">Loading and analyzing mockup...</div>
+
+    <script>
+        const img = new Image();
+        img.src = "../Design_Mockup/OverviewLayout.PNG";
+        img.onload = function() {
+            const canvas = document.getElementById("canvas");
+            const ctx = canvas.getContext("2d");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+
+            // Function to get hex at coordinates
+            function getHexAt(x, y) {
+                const pixel = ctx.getImageData(x, y, 1, 1).data;
+                return "#" + ((1 << 24) + (pixel[0] << 16) + (pixel[1] << 8) + pixel[2]).toString(16).slice(1);
+            }
+
+            // Sample key areas
+            const results = [
+                { name: "Sidebar Background (x=50, y=300)", color: getHexAt(50, 300) },
+                { name: "Top Header Background (x=400, y=30)", color: getHexAt(400, 30) },
+                { name: "Shell Background (x=10, y=10)", color: getHexAt(10, 10) },
+                { name: "Panel Background (x=400, y=300)", color: getHexAt(400, 300) },
+                { name: "Panel Header Background (x=400, y=120)", color: getHexAt(400, 120) },
+                { name: "Active Nav Item Border (x=68, y=78)", color: getHexAt(68, 78) },
+                { name: "Active Nav Item BG (x=30, y=78)", color: getHexAt(30, 78) },
+                { name: "Bronze/Orange Accent (x=120, y=230)", color: getHexAt(120, 230) },
+                { name: "Gold Value Text (x=350, y=175)", color: getHexAt(350, 175) },
+                { name: "Muted Text (x=100, y=320)", color: getHexAt(100, 320) },
+                { name: "Grid Border (x=460, y=300)", color: getHexAt(460, 300) },
+                { name: "Panel Border (x=310, y=120)", color: getHexAt(310, 120) },
+                { name: "Title Text (x=100, y=30)", color: getHexAt(100, 30) }
+            ];
+
+            // Let's also find dominant colors
+            const imgData = ctx.getImageData(0, 0, img.width, img.height).data;
+            const colorCounts = {};
+            // sample every 10th pixel to speed up
+            for (let i = 0; i < imgData.length; i += 40) {
+                const r = imgData[i];
+                const g = imgData[i+1];
+                const b = imgData[i+2];
+                const hex = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+                colorCounts[hex] = (colorCounts[hex] || 0) + 1;
+            }
+
+            const sortedColors = Object.entries(colorCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 15);
+
+            let html = "<h2>Sampled Coordinates</h2>";
+            results.forEach(res => {
+                html += `<div class="color-item"><span class="color-box" style="background:${res.color}"></span><strong>${res.name}:</strong> ${res.color}</div>`;
+            });
+
+            html += "<h2>Top 15 Dominant Colors (sampled)</h2>";
+            sortedColors.forEach(([color, count]) => {
+                html += `<div class="color-item"><span class="color-box" style="background:${color}"></span><strong>${color}:</strong> ${count} samples</div>`;
+            });
+
+            document.getElementById("results").innerHTML = html;
+        };
+        img.onerror = function() {
+            document.getElementById("results").innerHTML = "Error loading mockup image from ../Design_Mockup/OverviewLayout.PNG";
+        };
+    </script>
+</body>
+</html>

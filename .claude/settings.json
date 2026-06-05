@@ -1,0 +1,23 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NonInteractive -File \"G:\\Dashboard\\Dashboard_v001\\.claude\\hooks\\ruff_format.ps1\"",
+            "timeout": 30,
+            "statusMessage": "Formatting Python..."
+          },
+          {
+            "type": "command",
+            "command": "powershell -NonInteractive -File \"G:\\Dashboard\\Dashboard_v001\\.claude\\hooks\\ruff_check.ps1\"",
+            "timeout": 30,
+            "statusMessage": "Linting Python..."
+          }
+        ]
+      }
+    ]
+  }
+}

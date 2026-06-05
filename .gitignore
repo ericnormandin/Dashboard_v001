@@ -1,0 +1,30 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Secrets / credentials
+backend/.env
+backend/credentials.json
+.env
+
+# Claude Code local/ephemeral files
+.claude/settings.local.json
+.claude/todo.md
+
+# Third-party tool caches
+.antigravitycli/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp

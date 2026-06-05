@@ -1,0 +1,8 @@
+fastapi==0.111.0
+uvicorn==0.30.1
+ccxt==4.3.45
+gspread==6.1.2
+python-dotenv==1.0.1
+ruff>=0.4.0
+anthropic>=0.40.0
+httpx>=0.27.0
