@@ -754,8 +754,8 @@
                  ==================================================== -->
             <div class="view-panel" id="view-crypto">
 
-                <!-- ROW 1: Top-Level Corporate Metrics -->
-                <div class="panel" style="grid-column:1/-1">
+                <!-- COL 1: trading_co.sys — Share metrics + allocation -->
+                <div class="panel" id="panel-trading-co" style="grid-column:1">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
                             <div class="panel-dots">
@@ -763,91 +763,94 @@
                                 <div class="dot dot-gold"></div>
                                 <div class="dot dot-green"></div>
                             </div>
-                            <span class="panel-label"><i class="fa-brands fa-bitcoin"></i>TRADING_CO.SYS — EQUITY DASHBOARD</span>
+                            <span class="panel-label"><i class="fa-brands fa-bitcoin"></i>trading_co.sys</span>
                         </div>
                     </div>
-                    <div class="corp-metrics-row">
-                        <div class="corp-metric-box">
-                            <div class="corp-metric-label">SHARE_PRICE</div>
-                            <div class="corp-metric-val" id="corp-share-price">—</div>
-                            <div class="corp-metric-sub">10,000 SHARES ISSUED</div>
+
+                    <!-- Share price hero -->
+                    <div>
+                        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">SHARE_PRICE</div>
+                        <div id="corp-share-price" class="portfolio-value" style="margin-top:3px">—</div>
+                        <div style="font-size:10px;color:var(--muted);margin-top:4px">10,000 SHARES ISSUED</div>
+                    </div>
+
+                    <!-- Sentiment (full-width now that BTC price moved to btc_market.sys) -->
+                    <div class="chart-box">
+                        <div class="chart-label">SENTIMENT:</div>
+                        <div class="fg-track" style="margin:6px 0 4px"><div class="fg-fill" id="corp-fg-fill"></div></div>
+                        <div style="display:flex;justify-content:space-between;align-items:baseline">
+                            <span id="corp-fg-value" style="font-size:14px;font-weight:700;color:var(--gold)">—</span>
+                            <span id="corp-fg-label" style="font-size:10px;color:var(--muted)">—</span>
                         </div>
-                        <div class="corp-metric-box">
-                            <div class="corp-metric-label">PORTFOLIO_VALUE</div>
-                            <div class="corp-metric-val" id="corp-portfolio-val">—</div>
-                            <div class="corp-metric-sub" id="corp-portfolio-chg">TOTAL CRYPTO ASSETS</div>
+                    </div>
+
+                    <!-- Holdings allocation (fills remaining height) -->
+                    <div class="breakdown-label">HOLDINGS_ALLOCATION:</div>
+                    <div id="corp-holdings-breakdown" class="breakdown-list" style="flex:1;overflow-y:auto;min-height:0"></div>
+                </div>
+
+                <!-- COL 2: Charts stacked (portfolio 2/3, BTC 1/3) -->
+                <div class="col-stack" style="grid-column:2">
+                    <div class="panel" id="panel-portfolio-chart" style="flex:2;display:flex;flex-direction:column">
+                        <div class="panel-header">
+                            <span class="panel-label"><i class="fa-solid fa-chart-area"></i>portfolio.sys</span>
+                            <span style="font-size:10px;color:var(--muted)">30-DAY · DCA</span>
                         </div>
-                        <div class="corp-metric-box">
-                            <div class="corp-metric-label">BTC_PRICE</div>
-                            <div class="corp-metric-val" id="corp-btc-price">—</div>
-                            <div class="corp-metric-sub" id="corp-btc-chg">— 24H</div>
+                        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px">
+                            <div id="corp-portfolio-val" style="font-size:16px;font-weight:700;color:var(--slate);line-height:1">—</div>
+                            <div id="corp-portfolio-chg" style="font-size:10px;color:var(--muted)">—</div>
                         </div>
-                        <div class="corp-metric-box">
-                            <div class="corp-metric-label">MARKET_SENTIMENT</div>
-                            <div class="fg-track" style="margin:6px 0 4px"><div class="fg-fill" id="corp-fg-fill"></div></div>
-                            <div style="display:flex;justify-content:space-between;align-items:center">
-                                <span class="corp-metric-val" id="corp-fg-value">—</span>
-                                <span class="corp-metric-sub" id="corp-fg-label">—</span>
-                            </div>
+                        <div id="corp-assets-chart"></div>
+                        <div class="breakdown-label" style="margin-top:8px">DCA_TRACKING:</div>
+                        <div id="corp-inventory" style="flex:1;overflow-y:auto;min-height:0"></div>
+                    </div>
+                    <div class="panel" id="panel-btc-chart">
+                        <div class="panel-header">
+                            <span class="panel-label"><i class="fa-brands fa-bitcoin"></i>btc_market.sys</span>
+                            <span style="font-size:10px;color:var(--muted)">CANDLES</span>
                         </div>
+                        <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px">
+                            <div id="corp-btc-price" style="font-size:14px;font-weight:700;color:var(--slate);line-height:1">—</div>
+                            <div id="corp-btc-chg" style="font-size:10px">—</div>
+                        </div>
+                        <div id="corp-btc-chart"></div>
                     </div>
                 </div>
 
-                <!-- ROW 2: Charts -->
-                <div class="panel" style="grid-column:span 3">
-                    <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-chart-area"></i>TOTAL_CORPORATE_ASSETS</span>
-                        <span style="font-size:10px;color:var(--muted)">30-DAY PORTFOLIO VALUE</span>
+                <!-- COL 3: Kraken 2/3, Cold Storage 1/3 -->
+                <div class="col-stack" style="grid-column:3">
+                    <div class="panel" id="panel-kraken-ops" style="flex:2;display:flex;flex-direction:column">
+                        <div class="panel-header">
+                            <span class="panel-label"><i class="fa-solid fa-building-columns"></i>kraken_ops.sys</span>
+                            <span class="corp-status-badge" id="kraken-mode-badge">MOCK</span>
+                        </div>
+                        <div class="breakdown-label">EXCHANGE_BALANCES:</div>
+                        <div id="kraken-balance-row" class="corp-balance-row"></div>
+                        <div class="breakdown-label">RECENT_TRADE_LOG:</div>
+                        <div id="kraken-trade-log" class="corp-trade-log"></div>
+                        <div class="corp-action-row">
+                            <button class="corp-buy-btn" onclick="cryptoOrderStub('buy')"><i class="fa-solid fa-plus"></i> BUY</button>
+                            <button class="corp-sell-btn" onclick="cryptoOrderStub('sell')"><i class="fa-solid fa-minus"></i> SELL</button>
+                        </div>
                     </div>
-                    <div id="corp-assets-chart"></div>
-                </div>
-                <div class="panel" style="grid-column:4">
-                    <div class="panel-header">
-                        <span class="panel-label"><i class="fa-brands fa-bitcoin"></i>BTC/USD_MARKET</span>
-                        <span style="font-size:10px;color:var(--muted)">CANDLESTICK</span>
+                    <div class="panel" id="panel-cold-storage">
+                        <div class="panel-header">
+                            <span class="panel-label"><i class="fa-solid fa-hard-drive"></i>cold_storage.sys</span>
+                        </div>
+                        <div class="breakdown-label">OFFLINE_BALANCES:</div>
+                        <div id="cold-storage-balances" style="display:flex;flex-direction:column;gap:6px;margin-bottom:4px"></div>
+                        <div class="breakdown-label" style="margin-top:6px">AUDIT_LOG:</div>
+                        <div id="cold-storage-log" class="corp-trade-log"></div>
                     </div>
-                    <div id="corp-btc-chart"></div>
                 </div>
 
-                <!-- ROW 3: Corporate Accounts -->
-                <div class="panel" style="grid-column:span 2;display:flex;flex-direction:column">
+                <!-- COL 4: Cap Table (full height, cards stacked vertically) -->
+                <div class="panel" id="panel-cap-table" style="grid-column:4">
                     <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-building-columns"></i>KRAKEN_EXCHANGE_OPS</span>
-                        <span class="corp-status-badge" id="kraken-mode-badge">MOCK</span>
+                        <span class="panel-label"><i class="fa-solid fa-users"></i>cap_table.sys</span>
+                        <span style="font-size:10px;color:var(--muted)">EQUITY</span>
                     </div>
-                    <div class="breakdown-label">EXCHANGE_BALANCES:</div>
-                    <div id="kraken-balance-row" class="corp-balance-row"></div>
-                    <div class="breakdown-label">RECENT_TRADE_LOG:</div>
-                    <div id="kraken-trade-log" class="corp-trade-log"></div>
-                    <div class="corp-action-row">
-                        <button class="corp-buy-btn" onclick="cryptoOrderStub('buy')"><i class="fa-solid fa-plus"></i> BUY ORDER</button>
-                        <button class="corp-sell-btn" onclick="cryptoOrderStub('sell')"><i class="fa-solid fa-minus"></i> SELL ORDER</button>
-                    </div>
-                </div>
-                <div class="panel" style="grid-column:3">
-                    <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-hard-drive"></i>LEDGER_COLD_STORAGE</span>
-                    </div>
-                    <div class="breakdown-label">OFFLINE_BALANCES:</div>
-                    <div id="cold-storage-balances" style="display:flex;flex-direction:column;gap:6px;margin-bottom:4px"></div>
-                    <div class="breakdown-label" style="margin-top:6px">AUDIT_LOG:</div>
-                    <div id="cold-storage-log" class="corp-trade-log"></div>
-                </div>
-                <div class="panel" style="grid-column:4">
-                    <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-boxes-stacked"></i>ASSET_INVENTORY</span>
-                        <span style="font-size:10px;color:var(--muted)">DCA TRACKING</span>
-                    </div>
-                    <div id="corp-inventory"></div>
-                </div>
-
-                <!-- ROW 4: Shareholder Cap Table -->
-                <div class="panel" style="grid-column:1/-1">
-                    <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-users"></i>SHAREHOLDER_CAP_TABLE</span>
-                        <span style="font-size:10px;color:var(--muted)">CORPORATE EQUITY STRUCTURE</span>
-                    </div>
-                    <div id="corp-cap-table" class="corp-cap-table-row"></div>
+                    <div id="corp-cap-table" class="corp-cap-table-vertical"></div>
                 </div>
 
             </div>
