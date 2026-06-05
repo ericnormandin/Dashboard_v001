@@ -369,11 +369,16 @@ nav.sidebar-nav {
     line-height: 1;
 }
 
+.clock-box .clock-time-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
 .clock-box .clock-date {
     font-size: 10px;
     color: var(--muted);
     letter-spacing: 0.08em;
-    margin-top: 2px;
     line-height: 1;
     text-transform: uppercase;
 }
@@ -1447,6 +1452,102 @@ nav.sidebar-nav {
 .ai-ret-output.visible { display: block; }
 
 /* ============================================================
+   RETIREMENT PLAN TIMELINE (horizontal)
+   ============================================================ */
+.ret-tl-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    padding: 10px 12px 8px;
+}
+
+.ret-tl-track {
+    display: inline-flex;
+    min-width: max-content;
+}
+
+.ret-tl-col {
+    display: flex;
+    flex-direction: column;
+    min-width: 110px;
+}
+
+.ret-tl-content {
+    padding-bottom: 8px;
+    padding-right: 16px;
+}
+
+.ret-tl-year {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1;
+    margin-bottom: 2px;
+}
+
+.ret-tl-col.now .ret-tl-year { color: var(--bronze); }
+
+.ret-tl-now-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    background: var(--bronze);
+    color: var(--bg);
+    padding: 1px 4px;
+}
+
+.ret-tl-val {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1.4;
+}
+
+.ret-tl-col.goal .ret-tl-val { color: var(--green); }
+
+.ret-tl-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.ret-tl-spine {
+    display: flex;
+    align-items: center;
+    height: 12px;
+}
+
+.ret-tl-dot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    background: var(--panel-alt);
+}
+
+.ret-tl-dot.now {
+    background: var(--bronze);
+    border-color: var(--gold);
+    box-shadow: 0 0 6px rgba(var(--bronze-rgb), 0.5);
+}
+
+.ret-tl-dot.goal {
+    background: var(--gold);
+    border-color: var(--gold);
+}
+
+.ret-tl-line {
+    flex: 1;
+    height: 1px;
+    min-width: 50px;
+    background: var(--border);
+}
+
+/* ============================================================
    AI_INSIGHTS.SYS
    ============================================================ */
 
@@ -1656,6 +1757,7 @@ nav.sidebar-nav {
 
 #view-crypto {
     grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
     align-items: stretch;
 }
 
@@ -2213,7 +2315,7 @@ nav.sidebar-nav {
    ============================================================ */
 
 /* Other view panels — full content area, 3 col default */
-#view-budget, #view-crypto, #view-investments, #view-health, #view-news, #view-utilities {
+#view-budget, #view-investments, #view-health, #view-news, #view-utilities {
     grid-template-columns: repeat(3, 1fr);
     gap: var(--grid-gap);
     align-items: start;

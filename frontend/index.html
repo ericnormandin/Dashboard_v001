@@ -141,8 +141,10 @@
                 <!-- Clock -->
                 <div class="clock-box">
                     <div class="clock-label">SYSTEM_TIME</div>
-                    <div class="clock-time" id="system-clock">--:--:--</div>
-                    <div class="clock-date" id="system-date">--- ----</div>
+                    <div class="clock-time-row">
+                        <div class="clock-date" id="system-date">--- ----</div>
+                        <div class="clock-time" id="system-clock">--:--:--</div>
+                    </div>
                 </div>
             </div>
         </header>
@@ -580,6 +582,10 @@
                         </div>
                         <pre class="ai-ret-output" id="retirement-ai-output"></pre>
                     </div>
+
+                    <!-- Plan Timeline -->
+                    <div class="breakdown-label" style="margin-top:8px">PLAN_TIMELINE:</div>
+                    <div id="retirement-plan-timeline"></div>
 
                 </div><!-- end col4 -->
 

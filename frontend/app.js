@@ -570,6 +570,7 @@ function renderOverviewScreen() {
         });
     }
 
+    renderRetirementTimeline();
     _renderRetirementGauge(33, '$500K', '1.5M');
 }
 
@@ -628,6 +629,37 @@ function _renderRetirementGauge(pct, currentLabel, goalLabel) {
     if (amtEl) amtEl.textContent = `${currentLabel} / ${goalLabel}`;
 }
 
+
+// ================= RETIREMENT PLAN TIMELINE =================
+function renderRetirementTimeline() {
+    const el = document.getElementById('retirement-plan-timeline');
+    if (!el) return;
+
+    const milestones = [
+        { year: 2026, value: '$349K', label: 'Current position',        isNow: true  },
+        { year: 2027, value: '$427K', label: 'Max RRSP contribution'                  },
+        { year: 2029, value: '$590K', label: 'Crypto allocation shift'                },
+        { year: 2032, value: '$750K', label: '50% to goal'                            },
+        { year: 2036, value: '$1.1M', label: 'RRSP maturation'                        },
+        { year: 2041, value: '$1.5M', label: 'Goal reached',            isGoal: true },
+    ];
+
+    el.innerHTML = '<div class="ret-tl-scroll"><div class="ret-tl-track">' +
+        milestones.map((m, i) => `
+            <div class="ret-tl-col${m.isNow ? ' now' : ''}${m.isGoal ? ' goal' : ''}">
+                <div class="ret-tl-content">
+                    <div class="ret-tl-year">${m.isNow ? '<span class="ret-tl-now-badge">NOW</span>' : ''}${m.year}</div>
+                    <div class="ret-tl-val">${m.value}</div>
+                    <div class="ret-tl-label">${m.label}</div>
+                </div>
+                <div class="ret-tl-spine">
+                    <div class="ret-tl-dot${m.isNow ? ' now' : ''}${m.isGoal ? ' goal' : ''}"></div>
+                    ${i < milestones.length - 1 ? '<div class="ret-tl-line"></div>' : ''}
+                </div>
+            </div>
+        `).join('') +
+    '</div></div>';
+}
 
 // ================= VIEW: BUDGET MODULE (MOCK SPECIFICITY RENDERER) =================
 function renderBudgetScreen() {
