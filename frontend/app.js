@@ -569,6 +569,63 @@ function renderOverviewScreen() {
             overviewNewsHeadlines.appendChild(div);
         });
     }
+
+    _renderRetirementGauge(33, '$500K', '1.5M');
+}
+
+function _renderRetirementGauge(pct, currentLabel, goalLabel) {
+    const el = document.getElementById('retirement-gauge-svg');
+    if (!el) return;
+
+    const cx = 120, cy = 120, r1 = 76, r2 = 108, N = 40, gap = 1.8;
+    const step     = 360 / N;
+    const litCount = Math.round((pct / 100) * N);
+
+    const pt = (deg, r) => {
+        const rad = deg * Math.PI / 180;
+        return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
+    };
+
+    let paths = '';
+    for (let i = 0; i < N; i++) {
+        // Segments run clockwise from 6 o'clock (90° in SVG = bottom)
+        const a1 = 90 + i * step + gap;
+        const a2 = 90 + (i + 1) * step - gap;
+        const lit = i < litCount;
+
+        const [x1o, y1o] = pt(a1, r2);
+        const [x2o, y2o] = pt(a2, r2);
+        const [x2i, y2i] = pt(a2, r1);
+        const [x1i, y1i] = pt(a1, r1);
+
+        // Outer arc CW (sweep=1), inner arc CCW back (sweep=0)
+        const d = [
+            `M${x1o.toFixed(1)} ${y1o.toFixed(1)}`,
+            `A${r2} ${r2} 0 0 1 ${x2o.toFixed(1)} ${y2o.toFixed(1)}`,
+            `L${x2i.toFixed(1)} ${y2i.toFixed(1)}`,
+            `A${r1} ${r1} 0 0 0 ${x1i.toFixed(1)} ${y1i.toFixed(1)}Z`,
+        ].join(' ');
+
+        const style = lit
+            ? 'fill:var(--gold);filter:drop-shadow(0 0 5px rgba(207,167,120,0.45))'
+            : 'fill:var(--border-lt)';
+        paths += `<path d="${d}" style="${style}"/>`;
+    }
+
+    // Outer and inner outline circles that frame the segment ring
+    const outerRing = `<circle cx="${cx}" cy="${cy}" r="${r2 + 5}" fill="none" style="stroke:var(--border);stroke-width:1"/>`;
+    const innerRing = `<circle cx="${cx}" cy="${cy}" r="${r1 - 5}" fill="none" style="stroke:var(--border);stroke-width:1"/>`;
+
+    el.innerHTML = `<svg viewBox="0 0 240 240" style="width:100%;height:100%;display:block">
+        ${outerRing}${innerRing}${paths}
+    </svg>`;
+
+    const pctEl = document.getElementById('ret-gauge-pct');
+    const barEl = document.getElementById('ret-gauge-bar-fill');
+    const amtEl = document.getElementById('ret-gauge-amounts');
+    if (pctEl) pctEl.textContent = `${pct.toFixed(1)}%`;
+    if (barEl) barEl.style.width = `${pct}%`;
+    if (amtEl) amtEl.textContent = `${currentLabel} / ${goalLabel}`;
 }
 
 
@@ -818,22 +875,102 @@ async function _updateCorpFearGreed() {
         const res = await fetch(`${API_BASE_URL}/api/crypto/fear-greed`);
         if (!res.ok) throw new Error();
         const data = await res.json();
-        const color = _fgColor(data.value);
-        const fEl = document.getElementById('corp-fg-fill');
-        const vEl = document.getElementById('corp-fg-value');
-        const lEl = document.getElementById('corp-fg-label');
-        if (fEl) { fEl.style.width = `${data.value}%`; fEl.style.background = color; }
-        if (vEl) { vEl.textContent = data.value; vEl.style.color = color; }
-        if (lEl) { lEl.textContent = data.label.toUpperCase(); lEl.style.color = color; }
+        _renderFgGauge(data.value, data.label);
     } catch {
-        const color = _fgColor(55);
-        const fEl = document.getElementById('corp-fg-fill');
-        if (fEl) { fEl.style.width = '55%'; fEl.style.background = color; }
-        const vEl = document.getElementById('corp-fg-value');
-        if (vEl) { vEl.textContent = '55'; vEl.style.color = color; }
-        const lEl = document.getElementById('corp-fg-label');
-        if (lEl) { lEl.textContent = 'NEUTRAL'; lEl.style.color = color; }
+        _renderFgGauge(55, 'Neutral');
     }
+}
+
+function _renderFgGauge(value, label) {
+    const color   = _fgColor(value);
+    const gaugeEl = document.getElementById('corp-fg-gauge');
+    const lEl     = document.getElementById('corp-fg-label');
+    if (gaugeEl) gaugeEl.innerHTML = _fgGaugeSvg(value, color);
+    if (lEl) { lEl.textContent = label.toUpperCase(); lEl.style.color = color; }
+}
+
+function _fgGaugeSvg(value, color) {
+    const cx = 100, cy = 96;
+    const r1 = 40, r2 = 76;   // inner / outer radius of segments
+    const N  = 14;             // number of segments
+    const totalArc  = 240;     // degrees the gauge spans
+    const startAngle = 210;    // math-convention angle for value=0 (fear, lower-left)
+    const step = totalArc / N;
+    const gap  = 1.2;          // degrees of dead-space on each side of a segment
+
+    // Point on circle at math-convention angle (0°=right, CCW positive), SVG coords
+    const pt = (angleDeg, r) => {
+        const rad = angleDeg * Math.PI / 180;
+        return [cx + r * Math.cos(rad), cy - r * Math.sin(rad)];
+    };
+
+    // Zone color by segment index
+    const segColor = (i) => {
+        const pct = i / N;
+        if (pct < 0.22)  return '#cc2200';
+        if (pct < 0.40)  return '#e05a00';
+        if (pct < 0.58)  return '#c8a84b';
+        if (pct < 0.76)  return '#5fa85f';
+        return '#1f8c3b';
+    };
+
+    // Which segment the needle sits in (0–N-1)
+    const activeIdx = Math.min(Math.floor((value / 100) * N), N - 1);
+
+    let segs = '';
+    for (let i = 0; i < N; i++) {
+        // a1 > a2 (we go clockwise = decreasing math angle = CCW in SVG)
+        const a1 = startAngle - i * step + gap;
+        const a2 = startAngle - (i + 1) * step - gap;
+
+        const [x1o, y1o] = pt(a1, r2);
+        const [x2o, y2o] = pt(a2, r2);
+        const [x2i, y2i] = pt(a2, r1);
+        const [x1i, y1i] = pt(a1, r1);
+
+        // Annular sector: outer arc sweep=0 (CCW in SVG = CW in math, a1→a2),
+        // then inner arc sweep=1 (CW in SVG = CCW in math, a2→a1)
+        const d = [
+            `M${x1o.toFixed(1)} ${y1o.toFixed(1)}`,
+            `A${r2} ${r2} 0 0 0 ${x2o.toFixed(1)} ${y2o.toFixed(1)}`,
+            `L${x2i.toFixed(1)} ${y2i.toFixed(1)}`,
+            `A${r1} ${r1} 0 0 1 ${x1i.toFixed(1)} ${y1i.toFixed(1)}Z`,
+        ].join(' ');
+
+        const c   = segColor(i);
+        const lit = i <= activeIdx;
+        const glow = lit ? `style="filter:drop-shadow(0 0 3px ${c})"` : '';
+        segs += `<path d="${d}" fill="${c}" opacity="${lit ? 1 : 0.18}" ${glow}/>`;
+    }
+
+    // Needle: math angle for the exact value
+    const needleAngle = startAngle - (value / 100) * totalArc;
+    const [nx, ny]   = pt(needleAngle, r2 - 5);
+    const [nbx, nby] = pt(needleAngle + 180, 12); // short tail behind centre
+
+    // FEAR / GREED label x positions track the arc ends
+    const [fearX, fearY] = pt(startAngle, r2 + 4);
+    const [greedX, greedY] = pt(startAngle - totalArc, r2 + 4);
+
+    return `<svg viewBox="0 0 200 150" style="width:100%;display:block">
+        ${segs}
+        <circle cx="${cx}" cy="${cy}" r="${r1 - 3}" fill="#080808"/>
+        <line x1="${nbx.toFixed(1)}" y1="${nby.toFixed(1)}"
+              x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}"
+              stroke="var(--slate)" stroke-width="2" stroke-linecap="round"
+              style="filter:drop-shadow(0 0 4px var(--slate))"/>
+        <circle cx="${cx}" cy="${cy}" r="5" fill="var(--slate)"
+                style="filter:drop-shadow(0 0 4px var(--slate))"/>
+        <text x="${cx}" y="${(cy + 8).toFixed(0)}" text-anchor="middle"
+              fill="${color}" font-size="22" font-weight="700"
+              font-family="JetBrains Mono">${value}</text>
+        <text x="${(fearX - 2).toFixed(0)}" y="147"
+              fill="#cc2200" font-size="8" font-weight="700"
+              font-family="JetBrains Mono" text-anchor="middle">FEAR</text>
+        <text x="${(greedX + 2).toFixed(0)}" y="147"
+              fill="#1f8c3b" font-size="8" font-weight="700"
+              font-family="JetBrains Mono" text-anchor="middle">GREED</text>
+    </svg>`;
 }
 
 async function _fetchKrakenBalanceForCorp() {

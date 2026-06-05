@@ -108,17 +108,21 @@ html, body {
 }
 
 .sidebar-brand {
-    padding: 18px 16px 14px;
+    height: var(--header-h);
+    min-height: var(--header-h);
+    padding: 0 16px;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
     gap: 10px;
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 .sidebar-brand-icon {
     width: 26px;
     height: 26px;
-    border-radius: 4px;
+    border-radius: 0;
     background: linear-gradient(135deg, var(--bronze), var(--gold));
     display: flex;
     align-items: center;
@@ -159,7 +163,7 @@ nav.sidebar-nav {
     align-items: center;
     justify-content: space-between;
     padding: 9px 12px;
-    border-radius: 5px;
+    border-radius: 0;
     border: 1px solid transparent;
     background: transparent;
     color: var(--muted);
@@ -256,7 +260,7 @@ nav.sidebar-nav {
     display: block;
     width: 100%;
     height: 130px;
-    border-radius: 4px;
+    border-radius: 0;
 }
 
 /* ============================================================
@@ -315,7 +319,7 @@ nav.sidebar-nav {
     font-size: 10px;
     border: 1px solid var(--border);
     padding: 4px 8px;
-    border-radius: 4px;
+    border-radius: 0;
     background: var(--panel);
     color: var(--muted);
     text-transform: uppercase;
@@ -343,7 +347,7 @@ nav.sidebar-nav {
     border: 1px solid var(--border);
     background: var(--panel);
     padding: 5px 12px;
-    border-radius: 4px;
+    border-radius: 0;
     text-align: center;
     min-width: 110px;
 }
@@ -378,7 +382,7 @@ nav.sidebar-nav {
     width: 30px;
     height: 30px;
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: 0;
     background: var(--panel);
     color: var(--muted);
     cursor: pointer;
@@ -441,7 +445,7 @@ nav.sidebar-nav {
 .panel {
     background: var(--panel);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 0;
     padding: var(--panel-pad);
     display: flex;
     flex-direction: column;
@@ -550,7 +554,7 @@ nav.sidebar-nav {
 .tab-group {
     display: flex;
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 0;
     overflow: hidden;
 }
 
@@ -638,7 +642,7 @@ nav.sidebar-nav {
 .mini-card {
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: 0;
     padding: 10px 10px 8px;
     transition: border-color 0.15s;
 }
@@ -653,7 +657,7 @@ nav.sidebar-nav {
 .chart-box {
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: 0;
     padding: 10px;
 }
 
@@ -780,7 +784,7 @@ nav.sidebar-nav {
 .crypto-widget {
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 0;
     padding: 8px;
     display: flex;
     flex-direction: column;
@@ -855,7 +859,7 @@ nav.sidebar-nav {
 .asset-icon {
     width: 20px;
     height: 20px;
-    border-radius: 3px;
+    border-radius: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -915,7 +919,7 @@ nav.sidebar-nav {
 .mail-count-box {
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 0;
     padding: 8px 6px;
     text-align: center;
 }
@@ -953,7 +957,7 @@ nav.sidebar-nav {
 .mail-item {
     background: rgba(var(--panel-rgb), 0.5);
     border: 1px solid rgba(var(--border-rgb), 0.7);
-    border-radius: 4px;
+    border-radius: 0;
     padding: 8px 10px;
     transition: border-color 0.15s;
     cursor: default;
@@ -1001,7 +1005,7 @@ nav.sidebar-nav {
     margin-top: 4px;
     margin-left: 12px;
     padding: 1px 6px;
-    border-radius: 3px;
+    border-radius: 0;
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -1027,7 +1031,7 @@ nav.sidebar-nav {
     flex: 1;
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 0;
     padding: 7px 10px;
     color: var(--muted);
     font-family: 'JetBrains Mono', monospace;
@@ -1066,7 +1070,7 @@ nav.sidebar-nav {
 .health-stat {
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 0;
     padding: 8px;
 }
 
@@ -1098,14 +1102,14 @@ nav.sidebar-nav {
 .bar-chart-box {
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 0;
     padding: 8px;
 }
 
 .sleep-box {
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 0;
     padding: 8px 10px;
     display: flex;
     justify-content: space-between;
@@ -1196,7 +1200,7 @@ nav.sidebar-nav {
 .schedule-item {
     background: rgba(var(--panel-rgb), 0.5);
     border: 1px solid rgba(var(--border-rgb), 0.7);
-    border-radius: 4px;
+    border-radius: 0;
     padding: 8px 10px;
     display: flex;
     justify-content: space-between;
@@ -1249,7 +1253,7 @@ nav.sidebar-nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 170px;
+    height: 240px;
     user-select: none;
 }
 
@@ -1265,26 +1269,40 @@ nav.sidebar-nav {
 }
 
 .gauge-label {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
     line-height: 1;
 }
 
 .gauge-pct {
-    font-size: 26px;
+    font-size: 32px;
     font-weight: 700;
-    color: var(--slate);
+    color: #e07000;
     line-height: 1;
     margin-top: 4px;
 }
 
+.ret-gauge-bar-wrap {
+    width: 80px;
+    height: 4px;
+    background: var(--border-lt);
+    border-radius: 2px;
+    margin-top: 8px;
+    overflow: hidden;
+}
+
+.ret-gauge-bar-wrap > div {
+    height: 100%;
+    background: var(--bronze);
+    border-radius: 2px;
+}
+
 .gauge-goal {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--gold);
     font-weight: 600;
-    margin-top: 4px;
+    margin-top: 8px;
     line-height: 1;
 }
 
@@ -1304,7 +1322,7 @@ nav.sidebar-nav {
 .ret-card {
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 0;
     padding: 8px;
 }
 
@@ -1329,7 +1347,7 @@ nav.sidebar-nav {
 .rrsp-box {
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 0;
     padding: 10px;
     display: flex;
     flex-direction: column;
@@ -1382,7 +1400,7 @@ nav.sidebar-nav {
 .ai-ret-btn {
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 0;
     padding: 7px 8px;
     color: var(--muted);
     font-family: 'JetBrains Mono', monospace;
@@ -1414,7 +1432,7 @@ nav.sidebar-nav {
     display: none;
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 0;
     padding: 10px;
     font-size: 10px;
     color: var(--text);
@@ -1475,7 +1493,7 @@ nav.sidebar-nav {
 
 .insight-item {
     padding: 8px 10px;
-    border-radius: 4px;
+    border-radius: 0;
     border: 1px solid;
     display: flex;
     align-items: flex-start;
@@ -1651,7 +1669,7 @@ nav.sidebar-nav {
 .corp-metric-box {
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: 0;
     padding: 12px;
     display: flex;
     flex-direction: column;
@@ -1683,7 +1701,7 @@ nav.sidebar-nav {
     font-size: 10px;
     font-weight: 700;
     padding: 2px 7px;
-    border-radius: 3px;
+    border-radius: 0;
     background: rgba(207,167,120,0.1);
     border: 1px solid rgba(207,167,120,0.3);
     color: var(--gold);
@@ -1701,7 +1719,7 @@ nav.sidebar-nav {
 .corp-balance-card {
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 0;
     padding: 8px;
     text-align: center;
 }
@@ -1740,7 +1758,7 @@ nav.sidebar-nav {
     align-items: center;
     gap: 6px;
     padding: 5px 8px;
-    border-radius: 3px;
+    border-radius: 0;
     background: var(--panel-alt);
     border: 1px solid var(--border-lt);
     font-size: 10px;
@@ -1761,7 +1779,7 @@ nav.sidebar-nav {
 .corp-buy-btn, .corp-sell-btn {
     padding: 9px;
     border: 1px solid;
-    border-radius: 4px;
+    border-radius: 0;
     font-family: 'JetBrains Mono', monospace;
     font-size: 10px;
     font-weight: 700;
@@ -1832,7 +1850,7 @@ nav.sidebar-nav {
 .cap-card {
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: 0;
     padding: 14px 16px;
     display: flex;
     flex-direction: column;
@@ -1882,7 +1900,7 @@ nav.sidebar-nav {
     display: none;
     margin-bottom: 12px;
     padding: 10px 14px;
-    border-radius: 5px;
+    border-radius: 0;
     border: 1px solid rgba(var(--bronze-rgb), 0.3);
     background: rgba(var(--bronze-rgb), 0.06);
     color: var(--gold);
@@ -1915,7 +1933,7 @@ nav.sidebar-nav {
     max-width: 420px;
     background: var(--panel);
     border: 1px solid rgba(var(--bronze-rgb), 0.4);
-    border-radius: 8px;
+    border-radius: 0;
     padding: 20px;
     box-shadow: 0 24px 80px rgba(0,0,0,0.8);
     font-size: 11px;
@@ -1968,7 +1986,7 @@ nav.sidebar-nav {
     width: 100%;
     background: var(--panel-alt);
     border: 1px solid var(--border);
-    border-radius: 4px;
+    border-radius: 0;
     padding: 8px 10px;
     color: var(--text);
     font-family: 'JetBrains Mono', monospace;
@@ -1986,7 +2004,7 @@ nav.sidebar-nav {
     width: 100%;
     background: var(--bronze);
     border: none;
-    border-radius: 4px;
+    border-radius: 0;
     padding: 10px;
     color: #000;
     font-family: 'JetBrains Mono', monospace;
@@ -2066,7 +2084,7 @@ nav.sidebar-nav {
     .sidebar-brand-icon { width: 30px; height: 30px; }
     .bar-chart-box svg,
     .chart-box svg     { height: 90px; }
-    .gauge-wrap        { height: 200px; }
+    .gauge-wrap        { height: 270px; }
 }
 
 /* Ultrawide 3440x1440 */
@@ -2092,7 +2110,7 @@ nav.sidebar-nav {
     .refresh-btn       { width: 38px; height: 38px; font-size: 14px; }
 
     /* Sidebar */
-    .sidebar-brand     { padding: 22px 20px 16px; }
+    .sidebar-brand     { padding: 0 20px; }
     .sidebar-brand-icon { width: 36px; height: 36px; font-size: 15px; }
     .sidebar-brand-text h2 { font-size: 14px; }
     .sidebar-brand-text p  { font-size: 12px; }
@@ -2157,11 +2175,12 @@ nav.sidebar-nav {
     .participants     { font-size: 11px; }
 
     /* Retirement gauge */
-    .gauge-wrap        { height: 220px; }
-    .gauge-label       { font-size: 10px; }
-    .gauge-pct         { font-size: 34px; }
-    .gauge-goal        { font-size: 12px; }
+    .gauge-wrap        { height: 300px; }
+    .gauge-label       { font-size: 12px; }
+    .gauge-pct         { font-size: 38px; }
+    .gauge-goal        { font-size: 13px; }
     .gauge-rem         { font-size: 11px; }
+    .ret-gauge-bar-wrap { width: 100px; height: 5px; }
     .ret-card .ret-label { font-size: 11px; }
     .ret-card .ret-val   { font-size: 17px; }
     .rrsp-row          { font-size: 12px; }
