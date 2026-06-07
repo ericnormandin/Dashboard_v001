@@ -21,13 +21,13 @@ let securityScanRun = false;
 
 // Category breakdowns for budget.sys
 const mockBudgetCategories = [
-    { name: 'Cashflow', bal: 1790.73, spent: 1915.27, budget: 3786, icon: 'fa-wallet', colorClass: 'bg-terminal-bronze' },
-    { name: 'Crypto', bal: 0.00, spent: 0.00, budget: 0, icon: 'fa-brands fa-bitcoin', colorClass: 'bg-terminal-bronze' },
-    { name: 'Food', bal: 211.05, spent: 915.95, budget: 1127, icon: 'fa-utensils', colorClass: 'bg-terminal-bronze' },
-    { name: 'Media', bal: 0.00, spent: 185.07, budget: 104, icon: 'fa-tv', colorClass: 'bg-terminal-red' }, // Red because over budget (178%)
-    { name: 'Resto', bal: 139.84, spent: 169.16, budget: 309, icon: 'fa-champagne-glasses', colorClass: 'bg-terminal-bronze' },
-    { name: 'Stella', bal: 0.00, spent: 288.36, budget: 186, icon: 'fa-child', colorClass: 'bg-terminal-red' }, // Red over budget (155%)
-    { name: 'Transport', bal: 153.72, spent: 237.28, budget: 391, icon: 'fa-car', colorClass: 'bg-terminal-bronze' }
+    { name: 'Cashflow',  bal: 1790.73, spent: 1915.27, budget: 3786, icon: 'fa-wallet',            colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'Food',      bal: 211.05,  spent: 915.95,  budget: 1127, icon: 'fa-utensils',          colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'Resto',     bal: 139.84,  spent: 169.16,  budget: 309,  icon: 'fa-champagne-glasses', colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'Stella',    bal: 0.00,    spent: 288.36,  budget: 186,  icon: 'fa-child',             colorClass: 'bg-terminal-red',    type: 'variable' },
+    { name: 'Transport', bal: 153.72,  spent: 237.28,  budget: 391,  icon: 'fa-car',               colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'Crypto',    bal: 0.00,    spent: 0.00,    budget: 0,    icon: 'fa-brands fa-bitcoin',  colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'Media',     bal: 0.00,    spent: 185.07,  budget: 104,  icon: 'fa-tv',                colorClass: 'bg-terminal-red',    type: 'fixed' },
 ];
 
 // 12 Transactions log
@@ -458,7 +458,7 @@ function renderOverviewScreen() {
     const overviewBudgetBreakdown = document.getElementById('overview-budget-breakdown');
     if (overviewBudgetBreakdown) {
         overviewBudgetBreakdown.innerHTML = '';
-        mockBudgetCategories.forEach(cat => {
+        const renderCat = (cat) => {
             const ratioPercent = cat.budget > 0 ? Math.round((cat.spent / cat.budget) * 100) : 0;
             const barWidth = Math.min(ratioPercent, 100);
             const isOver = ratioPercent > 100;
@@ -481,7 +481,17 @@ function renderOverviewScreen() {
                 </div>
             `;
             overviewBudgetBreakdown.appendChild(line);
-        });
+        };
+        const addDivider = (label) => {
+            const d = document.createElement('div');
+            d.style.cssText = 'font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;padding:4px 0 2px;border-top:1px solid var(--border);margin-top:4px';
+            d.textContent = label;
+            overviewBudgetBreakdown.appendChild(d);
+        };
+        addDivider('VARIABLE');
+        mockBudgetCategories.filter(c => c.type === 'variable').forEach(renderCat);
+        addDivider('FIXED');
+        mockBudgetCategories.filter(c => c.type === 'fixed').forEach(renderCat);
     }
 
     // 2. Crypto holdings
