@@ -36,7 +36,6 @@
     /* Responsive scale tokens — override at each breakpoint */
     --sidebar-w:    200px;
     --header-h:     48px;
-    --footer-h:     38px;
     --panel-pad:    14px;
     --grid-gap:     12px;
     --content-pad:  16px;
@@ -2397,41 +2396,6 @@ nav.sidebar-nav {
 
 .btn-primary:hover { background: var(--gold); }
 
-/* ============================================================
-   FOOTER
-   ============================================================ */
-.app-footer {
-    height: var(--footer-h);
-    min-height: var(--footer-h);
-    background: var(--header-bg);
-    border-top: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    font-size: 12px;
-    color: var(--muted);
-    user-select: none;
-    flex-shrink: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-}
-
-.footer-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.footer-link {
-    color: var(--gold);
-    text-decoration: none;
-    transition: color 0.12s;
-}
-
-.footer-link:hover { color: var(--slate); }
-
-.footer-ok { color: var(--green); font-weight: 700; }
 
 /* ============================================================
    RESPONSIVE SCALING — ULTRAWIDE BREAKPOINTS
@@ -2444,7 +2408,6 @@ nav.sidebar-nav {
     :root {
         --sidebar-w:   240px;
         --header-h:    56px;
-        --footer-h:    44px;
         --panel-pad:   18px;
         --grid-gap:    16px;
         --content-pad: 18px;
@@ -2467,7 +2430,6 @@ nav.sidebar-nav {
     :root {
         --sidebar-w:   280px;
         --header-h:    64px;
-        --footer-h:    48px;
         --panel-pad:   22px;
         --grid-gap:    20px;
         --content-pad: 22px;
@@ -2575,9 +2537,6 @@ nav.sidebar-nav {
     .news-cat-tag, .news-trend-tag { font-size: 12px; }
     .news-headline     { font-size: 17px; }
     .news-meta         { font-size: 13px; }
-
-    /* Footer */
-    .app-footer, .footer-link { font-size: 14px; }
 
     /* Mock banner */
     .mock-banner       { font-size: 16px; padding: 12px 18px; }
