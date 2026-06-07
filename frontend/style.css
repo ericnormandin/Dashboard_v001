@@ -1764,19 +1764,26 @@ nav.sidebar-nav {
    ============================================================ */
 
 #view-stella {
-    grid-template-columns: 1.2fr 1.8fr 1fr 1fr;
-    grid-template-rows: 1.3fr 0.5fr 1fr;
+    grid-template-columns: 1.2fr 1fr 1fr 1.2fr 0.7fr;
+    grid-template-rows: 1.4fr 1fr 0.45fr;
     gap: var(--grid-gap);
     grid-template-areas:
-        "basicinfo photos   aiinsights todo"
-        "budget    photos   news       health"
-        "budget    timeline news       health";
+        "basicinfo photos   photos   health  aiinsights"
+        "budget    calendar news     health  todo"
+        "timeline  timeline timeline timeline timeline";
     align-items: stretch;
 }
 
 #view-stella .panel {
     min-height: 0;
     min-width: 0;
+    overflow: hidden;
+}
+
+#panel-stella-news .news-list {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 }
 
 .stella-photo-frame {

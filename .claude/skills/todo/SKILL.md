@@ -72,23 +72,18 @@ Show the user the title, priority, and rephrased instructions so they can verify
 Read `todo.md`. Extract all entries where `**Status:** pending`. For each, capture: title, priority number, and order in file.
 
 **Step 2 — Sort and display**
-Sort: P1 first, P2 second, P3 third. Within same priority, preserve file order. Present as a numbered list:
-
-```
-PROJECT BACKLOG
-───────────────────────────────────────
-  1. [P1] Kraken Balance Auto-Refresh
-  2. [P1] Split Sheets Into Router File
-  3. [P2] Mail Panel Gmail Integration
-  4. [P3] News Feed API Endpoint
-───────────────────────────────────────
-Select a number, or type "cancel":
-```
+Sort: P1 first, P2 second, P3 third. Within same priority, preserve file order.
 
 If the list is empty, tell the user the backlog is empty and suggest using `/todo <note> <priority>` to add items.
 
+Use the `AskUserQuestion` tool to present a single-select question:
+- **question**: `"Which backlog item do you want to implement?"`
+- **header**: `"Backlog"`
+- **multiSelect**: `false`
+- **options**: one entry per pending item, `label` = `"[P{n}] {Title}"`, `description` = first sentence of the implementation instructions
+
 **Step 3 — Wait for selection**
-The user will reply with a number. Map their input to the selected item and immediately follow the IMPLEMENT logic below — no confirmation prompt.
+The user selects an option. Map the selected label to the item and immediately follow the IMPLEMENT logic below — no confirmation prompt.
 
 ---
 
@@ -100,21 +95,14 @@ Read `todo.md`. Extract all entries where `**Status:** pending`. Sort: P1 first,
 If the backlog is empty, tell the user and stop.
 
 **Step 2 — Show selection menu**
-Display the sorted list with a `►` cursor on item 1 (highest priority). Format:
-
-```
-PENDING_BACKLOG — SELECT ITEM TO IMPLEMENT
-────────────────────────────────────────────────
-  ► 1. [P1] Start Bat Kill and Restart Server
-    2. [P2] Sidebar News Dedicated View Tab
-    3. [P2] Mail Sys Gmail Cleanup Button
-    4. [P2] Calendar Sys Monthly Grid View
-────────────────────────────────────────────────
-  ↑ ↓  Type a number to select  [ ENTER = 1 ]
-```
+Use the `AskUserQuestion` tool to present a single-select question:
+- **question**: `"Which item do you want to implement next?"`
+- **header**: `"Backlog"`
+- **multiSelect**: `false`
+- **options**: one entry per pending item (sorted P1→P2→P3), `label` = `"[P{n}] {Title}"`, `description` = first sentence of the implementation instructions
 
 **Step 3 — Wait for selection**
-The user replies with a number (or nothing/Enter to accept item 1). Map their input to the selected item and immediately follow the IMPLEMENT logic below — no confirmation prompt.
+The user selects an option. Map the selected label to the item and immediately follow the IMPLEMENT logic below — no confirmation prompt.
 
 ---
 

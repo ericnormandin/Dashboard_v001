@@ -35,18 +35,14 @@ Then stop.
 
 ## Step 2 — Show selection menu
 
-Display the list with a `►` cursor on item 1. Format exactly:
+Use the `AskUserQuestion` tool to present a single-select question. Build the options list dynamically from the filenames found in Step 1:
 
-```
-LAYOUT_TOOL — SELECT MOCKUP TO APPLY
-────────────────────────────────────────────────
-  ► 1. Crypto
-    2. Stella
-────────────────────────────────────────────────
-  Type a number to select  [ ENTER = 1 ]
-```
+- **question**: `"Which mockup would you like to apply?"`
+- **header**: `"Mockup"`
+- **multiSelect**: `false`
+- **options**: one entry per file, with `label` = filename stem (e.g. `"Crypto"`) and `description` = the relative path (e.g. `"Design_Mockup/Layout/Crypto.png"`)
 
-Wait for the user to reply with a number (or nothing/Enter to accept item 1).
+Wait for the user to select an option. The selected label is the layout name; proceed to Step 3.
 
 ---
 

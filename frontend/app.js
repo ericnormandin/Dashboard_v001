@@ -289,6 +289,8 @@ function triggerViewRender(tabName) {
         updateFearGreed();
     } else if (tabName === 'budget') {
         renderBudgetScreen();
+    } else if (tabName === 'stella') {
+        renderStellaScreen();
     } else if (tabName === 'crypto') {
         renderCryptoScreen();
     } else if (tabName === 'investments') {
@@ -300,6 +302,50 @@ function triggerViewRender(tabName) {
     } else if (tabName === 'utilities') {
         renderUtilitiesScreen();
     }
+}
+
+// ================= VIEW: STELLA =================
+function renderStellaScreen() {
+    _renderStellaCalendar();
+}
+
+function _renderStellaCalendar() {
+    const grid = document.getElementById('stella-cal-grid');
+    if (!grid) return;
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    const today = now.getDate();
+
+    const days = ['SUN','MON','TUE','WED','THU','FRI','SAT'];
+    let html = days.map(d => `<div class="cal-day-hdr">${d}</div>`).join('');
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const prevDays = new Date(year, month, 0).getDate();
+
+    // days from previous month
+    for (let i = firstDay - 1; i >= 0; i--) {
+        html += `<div class="cal-day other-month">${prevDays - i}</div>`;
+    }
+    // current month days
+    // Marked event dates in June 2026
+    const eventDays = new Set([18, 24]);
+    for (let d = 1; d <= daysInMonth; d++) {
+        const isToday = d === today;
+        const hasEvent = eventDays.has(d);
+        const style = hasEvent && !isToday ? 'background:rgba(168,138,102,0.08);border-color:rgba(168,138,102,0.3);' : '';
+        html += `<div class="cal-day${isToday ? ' today' : ''}" style="${style}">${d}</div>`;
+    }
+    // fill remaining cells to complete last row
+    const total = firstDay + daysInMonth;
+    const remainder = total % 7 === 0 ? 0 : 7 - (total % 7);
+    for (let d = 1; d <= remainder; d++) {
+        html += `<div class="cal-day other-month">${d}</div>`;
+    }
+
+    grid.innerHTML = html;
 }
 
 

@@ -881,6 +881,30 @@
                     </div>
                 </div>
 
+                <!-- calendar.sys -->
+                <div class="panel" id="panel-stella-calendar" style="grid-area:calendar">
+                    <div class="panel-header">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-dots">
+                                <div class="dot dot-red"></div>
+                                <div class="dot dot-gold"></div>
+                                <div class="dot dot-green"></div>
+                            </div>
+                            <span class="panel-label"><i class="fa-solid fa-calendar-days"></i>calendar.sys</span>
+                        </div>
+                        <span style="font-size:12px;color:var(--muted)">JUNE 2026</span>
+                    </div>
+                    <!-- Mini calendar grid -->
+                    <div class="cal-grid" id="stella-cal-grid" style="font-size:11px"></div>
+                    <div class="breakdown-label" style="margin-top:6px">UPCOMING:</div>
+                    <div class="breakdown-list">
+                        <div class="breakdown-row"><span class="breakdown-name"><i class="fa-solid fa-syringe" style="color:var(--red)"></i>Pediatrician checkup</span><span class="breakdown-amounts text-gold">JUN 18</span></div>
+                        <div class="breakdown-row"><span class="breakdown-name"><i class="fa-solid fa-person-swimming" style="color:#5bafd4"></i>Swim lesson registration</span><span class="breakdown-amounts text-gold">JUN 24</span></div>
+                        <div class="breakdown-row"><span class="breakdown-name"><i class="fa-solid fa-cake-candles" style="color:var(--bronze)"></i>Birthday party planning</span><span class="breakdown-amounts text-red">JUL 02</span></div>
+                        <div class="breakdown-row"><span class="breakdown-name"><i class="fa-solid fa-tooth" style="color:var(--muted)"></i>Dentist — first visit</span><span class="breakdown-amounts text-muted">AUG 03</span></div>
+                    </div>
+                </div>
+
                 <!-- time_line.sys -->
                 <div class="panel" id="panel-stella-timeline" style="grid-area:timeline">
                     <div class="panel-header">
@@ -994,33 +1018,66 @@
                             </div>
                             <span class="panel-label"><i class="fa-solid fa-heart-pulse"></i>health.sys</span>
                         </div>
+                        <span style="font-size:12px;color:var(--muted)">AGE 3Y 4MO</span>
                     </div>
-                    <div class="health-grid">
-                        <div class="health-stat">
-                            <div class="stat-label"><i class="fa-solid fa-ruler-vertical" style="color:var(--gold)"></i>HEIGHT</div>
-                            <div class="stat-val text-slate">98 <span style="font-size:12px;font-weight:400;color:var(--muted)">cm</span></div>
-                            <div class="stat-sub text-green">+2cm this month</div>
+                    <div style="display:flex;flex-direction:column;gap:8px;flex:1;min-height:0;overflow-y:auto">
+                        <div class="breakdown-label">VITALS:</div>
+                        <div class="health-grid">
+                            <div class="health-stat">
+                                <div class="stat-label"><i class="fa-solid fa-ruler-vertical" style="color:var(--gold)"></i>HEIGHT</div>
+                                <div class="stat-val text-slate">98 <span style="font-size:12px;font-weight:400;color:var(--muted)">cm</span></div>
+                                <div class="stat-sub text-green">+2cm this month</div>
+                            </div>
+                            <div class="health-stat">
+                                <div class="stat-label"><i class="fa-solid fa-weight-scale" style="color:var(--bronze)"></i>WEIGHT</div>
+                                <div class="stat-val text-slate">14.2 <span style="font-size:12px;font-weight:400;color:var(--muted)">kg</span></div>
+                                <div class="stat-sub text-green">On track</div>
+                            </div>
+                            <div class="health-stat">
+                                <div class="stat-label"><i class="fa-solid fa-syringe" style="color:var(--red)"></i>VACCINES</div>
+                                <div class="stat-val text-slate">8/9</div>
+                                <div class="stat-sub text-gold">1 due soon</div>
+                            </div>
+                            <div class="health-stat">
+                                <div class="stat-label"><i class="fa-solid fa-bed" style="color:#5bafd4"></i>SLEEP_AVG</div>
+                                <div class="stat-val text-slate">10.5 <span style="font-size:12px;font-weight:400;color:var(--muted)">hrs</span></div>
+                                <div class="stat-sub text-muted">Goal: 11hrs</div>
+                            </div>
                         </div>
-                        <div class="health-stat">
-                            <div class="stat-label"><i class="fa-solid fa-weight-scale" style="color:var(--bronze)"></i>WEIGHT</div>
-                            <div class="stat-val text-slate">14.2 <span style="font-size:12px;font-weight:400;color:var(--muted)">kg</span></div>
-                            <div class="stat-sub text-green">On track</div>
+                        <div class="breakdown-label">GROWTH_PERCENTILES:</div>
+                        <div style="display:flex;flex-direction:column;gap:8px">
+                            <div>
+                                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                                    <span style="color:var(--text)">HEIGHT</span>
+                                    <span style="color:var(--gold);font-weight:700">65th</span>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill" style="width:65%"></div></div>
+                            </div>
+                            <div>
+                                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                                    <span style="color:var(--text)">WEIGHT</span>
+                                    <span style="color:var(--gold);font-weight:700">58th</span>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill" style="width:58%"></div></div>
+                            </div>
+                            <div>
+                                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                                    <span style="color:var(--text)">HEAD_CIRC</span>
+                                    <span style="color:var(--gold);font-weight:700">72nd</span>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill" style="width:72%"></div></div>
+                            </div>
                         </div>
-                        <div class="health-stat">
-                            <div class="stat-label"><i class="fa-solid fa-syringe" style="color:var(--red)"></i>VACCINES</div>
-                            <div class="stat-val text-slate">8/9</div>
-                            <div class="stat-sub text-gold">1 due soon</div>
+                        <div class="breakdown-label">NEXT_APPOINTMENT:</div>
+                        <div class="breakdown-list">
+                            <div class="breakdown-row"><span class="breakdown-name"><i class="fa-solid fa-stethoscope"></i>Pediatrician</span><span class="breakdown-amounts text-gold">JUN 18</span></div>
+                            <div class="breakdown-row"><span class="breakdown-name"><i class="fa-solid fa-tooth"></i>Dentist</span><span class="breakdown-amounts text-muted">AUG 03</span></div>
                         </div>
-                        <div class="health-stat">
-                            <div class="stat-label"><i class="fa-solid fa-bed" style="color:#5bafd4"></i>SLEEP_AVG</div>
-                            <div class="stat-val text-slate">10.5 <span style="font-size:12px;font-weight:400;color:var(--muted)">hrs</span></div>
-                            <div class="stat-sub text-muted">Goal: 11hrs</div>
+                        <div style="padding:8px;background:var(--panel-alt);border:1px solid var(--border);font-size:12px">
+                            <div style="color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px">LAST_CHECKUP:</div>
+                            <div style="color:var(--slate);font-weight:600">May 02, 2026 — Dr. Lafleur</div>
+                            <div style="color:var(--green);margin-top:2px"><i class="fa-solid fa-circle-check" style="font-size:11px"></i> All clear · next in 6 months</div>
                         </div>
-                    </div>
-                    <div class="breakdown-label">NEXT_APPOINTMENT:</div>
-                    <div class="breakdown-list">
-                        <div class="breakdown-row"><span class="breakdown-name"><i class="fa-solid fa-stethoscope"></i>Pediatrician — annual checkup</span><span class="breakdown-amounts text-gold">JUN 18</span></div>
-                        <div class="breakdown-row"><span class="breakdown-name"><i class="fa-solid fa-tooth"></i>Dentist — first visit</span><span class="breakdown-amounts text-muted">AUG 03</span></div>
                     </div>
                 </div>
 
@@ -1452,6 +1509,7 @@
     // Boot sequence
     setTimeout(() => {
         renderOverviewScreen();
+        renderStellaScreen();
         checkAPIStatus();
     }, 100);
 </script>
