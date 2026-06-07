@@ -121,6 +121,11 @@
                 <h1 id="header-view-title">TERMINAL_DASHBOARD_v2.5.8</h1>
                 <p id="header-view-subtitle">&gt; System monitoring &amp; analytics platform | ULTRAWIDE_MODE | 3448x1440</p>
             </div>
+            <!-- Mock Banner (center) -->
+            <div class="mock-banner" id="global-mock-banner">
+                <span><i class="fa-solid fa-flask" style="margin-right:6px"></i>MOCK_MODE — Backend offline or API keys not configured. Displaying simulated data.</span>
+                <button onclick="checkAPIStatus()" style="background:none;border:1px solid var(--bronze);color:var(--gold);padding:3px 8px;border-radius:0;font-size:12px;cursor:pointer;font-family:inherit">RETRY</button>
+            </div>
             <div class="header-right">
                 <!-- Kraken status -->
                 <div class="status-pill" id="api-status-kraken">
@@ -151,12 +156,6 @@
 
         <!-- Content Scroll Area -->
         <div class="content-scroll">
-
-            <!-- Mock Banner -->
-            <div class="mock-banner" id="global-mock-banner">
-                <span><i class="fa-solid fa-flask" style="margin-right:6px"></i>MOCK_MODE — Backend offline or API keys not configured. Displaying simulated data.</span>
-                <button onclick="checkAPIStatus()" style="background:none;border:1px solid var(--bronze);color:var(--gold);padding:3px 8px;border-radius:0;font-size:12px;cursor:pointer;font-family:inherit">RETRY</button>
-            </div>
 
             <!-- ====================================================
                  VIEW: OVERVIEW (5-column grid)
