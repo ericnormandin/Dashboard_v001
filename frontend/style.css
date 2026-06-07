@@ -40,7 +40,7 @@
     --panel-pad:    14px;
     --grid-gap:     12px;
     --content-pad:  16px;
-    --base-fs:      12px;
+    --base-fs:      14px;
     --label-fs:     11px;
     --value-fs:     24px;
     --clock-fs:     15px;
@@ -128,13 +128,13 @@ html, body {
     align-items: center;
     justify-content: center;
     color: #000;
-    font-size: 12px;
+    font-size: 14px;
     flex-shrink: 0;
     box-shadow: 0 0 12px rgba(var(--bronze-rgb), 0.2);
 }
 
 .sidebar-brand-text h2 {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--slate);
     letter-spacing: 0.12em;
@@ -143,7 +143,7 @@ html, body {
 }
 
 .sidebar-brand-text p {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     margin-top: 2px;
     line-height: 1;
@@ -168,7 +168,7 @@ nav.sidebar-nav {
     background: transparent;
     color: var(--muted);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 500;
     letter-spacing: 0.08em;
     text-align: left;
@@ -198,11 +198,11 @@ nav.sidebar-nav {
 .nav-item-left i {
     width: 14px;
     text-align: center;
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .nav-arrow {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--bronze);
     font-weight: 700;
 }
@@ -211,7 +211,7 @@ nav.sidebar-nav {
 .sidebar-footer {
     padding: 12px 16px;
     border-top: 1px solid var(--border);
-    font-size: 10px;
+    font-size: 12px;
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -247,7 +247,7 @@ nav.sidebar-nav {
 }
 
 .sidebar-globe-label {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -291,7 +291,7 @@ nav.sidebar-nav {
 }
 
 .header-title h1 {
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--slate);
     letter-spacing: 0.1em;
@@ -300,7 +300,7 @@ nav.sidebar-nav {
 }
 
 .header-title p {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     margin-top: 3px;
     line-height: 1;
@@ -316,7 +316,7 @@ nav.sidebar-nav {
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 10px;
+    font-size: 12px;
     border: 1px solid var(--border);
     padding: 4px 8px;
     border-radius: 0;
@@ -353,7 +353,7 @@ nav.sidebar-nav {
 }
 
 .clock-box .clock-label {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -361,7 +361,7 @@ nav.sidebar-nav {
 }
 
 .clock-box .clock-time {
-    font-size: 15px;
+    font-size: 18px;
     font-weight: 700;
     color: var(--gold);
     letter-spacing: 0.15em;
@@ -376,7 +376,7 @@ nav.sidebar-nav {
 }
 
 .clock-box .clock-date {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     letter-spacing: 0.08em;
     line-height: 1;
@@ -394,7 +394,7 @@ nav.sidebar-nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 11px;
+    font-size: 13px;
     transition: all 0.15s;
 }
 
@@ -481,7 +481,7 @@ nav.sidebar-nav {
 .dot-green { background: var(--green); }
 
 .panel-label {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     letter-spacing: 0.05em;
     margin-left: 6px;
@@ -505,16 +505,16 @@ nav.sidebar-nav {
 .text-text     { color: var(--text) !important; }
 
 /* Font sizes */
-.fs-8  { font-size: 11px;  }
-.fs-9  { font-size: 10px;  }
-.fs-10 { font-size: 11px; }
-.fs-11 { font-size: 12px; }
-.fs-12 { font-size: 13px; }
-.fs-14 { font-size: 15px; }
-.fs-16 { font-size: 16px; }
-.fs-18 { font-size: 18px; }
-.fs-20 { font-size: 20px; }
-.fs-22 { font-size: 22px; }
+.fs-8  { font-size: 13px;  }
+.fs-9  { font-size: 12px;  }
+.fs-10 { font-size: 13px; }
+.fs-11 { font-size: 14px; }
+.fs-12 { font-size: 16px; }
+.fs-14 { font-size: 18px; }
+.fs-16 { font-size: 19px; }
+.fs-18 { font-size: 22px; }
+.fs-20 { font-size: 24px; }
+.fs-22 { font-size: 26px; }
 
 .fw-400 { font-weight: 400; }
 .fw-600 { font-weight: 600; }
@@ -566,7 +566,7 @@ nav.sidebar-nav {
 .tab-btn {
     padding: 5px 10px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -590,7 +590,7 @@ nav.sidebar-nav {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .month-nav button {
@@ -598,12 +598,12 @@ nav.sidebar-nav {
     border: none;
     color: var(--muted);
     cursor: pointer;
-    font-size: 11px;
+    font-size: 13px;
     padding: 0 2px;
 }
 
 .month-nav button:hover { color: var(--text); }
-.month-nav .month-name { color: var(--gold); font-weight: 600; font-size: 10px; }
+.month-nav .month-name { color: var(--gold); font-weight: 600; font-size: 12px; }
 
 /* Sub tabs: OVERVIEW / ERIC / EMILIE */
 .sub-tabs {
@@ -614,7 +614,7 @@ nav.sidebar-nav {
 }
 
 .sub-tab {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -654,9 +654,9 @@ nav.sidebar-nav {
 
 .mini-card:hover { border-color: rgba(var(--bronze-rgb), 0.35); }
 
-.mini-card .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
-.mini-card .value { font-size: 16px; font-weight: 700; color: var(--slate); margin-top: 3px; }
-.mini-card .sub   { font-size: 11px; margin-top: 3px; }
+.mini-card .label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+.mini-card .value { font-size: 19px; font-weight: 700; color: var(--slate); margin-top: 3px; }
+.mini-card .sub   { font-size: 13px; margin-top: 3px; }
 
 /* Cashflow chart container */
 .chart-box {
@@ -667,7 +667,7 @@ nav.sidebar-nav {
 }
 
 .chart-label {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -678,7 +678,7 @@ nav.sidebar-nav {
 
 /* Category breakdown */
 .breakdown-label {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -706,26 +706,26 @@ nav.sidebar-nav {
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 10px;
+    font-size: 12px;
     color: var(--text);
     font-weight: 600;
 }
 
 .breakdown-name i {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--gold);
     width: 10px;
     text-align: center;
 }
 
 .breakdown-bal {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     margin-left: 2px;
 }
 
 .breakdown-amounts {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
 }
 
@@ -752,7 +752,7 @@ nav.sidebar-nav {
 .progress-fill.over { background: var(--red); }
 
 .progress-pct {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     min-width: 26px;
     text-align: right;
@@ -766,7 +766,7 @@ nav.sidebar-nav {
    ============================================================ */
 
 .portfolio-value {
-    font-size: 24px;
+    font-size: 29px;
     font-weight: 700;
     color: var(--slate);
     letter-spacing: -0.01em;
@@ -774,7 +774,7 @@ nav.sidebar-nav {
 }
 
 .portfolio-change {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--green);
     margin-top: 3px;
 }
@@ -797,7 +797,7 @@ nav.sidebar-nav {
 }
 
 .crypto-widget .widget-label {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -805,14 +805,14 @@ nav.sidebar-nav {
 }
 
 .crypto-widget .widget-val {
-    font-size: 14px;
+    font-size: 17px;
     font-weight: 700;
     color: var(--gold);
     line-height: 1;
 }
 
 .crypto-widget .widget-sub {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     line-height: 1;
 }
@@ -868,7 +868,7 @@ nav.sidebar-nav {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 10px;
+    font-size: 12px;
     flex-shrink: 0;
 }
 
@@ -880,14 +880,14 @@ nav.sidebar-nav {
 .asset-icon.def  { background: rgba(100, 100, 100, 0.1); color: var(--muted); border: 1px solid var(--border); }
 
 .holding-info .coin-name {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--text);
     line-height: 1;
 }
 
 .holding-info .coin-sub {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     margin-top: 1px;
     line-height: 1;
@@ -895,14 +895,14 @@ nav.sidebar-nav {
 
 .holding-right { text-align: right; }
 .holding-right .coin-val {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--text);
     line-height: 1;
 }
 
 .holding-right .coin-chg {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     margin-top: 1px;
     line-height: 1;
@@ -930,7 +930,7 @@ nav.sidebar-nav {
 }
 
 .mail-count-box .count-num {
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 700;
     color: var(--slate);
     line-height: 1;
@@ -939,7 +939,7 @@ nav.sidebar-nav {
 .mail-count-box .count-num.unread { color: var(--gold); }
 
 .mail-count-box .count-label {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -947,7 +947,7 @@ nav.sidebar-nav {
 }
 
 .mail-section-label {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -978,7 +978,7 @@ nav.sidebar-nav {
 }
 
 .mail-sender {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     color: var(--text);
     overflow: hidden;
@@ -989,14 +989,14 @@ nav.sidebar-nav {
 .mail-sender::before { content: '● '; color: var(--gold); }
 
 .mail-time {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     flex-shrink: 0;
     margin-left: 6px;
 }
 
 .mail-subject {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--slate);
     margin-left: 12px;
@@ -1011,7 +1011,7 @@ nav.sidebar-nav {
     margin-left: 12px;
     padding: 1px 6px;
     border-radius: 0;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -1040,7 +1040,7 @@ nav.sidebar-nav {
     padding: 7px 10px;
     color: var(--muted);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -1054,10 +1054,10 @@ nav.sidebar-nav {
 
 .mail-cleanup-btn:hover  { border-color: var(--bronze); color: var(--gold); }
 .mail-cleanup-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.mail-cleanup-btn i { font-size: 10px; }
+.mail-cleanup-btn i { font-size: 12px; }
 
 .mail-cleanup-result {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     white-space: nowrap;
 }
@@ -1080,7 +1080,7 @@ nav.sidebar-nav {
 }
 
 .health-stat .stat-label {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -1090,7 +1090,7 @@ nav.sidebar-nav {
 }
 
 .health-stat .stat-val {
-    font-size: 16px;
+    font-size: 19px;
     font-weight: 700;
     color: var(--slate);
     margin-top: 3px;
@@ -1098,7 +1098,7 @@ nav.sidebar-nav {
 }
 
 .health-stat .stat-sub {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     margin-top: 2px;
 }
@@ -1126,14 +1126,14 @@ nav.sidebar-nav {
    ============================================================ */
 
 .cal-date-label {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
 }
 
 .cal-date-value {
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--slate);
     margin-top: 2px;
@@ -1141,7 +1141,7 @@ nav.sidebar-nav {
 }
 
 .cal-count {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     margin-top: 2px;
 }
@@ -1154,7 +1154,7 @@ nav.sidebar-nav {
 }
 
 .cal-day-hdr {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     text-align: center;
     padding: 2px 0 3px;
@@ -1164,7 +1164,7 @@ nav.sidebar-nav {
 }
 
 .cal-day {
-    font-size: 10px;
+    font-size: 12px;
     text-align: center;
     padding: 3px 2px;
     border-radius: 2px;
@@ -1190,7 +1190,7 @@ nav.sidebar-nav {
 }
 
 .schedule-label {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -1217,7 +1217,7 @@ nav.sidebar-nav {
 .schedule-item:hover { border-color: rgba(var(--bronze-rgb), 0.3); }
 
 .schedule-title {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--text);
     display: flex;
@@ -1226,13 +1226,13 @@ nav.sidebar-nav {
 }
 
 .schedule-time {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     margin-top: 2px;
 }
 
 .live-badge {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -1244,7 +1244,7 @@ nav.sidebar-nav {
 }
 
 .participants {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     text-align: right;
 }
@@ -1274,14 +1274,14 @@ nav.sidebar-nav {
 }
 
 .gauge-label {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     letter-spacing: 0.06em;
     line-height: 1;
 }
 
 .gauge-pct {
-    font-size: 32px;
+    font-size: 38px;
     font-weight: 700;
     color: #e07000;
     line-height: 1;
@@ -1304,15 +1304,23 @@ nav.sidebar-nav {
 }
 
 .gauge-goal {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--gold);
     font-weight: 600;
     margin-top: 8px;
     line-height: 1;
 }
 
+/* fear_greed.sys is a half-ring gauge — its flat edge sits ~88% down the
+   SVG viewBox, so push the overlaid text down to align with it instead
+   of the full-ring vertical center used elsewhere */
+#panel-fear-greed .gauge-center {
+    justify-content: flex-end;
+    padding-bottom: 6%;
+}
+
 .gauge-rem {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     margin-top: 2px;
     line-height: 1;
@@ -1332,7 +1340,7 @@ nav.sidebar-nav {
 }
 
 .ret-card .ret-label {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -1342,7 +1350,7 @@ nav.sidebar-nav {
 }
 
 .ret-card .ret-val {
-    font-size: 14px;
+    font-size: 17px;
     font-weight: 700;
     color: var(--slate);
     margin-top: 3px;
@@ -1362,7 +1370,7 @@ nav.sidebar-nav {
 .rrsp-row {
     display: flex;
     justify-content: space-between;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .rrsp-row .rname { color: var(--text); }
@@ -1379,7 +1387,7 @@ nav.sidebar-nav {
 .fin-row {
     display: flex;
     justify-content: space-between;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .fin-row .flabel { color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
@@ -1409,7 +1417,7 @@ nav.sidebar-nav {
     padding: 7px 8px;
     color: var(--muted);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -1431,7 +1439,7 @@ nav.sidebar-nav {
     cursor: not-allowed;
 }
 
-.ai-ret-btn i { font-size: 10px; }
+.ai-ret-btn i { font-size: 12px; }
 
 .ai-ret-output {
     display: none;
@@ -1439,7 +1447,7 @@ nav.sidebar-nav {
     border: 1px solid var(--border);
     border-radius: 0;
     padding: 10px;
-    font-size: 10px;
+    font-size: 12px;
     color: var(--text);
     white-space: pre-wrap;
     line-height: 1.5;
@@ -1482,7 +1490,7 @@ nav.sidebar-nav {
     display: flex;
     align-items: center;
     gap: 4px;
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     line-height: 1;
     margin-bottom: 2px;
@@ -1491,7 +1499,7 @@ nav.sidebar-nav {
 .ret-tl-col.now .ret-tl-year { color: var(--bronze); }
 
 .ret-tl-now-badge {
-    font-size: 9px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.05em;
     background: var(--bronze);
@@ -1500,7 +1508,7 @@ nav.sidebar-nav {
 }
 
 .ret-tl-val {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     color: var(--gold);
     line-height: 1.4;
@@ -1509,7 +1517,7 @@ nav.sidebar-nav {
 .ret-tl-col.goal .ret-tl-val { color: var(--green); }
 
 .ret-tl-label {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -1569,17 +1577,17 @@ nav.sidebar-nav {
 }
 
 .ai-status-text {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     color: var(--text);
 }
 
 .ai-status-text .active { color: var(--green); }
 
-.ai-sub { font-size: 11px; color: var(--muted); line-height: 1; }
+.ai-sub { font-size: 13px; color: var(--muted); line-height: 1; }
 
 .insight-section-label {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -1599,7 +1607,7 @@ nav.sidebar-nav {
     display: flex;
     align-items: flex-start;
     gap: 8px;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .insight-item.ok {
@@ -1618,7 +1626,7 @@ nav.sidebar-nav {
 }
 
 .insight-item i {
-    font-size: 10px;
+    font-size: 12px;
     margin-top: 1px;
     flex-shrink: 0;
 }
@@ -1628,7 +1636,7 @@ nav.sidebar-nav {
 .insight-item.info i   { color: var(--muted); }
 
 .insight-cat {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
@@ -1637,7 +1645,7 @@ nav.sidebar-nav {
 }
 
 .insight-text {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--text);
     margin-top: 2px;
     line-height: 1.4;
@@ -1658,14 +1666,14 @@ nav.sidebar-nav {
 .pred-row {
     display: flex;
     justify-content: space-between;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .pred-name { color: var(--text); }
 .pred-status { color: var(--slate); font-weight: 700; }
 
 .next-analysis {
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
     text-align: right;
     letter-spacing: 0.06em;
@@ -1704,7 +1712,7 @@ nav.sidebar-nav {
 }
 
 .news-cat-tag {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -1716,7 +1724,7 @@ nav.sidebar-nav {
 }
 
 .news-trend-tag {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -1728,7 +1736,7 @@ nav.sidebar-nav {
 }
 
 .news-headline {
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 500;
     color: var(--slate);
     line-height: 1.35;
@@ -1737,7 +1745,7 @@ nav.sidebar-nav {
 .news-meta {
     display: flex;
     justify-content: space-between;
-    font-size: 11px;
+    font-size: 13px;
     color: var(--muted);
 }
 
@@ -1752,13 +1760,76 @@ nav.sidebar-nav {
 }
 
 /* ============================================================
+   STELLA DASHBOARD
+   ============================================================ */
+
+#view-stella {
+    grid-template-columns: 1.2fr 1.8fr 1fr 1fr;
+    grid-template-rows: 1.3fr 0.5fr 1fr;
+    gap: var(--grid-gap);
+    grid-template-areas:
+        "basicinfo photos   aiinsights todo"
+        "budget    photos   news       health"
+        "budget    timeline news       health";
+    align-items: stretch;
+}
+
+#view-stella .panel {
+    min-height: 0;
+    min-width: 0;
+}
+
+.stella-photo-frame {
+    aspect-ratio: 1;
+    max-width: 140px;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stella-photo-frame i { font-size: 28px; color: var(--border); }
+
+.stella-photo-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: min-content;
+    align-content: start;
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.stella-photo-thumb {
+    aspect-ratio: 1;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stella-photo-thumb i { color: var(--border); font-size: 16px; }
+
+/* ============================================================
    CORPORATE CRYPTO DASHBOARD
    ============================================================ */
 
 #view-crypto {
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 2fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+        "portfolio btcmarket kraken   ledger"
+        "tradingco splitrow   news    news";
     align-items: stretch;
+}
+
+#view-crypto .panel,
+#view-crypto > [style*="grid-area:splitrow"] {
+    min-height: 0;
+    min-width: 0;
 }
 
 .corp-metrics-row {
@@ -1779,7 +1850,7 @@ nav.sidebar-nav {
 }
 
 .corp-metric-label {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -1787,20 +1858,20 @@ nav.sidebar-nav {
 }
 
 .corp-metric-val {
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 700;
     color: var(--gold);
     line-height: 1;
 }
 
 .corp-metric-sub {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     line-height: 1;
 }
 
 .corp-status-badge {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     padding: 2px 7px;
     border-radius: 0;
@@ -1811,40 +1882,105 @@ nav.sidebar-nav {
     text-transform: uppercase;
 }
 
-.corp-balance-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+.crypto-balance-list {
+    display: flex;
+    flex-direction: column;
     gap: 6px;
     margin-bottom: 8px;
 }
 
-.corp-balance-card {
+.crypto-balance-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     background: var(--panel-alt);
     border: 1px solid var(--border);
     border-radius: 0;
-    padding: 8px;
+    padding: 7px 10px;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.crypto-balance-row .cb-icon {
+    width: 16px;
+    flex-shrink: 0;
     text-align: center;
+    font-size: 16px;
+    color: var(--gold);
 }
 
-.corp-balance-card .asset-name {
-    font-size: 10px;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-}
-
-.corp-balance-card .asset-amount {
-    font-size: 12px;
+.crypto-balance-row .cb-amount {
+    font-size: 14px;
     font-weight: 700;
     color: var(--slate);
-    margin-top: 2px;
+    letter-spacing: 0.02em;
     line-height: 1;
 }
 
-.corp-balance-card .asset-usd {
-    font-size: 10px;
+.crypto-balance-row .cb-usd {
+    font-size: 13px;
     color: var(--gold);
-    margin-top: 2px;
+    margin-left: auto;
+    line-height: 1;
+}
+
+.crypto-balance-row .cb-status {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.ticker-switch-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 108px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.ticker-switch-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    border-radius: 0;
+    padding: 6px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.ticker-switch-item:hover {
+    border-color: var(--gold);
+}
+
+.ticker-switch-item.active {
+    border-color: var(--gold);
+    background: rgba(201, 162, 91, 0.08);
+}
+
+.ticker-switch-item .ts-symbol {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--slate);
+    letter-spacing: 0.04em;
+}
+
+.ticker-switch-item .ts-symbol i {
+    color: var(--gold);
+    font-size: 12px;
+}
+
+.ticker-switch-item .ts-price {
+    font-size: 11px;
+    color: var(--muted);
 }
 
 .corp-trade-log {
@@ -1863,7 +1999,7 @@ nav.sidebar-nav {
     border-radius: 0;
     background: var(--panel-alt);
     border: 1px solid var(--border-lt);
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .corp-trade-row .trade-type-buy  { color: var(--green); font-weight: 700; }
@@ -1883,7 +2019,7 @@ nav.sidebar-nav {
     border: 1px solid;
     border-radius: 0;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -1911,15 +2047,137 @@ nav.sidebar-nav {
 .corp-sell-btn:hover  { background: rgba(237,71,60,0.15); }
 .corp-sell-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* ============================================================
+   UTILITIES — system_check.sys security scanner
+   ============================================================ */
+.scan-btn {
+    padding: 9px 18px;
+    border: 1px solid rgba(var(--gold-rgb), 0.3);
+    border-radius: 0;
+    background: rgba(var(--gold-rgb), 0.08);
+    color: var(--gold);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    transition: all 0.15s;
+}
+.scan-btn:hover     { background: rgba(var(--gold-rgb), 0.16); }
+.scan-btn:disabled  { opacity: 0.5; cursor: not-allowed; }
+
+.findings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.finding-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 9px 11px;
+    border: 1px solid;
+    border-radius: 0;
+    font-size: 12px;
+}
+
+.finding-item.high {
+    border-color: rgba(var(--red-rgb), 0.3);
+    background: rgba(var(--red-rgb), 0.05);
+}
+.finding-item.medium {
+    border-color: rgba(var(--gold-rgb), 0.3);
+    background: rgba(var(--gold-rgb), 0.05);
+}
+.finding-item.low {
+    border-color: rgba(var(--muted-rgb), 0.3);
+    background: rgba(var(--muted-rgb), 0.05);
+}
+
+.finding-item.high .finding-head i   { color: var(--red); }
+.finding-item.medium .finding-head i { color: var(--gold); }
+.finding-item.low .finding-head i    { color: var(--muted); }
+
+.finding-head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.finding-name {
+    font-weight: 700;
+    color: var(--slate);
+    letter-spacing: 0.03em;
+}
+
+.finding-pid {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.finding-badge {
+    margin-left: auto;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 1px 6px;
+    border: 1px solid;
+    border-radius: 0;
+}
+.finding-item.high .finding-badge   { color: var(--red);   border-color: rgba(var(--red-rgb), 0.4); }
+.finding-item.medium .finding-badge { color: var(--gold);  border-color: rgba(var(--gold-rgb), 0.4); }
+.finding-item.low .finding-badge    { color: var(--muted); border-color: rgba(var(--muted-rgb), 0.4); }
+
+.finding-reason {
+    color: var(--text);
+    line-height: 1.4;
+}
+
+.finding-path {
+    font-size: 11px;
+    color: var(--muted);
+    word-break: break-all;
+}
+
+.finding-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 2px;
+}
+
+.finding-action-btn {
+    padding: 4px 9px;
+    border: 1px solid var(--border);
+    border-radius: 0;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+.finding-action-btn:hover         { color: var(--text); border-color: var(--bronze); }
+.finding-action-btn.danger:hover  { color: var(--red); border-color: rgba(var(--red-rgb), 0.5); }
+.finding-action-btn:disabled      { opacity: 0.5; cursor: not-allowed; }
+
 /* Inventory table */
 .corp-inventory-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 10px;
+    font-size: 12px;
 }
 
 .corp-inventory-table th {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -1968,7 +2226,7 @@ nav.sidebar-nav {
 }
 
 .cap-card-name {
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--slate);
     text-transform: uppercase;
@@ -1976,7 +2234,7 @@ nav.sidebar-nav {
 }
 
 .cap-card-role {
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.06em;
@@ -1989,8 +2247,8 @@ nav.sidebar-nav {
 }
 
 .cap-stat { display: flex; flex-direction: column; gap: 3px; }
-.cap-stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; line-height: 1; }
-.cap-stat-val   { font-size: 15px; font-weight: 700; color: var(--gold); line-height: 1; }
+.cap-stat-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; line-height: 1; }
+.cap-stat-val   { font-size: 18px; font-weight: 700; color: var(--gold); line-height: 1; }
 
 .cap-ownership-bar { height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
 .cap-ownership-fill { height: 100%; background: var(--bronze); border-radius: 2px; transition: width 0.4s ease; }
@@ -2006,7 +2264,7 @@ nav.sidebar-nav {
     border: 1px solid rgba(var(--bronze-rgb), 0.3);
     background: rgba(var(--bronze-rgb), 0.06);
     color: var(--gold);
-    font-size: 11px;
+    font-size: 13px;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
@@ -2038,7 +2296,7 @@ nav.sidebar-nav {
     border-radius: 0;
     padding: 20px;
     box-shadow: 0 24px 80px rgba(0,0,0,0.8);
-    font-size: 11px;
+    font-size: 13px;
 }
 
 .modal-header {
@@ -2051,7 +2309,7 @@ nav.sidebar-nav {
 }
 
 .modal-title {
-    font-size: 13px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--slate);
     display: flex;
@@ -2065,7 +2323,7 @@ nav.sidebar-nav {
     background: none;
     border: none;
     color: var(--muted);
-    font-size: 15px;
+    font-size: 18px;
     cursor: pointer;
     transition: color 0.12s;
 }
@@ -2076,7 +2334,7 @@ nav.sidebar-nav {
 .form-group { margin-bottom: 12px; }
 .form-label {
     display: block;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.1em;
@@ -2092,7 +2350,7 @@ nav.sidebar-nav {
     padding: 8px 10px;
     color: var(--text);
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     outline: none;
     transition: border-color 0.15s;
 }
@@ -2110,7 +2368,7 @@ nav.sidebar-nav {
     padding: 10px;
     color: #000;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 13px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -2136,7 +2394,7 @@ nav.sidebar-nav {
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
-    font-size: 10px;
+    font-size: 12px;
     color: var(--muted);
     user-select: none;
     flex-shrink: 0;
@@ -2175,12 +2433,12 @@ nav.sidebar-nav {
         --panel-pad:   18px;
         --grid-gap:    16px;
         --content-pad: 18px;
-        --base-fs:     13px;
+        --base-fs:     16px;
     }
-    .mini-card .value  { font-size: 20px; }
-    .portfolio-value   { font-size: 28px; }
-    .gauge-pct         { font-size: 30px; }
-    .clock-box .clock-time { font-size: 16px; }
+    .mini-card .value  { font-size: 24px; }
+    .portfolio-value   { font-size: 34px; }
+    .gauge-pct         { font-size: 36px; }
+    .clock-box .clock-time { font-size: 19px; }
     .dot               { width: 10px; height: 10px; }
     .progress-track    { height: 4px; }
     .sidebar-brand-icon { width: 30px; height: 30px; }
@@ -2198,116 +2456,116 @@ nav.sidebar-nav {
         --panel-pad:   22px;
         --grid-gap:    20px;
         --content-pad: 22px;
-        --base-fs:     15px;
+        --base-fs:     18px;
     }
 
     /* Header elements */
-    .header-title h1   { font-size: 16px; letter-spacing: 0.12em; }
-    .header-title p    { font-size: 12px; }
+    .header-title h1   { font-size: 19px; letter-spacing: 0.12em; }
+    .header-title p    { font-size: 14px; }
     .clock-box         { min-width: 140px; }
-    .clock-box .clock-time { font-size: 20px; letter-spacing: 0.18em; }
-    .clock-box .clock-label { font-size: 11px; }
-    .status-pill       { font-size: 12px; padding: 6px 12px; }
+    .clock-box .clock-time { font-size: 24px; letter-spacing: 0.18em; }
+    .clock-box .clock-label { font-size: 13px; }
+    .status-pill       { font-size: 14px; padding: 6px 12px; }
     .status-dot        { width: 8px; height: 8px; }
-    .refresh-btn       { width: 38px; height: 38px; font-size: 14px; }
+    .refresh-btn       { width: 38px; height: 38px; font-size: 17px; }
 
     /* Sidebar */
     .sidebar-brand     { padding: 0 20px; }
-    .sidebar-brand-icon { width: 36px; height: 36px; font-size: 15px; }
-    .sidebar-brand-text h2 { font-size: 14px; }
-    .sidebar-brand-text p  { font-size: 12px; }
-    .nav-item          { font-size: 13px; padding: 11px 16px; }
-    .nav-item-left i   { font-size: 13px; width: 18px; }
-    .sidebar-footer    { font-size: 12px; padding: 16px 20px; }
+    .sidebar-brand-icon { width: 36px; height: 36px; font-size: 18px; }
+    .sidebar-brand-text h2 { font-size: 17px; }
+    .sidebar-brand-text p  { font-size: 14px; }
+    .nav-item          { font-size: 16px; padding: 11px 16px; }
+    .nav-item-left i   { font-size: 16px; width: 18px; }
+    .sidebar-footer    { font-size: 14px; padding: 16px 20px; }
 
     /* Panels */
-    .panel-label       { font-size: 12px; }
+    .panel-label       { font-size: 14px; }
     .panel-dots .dot   { width: 11px; height: 11px; }
     .dot               { width: 11px; height: 11px; }
 
     /* Budget.sys */
-    .tab-btn           { font-size: 12px; padding: 7px 14px; }
-    .sub-tab           { font-size: 12px; }
-    .mini-card .label  { font-size: 11px; }
-    .mini-card .value  { font-size: 22px; }
-    .mini-card .sub    { font-size: 11px; }
-    .breakdown-label   { font-size: 11px; }
-    .breakdown-name    { font-size: 12px; }
-    .breakdown-bal     { font-size: 11px; }
-    .breakdown-amounts { font-size: 11px; }
-    .breakdown-name i  { font-size: 11px; }
+    .tab-btn           { font-size: 14px; padding: 7px 14px; }
+    .sub-tab           { font-size: 14px; }
+    .mini-card .label  { font-size: 13px; }
+    .mini-card .value  { font-size: 26px; }
+    .mini-card .sub    { font-size: 13px; }
+    .breakdown-label   { font-size: 13px; }
+    .breakdown-name    { font-size: 14px; }
+    .breakdown-bal     { font-size: 13px; }
+    .breakdown-amounts { font-size: 13px; }
+    .breakdown-name i  { font-size: 13px; }
     .progress-track    { height: 5px; }
-    .progress-pct      { font-size: 11px; min-width: 32px; }
-    .chart-label       { font-size: 11px; }
+    .progress-pct      { font-size: 13px; min-width: 32px; }
+    .chart-label       { font-size: 13px; }
     .chart-box svg     { height: 110px; }
 
     /* Crypto.sys */
-    .portfolio-value   { font-size: 32px; }
-    .portfolio-change  { font-size: 13px; }
-    .holding-info .coin-name { font-size: 14px; }
-    .holding-info .coin-sub  { font-size: 11px; }
-    .holding-right .coin-val { font-size: 14px; }
-    .holding-right .coin-chg { font-size: 11px; }
-    .asset-icon        { width: 26px; height: 26px; font-size: 13px; }
+    .portfolio-value   { font-size: 38px; }
+    .portfolio-change  { font-size: 16px; }
+    .holding-info .coin-name { font-size: 17px; }
+    .holding-info .coin-sub  { font-size: 13px; }
+    .holding-right .coin-val { font-size: 17px; }
+    .holding-right .coin-chg { font-size: 13px; }
+    .asset-icon        { width: 26px; height: 26px; font-size: 16px; }
     .bar-chart-box svg { height: 110px; }
 
     /* Mail.sys */
-    .mail-count-box .count-num   { font-size: 24px; }
-    .mail-count-box .count-label { font-size: 11px; }
-    .mail-section-label          { font-size: 11px; }
-    .mail-sender                 { font-size: 12px; }
-    .mail-subject                { font-size: 13px; }
-    .mail-time                   { font-size: 11px; }
-    .mail-tag                    { font-size: 11px; }
+    .mail-count-box .count-num   { font-size: 29px; }
+    .mail-count-box .count-label { font-size: 13px; }
+    .mail-section-label          { font-size: 13px; }
+    .mail-sender                 { font-size: 14px; }
+    .mail-subject                { font-size: 16px; }
+    .mail-time                   { font-size: 13px; }
+    .mail-tag                    { font-size: 13px; }
 
     /* Health.sys */
-    .health-stat .stat-label { font-size: 11px; }
-    .health-stat .stat-val   { font-size: 20px; }
-    .health-stat .stat-sub   { font-size: 11px; }
+    .health-stat .stat-label { font-size: 13px; }
+    .health-stat .stat-val   { font-size: 24px; }
+    .health-stat .stat-sub   { font-size: 13px; }
     .sleep-box               { padding: 12px 14px; }
 
     /* Calendar.sys */
-    .cal-date-label   { font-size: 11px; }
-    .cal-date-value   { font-size: 16px; }
-    .cal-count        { font-size: 11px; }
-    .schedule-label   { font-size: 11px; }
-    .schedule-title   { font-size: 14px; }
-    .schedule-time    { font-size: 11px; }
-    .live-badge       { font-size: 10px; }
-    .participants     { font-size: 11px; }
+    .cal-date-label   { font-size: 13px; }
+    .cal-date-value   { font-size: 19px; }
+    .cal-count        { font-size: 13px; }
+    .schedule-label   { font-size: 13px; }
+    .schedule-title   { font-size: 17px; }
+    .schedule-time    { font-size: 13px; }
+    .live-badge       { font-size: 12px; }
+    .participants     { font-size: 13px; }
 
     /* Retirement gauge */
     .gauge-wrap        { height: 300px; }
-    .gauge-label       { font-size: 12px; }
-    .gauge-pct         { font-size: 38px; }
-    .gauge-goal        { font-size: 13px; }
-    .gauge-rem         { font-size: 11px; }
+    .gauge-label       { font-size: 14px; }
+    .gauge-pct         { font-size: 46px; }
+    .gauge-goal        { font-size: 16px; }
+    .gauge-rem         { font-size: 13px; }
     .ret-gauge-bar-wrap { width: 100px; height: 5px; }
-    .ret-card .ret-label { font-size: 11px; }
-    .ret-card .ret-val   { font-size: 17px; }
-    .rrsp-row          { font-size: 12px; }
-    .fin-row           { font-size: 12px; }
-    .fin-row .flabel   { font-size: 11px; }
+    .ret-card .ret-label { font-size: 13px; }
+    .ret-card .ret-val   { font-size: 20px; }
+    .rrsp-row          { font-size: 14px; }
+    .fin-row           { font-size: 14px; }
+    .fin-row .flabel   { font-size: 13px; }
 
     /* AI Insights */
-    .ai-status-text    { font-size: 13px; }
-    .ai-sub            { font-size: 11px; }
-    .insight-section-label { font-size: 11px; }
-    .insight-cat       { font-size: 11px; }
-    .insight-text      { font-size: 12px; }
-    .pred-name, .pred-status { font-size: 12px; }
-    .next-analysis     { font-size: 11px; }
+    .ai-status-text    { font-size: 16px; }
+    .ai-sub            { font-size: 13px; }
+    .insight-section-label { font-size: 13px; }
+    .insight-cat       { font-size: 13px; }
+    .insight-text      { font-size: 14px; }
+    .pred-name, .pred-status { font-size: 14px; }
+    .next-analysis     { font-size: 13px; }
 
     /* News */
-    .news-cat-tag, .news-trend-tag { font-size: 10px; }
-    .news-headline     { font-size: 14px; }
-    .news-meta         { font-size: 11px; }
+    .news-cat-tag, .news-trend-tag { font-size: 12px; }
+    .news-headline     { font-size: 17px; }
+    .news-meta         { font-size: 13px; }
 
     /* Footer */
-    .app-footer, .footer-link { font-size: 12px; }
+    .app-footer, .footer-link { font-size: 14px; }
 
     /* Mock banner */
-    .mock-banner       { font-size: 13px; padding: 12px 18px; }
+    .mock-banner       { font-size: 16px; padding: 12px 18px; }
 }
 
 /* ============================================================

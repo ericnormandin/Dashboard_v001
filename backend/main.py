@@ -14,6 +14,7 @@ from pydantic import BaseModel
 from backend.routers.crypto import router as crypto_router
 from backend.routers.mail import router as mail_router
 from backend.routers.retirement import router as retirement_router
+from backend.routers.security import router as security_router
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
@@ -40,6 +41,7 @@ app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
 app.include_router(retirement_router)
 app.include_router(mail_router)
 app.include_router(crypto_router)
+app.include_router(security_router)
 
 
 # Helper function to check if Kraken is configured

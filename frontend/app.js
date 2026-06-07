@@ -13,6 +13,9 @@ let currentPrices = {
 let activeTab = 'overview';
 let isLiveKraken = false;
 let isLiveSheets = false;
+let tradingViewAsset = 'BTC';
+const tradingViewAssets = ['BTC', 'ETH', 'SOL', 'ADA'];
+let securityScanRun = false;
 
 // ================= MOCKUP DATASETS (ACCORDING TO DESIGN SPECIFICATIONS) =================
 
@@ -154,6 +157,13 @@ const mockCryptoNews = [
     { category: 'DEFI',   tag: '',         headline: 'Total DeFi locked value surpasses $200B milestone', source: 'DeFiPulse', time: '14h ago' },
 ];
 
+const mockCryptoInsights = [
+    { category: 'PORTFOLIO',  text: 'BTC allocation has drifted 6% above target — consider rebalancing toward ETH.', cls: 'warn', icon: 'fa-triangle-exclamation' },
+    { category: 'MARKET',     text: 'Fear & Greed index shifted from Neutral to Greed over the past 48 hours.', cls: 'info', icon: 'fa-circle-info' },
+    { category: 'DCA',        text: 'Next scheduled buy executes in 2 days — projected at current price levels.', cls: 'ok',   icon: 'fa-circle-check' },
+    { category: 'VOLATILITY', text: 'BTC 24h volatility up 18% — tighten stop levels on active positions.', cls: 'warn', icon: 'fa-triangle-exclamation' },
+];
+
 // Tech & AI news (news view col 3)
 const mockTechNews = [
     { category: 'AI',   tag: 'TRENDING', headline: 'Anthropic releases Claude 4 with extended context window', source: 'TechCrunch', time: '2h ago' },
@@ -287,6 +297,8 @@ function triggerViewRender(tabName) {
         renderHealthScreen();
     } else if (tabName === 'news') {
         renderNewsView();
+    } else if (tabName === 'utilities') {
+        renderUtilitiesScreen();
     }
 }
 
@@ -445,7 +457,7 @@ function renderOverviewScreen() {
                         <i class="${getAssetIcon(hold.asset)}"></i>
                     </div>
                     <div class="holding-info">
-                        <div class="coin-name">${hold.asset} <span style="font-size:10px;color:var(--muted);font-weight:400">${hold.name}</span></div>
+                        <div class="coin-name">${hold.asset} <span style="font-size:12px;color:var(--muted);font-weight:400">${hold.name}</span></div>
                         <div class="coin-sub">${hold.amount}</div>
                     </div>
                 </div>
@@ -491,7 +503,7 @@ function renderOverviewScreen() {
             div.innerHTML = `
                 <div>
                     <div class="schedule-title">
-                        <i class="fa-solid fa-calendar-day" style="font-size:10px;color:var(--gold)"></i>
+                        <i class="fa-solid fa-calendar-day" style="font-size:12px;color:var(--gold)"></i>
                         ${evt.title}
                         ${evt.isLive ? '<span class="live-badge">LIVE</span>' : ''}
                     </div>
@@ -836,23 +848,27 @@ function populateTransactionsList(txs) {
 async function renderCryptoScreen() {
     // Render synchronous parts immediately
     _renderAssetsChart();
-    _renderCandlestickChart();
+    _renderCandlestickChart(tradingViewAsset);
+    _renderTradingViewTickerList();
     _renderCryptoTradeLog('kraken-trade-log', mockKrakenTrades);
     _renderColdStorage();
     _renderInventory();
     _renderCapTable();
     _updateCorpMetrics();
+    _renderCryptoAiInsights();
+    renderNewsList('crypto-news-headlines', mockCryptoNews);
 
     // Fetch live data concurrently
     await Promise.allSettled([
         _fetchKrakenBalanceForCorp(),
-        _updateCorpBtcPrice(),
+        _updateTradingViewTicker(tradingViewAsset),
         _updateCorpFearGreed(),
     ]);
 
     // Refresh calculated metrics & PNL with live prices
     _updateCorpMetrics();
     _renderInventory();
+    _renderTradingViewTickerList();
 }
 
 function _updateCorpMetrics() {
@@ -880,26 +896,50 @@ function _updateCorpMetrics() {
     }
 }
 
-async function _updateCorpBtcPrice() {
+async function _updateTradingViewTicker(asset) {
+    const pEl = document.getElementById('corp-btc-price');
+    const cEl = document.getElementById('corp-btc-chg');
     try {
-        const res = await fetch(`${API_BASE_URL}/api/kraken/ticker/BTC%2FUSD`);
+        const res = await fetch(`${API_BASE_URL}/api/kraken/ticker/${asset}%2FUSD`);
         if (!res.ok) throw new Error();
         const data = await res.json();
-        currentPrices['BTC'] = data.last;
-        const pEl = document.getElementById('corp-btc-price');
-        const cEl = document.getElementById('corp-btc-chg');
-        if (pEl) pEl.textContent = `$${Math.round(data.last).toLocaleString()}`;
+        currentPrices[asset] = data.last;
+        if (pEl) pEl.textContent = `$${data.last.toLocaleString(undefined, { maximumFractionDigits: data.last < 10 ? 4 : 2 })}`;
         if (cEl) {
             const isPos = data.change_24h >= 0;
             cEl.textContent = `${isPos ? '▲ +' : '▼ '}${Math.abs(data.change_24h).toFixed(2)}% 24H`;
             cEl.style.color = isPos ? 'var(--green)' : 'var(--red)';
         }
     } catch {
-        const pEl = document.getElementById('corp-btc-price');
-        if (pEl) pEl.textContent = '$67,500';
-        const cEl = document.getElementById('corp-btc-chg');
+        const fallback = currentPrices[asset] || 0;
+        if (pEl) pEl.textContent = `$${fallback.toLocaleString(undefined, { maximumFractionDigits: fallback < 10 ? 4 : 2 })}`;
         if (cEl) { cEl.textContent = '▲ +1.85% 24H'; cEl.style.color = 'var(--green)'; }
     }
+}
+
+function _renderTradingViewTickerList() {
+    const container = document.getElementById('trading-view-ticker-list');
+    if (!container) return;
+    container.innerHTML = '';
+    tradingViewAssets.forEach(asset => {
+        const price = currentPrices[asset] || 0;
+        const btn = document.createElement('button');
+        btn.className = `ticker-switch-item${asset === tradingViewAsset ? ' active' : ''}`;
+        btn.innerHTML = `
+            <span class="ts-symbol"><i class="${getAssetIcon(asset)}"></i>${asset}</span>
+            <span class="ts-price">$${price.toLocaleString(undefined, { maximumFractionDigits: price < 10 ? 4 : 2 })}</span>
+        `;
+        btn.onclick = () => _selectTradingViewAsset(asset);
+        container.appendChild(btn);
+    });
+}
+
+function _selectTradingViewAsset(asset) {
+    if (asset === tradingViewAsset) return;
+    tradingViewAsset = asset;
+    _renderTradingViewTickerList();
+    _renderCandlestickChart(asset);
+    _updateTradingViewTicker(asset);
 }
 
 async function _updateCorpFearGreed() {
@@ -916,27 +956,27 @@ async function _updateCorpFearGreed() {
 function _renderFgGauge(value, label) {
     const color   = _fgColor(value);
     const gaugeEl = document.getElementById('corp-fg-gauge');
+    const vEl     = document.getElementById('corp-fg-value');
     const lEl     = document.getElementById('corp-fg-label');
-    if (gaugeEl) gaugeEl.innerHTML = _fgGaugeSvg(value, color);
+    if (gaugeEl) gaugeEl.innerHTML = _fgGaugeRingSvg(value);
+    if (vEl) { vEl.textContent = value; vEl.style.color = color; }
     if (lEl) { lEl.textContent = label.toUpperCase(); lEl.style.color = color; }
 }
 
-function _fgGaugeSvg(value, color) {
-    const cx = 100, cy = 96;
-    const r1 = 40, r2 = 76;   // inner / outer radius of segments
-    const N  = 14;             // number of segments
-    const totalArc  = 240;     // degrees the gauge spans
-    const startAngle = 210;    // math-convention angle for value=0 (fear, lower-left)
-    const step = totalArc / N;
-    const gap  = 1.2;          // degrees of dead-space on each side of a segment
+// Half-ring segmented gauge in the same style as retirement_goal.sys, colored by fear/greed zone
+function _fgGaugeRingSvg(value) {
+    const cx = 120, cy = 122, r1 = 76, r2 = 108, N = 20, gap = 1.8;
+    const startAngle = 180;   // 9 o'clock (left / FEAR)
+    const totalArc   = 180;   // half ring spanning the top
+    const step       = totalArc / N;
+    const litCount   = Math.round((value / 100) * N);
 
-    // Point on circle at math-convention angle (0°=right, CCW positive), SVG coords
-    const pt = (angleDeg, r) => {
-        const rad = angleDeg * Math.PI / 180;
-        return [cx + r * Math.cos(rad), cy - r * Math.sin(rad)];
+    const pt = (deg, r) => {
+        const rad = deg * Math.PI / 180;
+        return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)];
     };
 
-    // Zone color by segment index
+    // Zone color by segment position around the arc (fear → greed)
     const segColor = (i) => {
         const pct = i / N;
         if (pct < 0.22)  return '#cc2200';
@@ -946,62 +986,39 @@ function _fgGaugeSvg(value, color) {
         return '#1f8c3b';
     };
 
-    // Which segment the needle sits in (0–N-1)
-    const activeIdx = Math.min(Math.floor((value / 100) * N), N - 1);
-
-    let segs = '';
+    let paths = '';
     for (let i = 0; i < N; i++) {
-        // a1 > a2 (we go clockwise = decreasing math angle = CCW in SVG)
-        const a1 = startAngle - i * step + gap;
-        const a2 = startAngle - (i + 1) * step - gap;
+        // Segments run clockwise from 9 o'clock (180° in SVG = left) over the top to 3 o'clock
+        const a1 = startAngle + i * step + gap;
+        const a2 = startAngle + (i + 1) * step - gap;
+        const lit = i < litCount;
 
         const [x1o, y1o] = pt(a1, r2);
         const [x2o, y2o] = pt(a2, r2);
         const [x2i, y2i] = pt(a2, r1);
         const [x1i, y1i] = pt(a1, r1);
 
-        // Annular sector: outer arc sweep=0 (CCW in SVG = CW in math, a1→a2),
-        // then inner arc sweep=1 (CW in SVG = CCW in math, a2→a1)
+        // Outer arc CW (sweep=1), inner arc CCW back (sweep=0)
         const d = [
             `M${x1o.toFixed(1)} ${y1o.toFixed(1)}`,
-            `A${r2} ${r2} 0 0 0 ${x2o.toFixed(1)} ${y2o.toFixed(1)}`,
+            `A${r2} ${r2} 0 0 1 ${x2o.toFixed(1)} ${y2o.toFixed(1)}`,
             `L${x2i.toFixed(1)} ${y2i.toFixed(1)}`,
-            `A${r1} ${r1} 0 0 1 ${x1i.toFixed(1)} ${y1i.toFixed(1)}Z`,
+            `A${r1} ${r1} 0 0 0 ${x1i.toFixed(1)} ${y1i.toFixed(1)}Z`,
         ].join(' ');
 
-        const c   = segColor(i);
-        const lit = i <= activeIdx;
-        const glow = lit ? `style="filter:drop-shadow(0 0 3px ${c})"` : '';
-        segs += `<path d="${d}" fill="${c}" opacity="${lit ? 1 : 0.18}" ${glow}/>`;
+        const c     = segColor(i);
+        const style = lit
+            ? `fill:${c};filter:drop-shadow(0 0 5px ${c})`
+            : 'fill:var(--border-lt)';
+        paths += `<path d="${d}" style="${style}"/>`;
     }
 
-    // Needle: math angle for the exact value
-    const needleAngle = startAngle - (value / 100) * totalArc;
-    const [nx, ny]   = pt(needleAngle, r2 - 5);
-    const [nbx, nby] = pt(needleAngle + 180, 12); // short tail behind centre
+    // Outer and inner outline arcs that frame the segment half-ring
+    const outerArc = `<path d="M${(cx - r2 - 5).toFixed(1)} ${cy} A${r2 + 5} ${r2 + 5} 0 0 1 ${(cx + r2 + 5).toFixed(1)} ${cy}" fill="none" style="stroke:var(--border);stroke-width:1"/>`;
+    const innerArc = `<path d="M${(cx - r1 + 5).toFixed(1)} ${cy} A${r1 - 5} ${r1 - 5} 0 0 1 ${(cx + r1 - 5).toFixed(1)} ${cy}" fill="none" style="stroke:var(--border);stroke-width:1"/>`;
 
-    // FEAR / GREED label x positions track the arc ends
-    const [fearX, fearY] = pt(startAngle, r2 + 4);
-    const [greedX, greedY] = pt(startAngle - totalArc, r2 + 4);
-
-    return `<svg viewBox="0 0 200 150" style="width:100%;display:block">
-        ${segs}
-        <circle cx="${cx}" cy="${cy}" r="${r1 - 3}" fill="#080808"/>
-        <line x1="${nbx.toFixed(1)}" y1="${nby.toFixed(1)}"
-              x2="${nx.toFixed(1)}" y2="${ny.toFixed(1)}"
-              stroke="var(--slate)" stroke-width="2" stroke-linecap="round"
-              style="filter:drop-shadow(0 0 4px var(--slate))"/>
-        <circle cx="${cx}" cy="${cy}" r="5" fill="var(--slate)"
-                style="filter:drop-shadow(0 0 4px var(--slate))"/>
-        <text x="${cx}" y="${(cy + 8).toFixed(0)}" text-anchor="middle"
-              fill="${color}" font-size="22" font-weight="700"
-              font-family="JetBrains Mono">${value}</text>
-        <text x="${(fearX - 2).toFixed(0)}" y="147"
-              fill="#cc2200" font-size="8" font-weight="700"
-              font-family="JetBrains Mono" text-anchor="middle">FEAR</text>
-        <text x="${(greedX + 2).toFixed(0)}" y="147"
-              fill="#1f8c3b" font-size="8" font-weight="700"
-              font-family="JetBrains Mono" text-anchor="middle">GREED</text>
+    return `<svg viewBox="0 0 240 138" style="width:100%;height:100%;display:block">
+        ${outerArc}${innerArc}${paths}
     </svg>`;
 }
 
@@ -1014,30 +1031,50 @@ async function _fetchKrakenBalanceForCorp() {
         if (!res.ok) throw new Error();
         const data = await res.json();
         const bals = data.free || data.total || {};
-        _renderKrakenBalanceCards(container, bals);
+        _renderKrakenBalanceCards(container, bals, data.mode === 'live' ? 'ok' : 'stale');
         if (badge) {
             badge.textContent  = data.mode === 'live' ? 'LIVE' : 'MOCK';
             badge.style.color  = data.mode === 'live' ? 'var(--green)' : 'var(--gold)';
         }
     } catch {
-        _renderKrakenBalanceCards(container, { USD: 12450.75, BTC: 0.4258, ETH: 2.15, SOL: 12.50 });
+        _renderKrakenBalanceCards(container, { USD: 12450.75, BTC: 0.4258, ETH: 2.15, SOL: 12.50 }, 'error');
     }
 }
 
-function _renderKrakenBalanceCards(container, balances) {
+function _renderKrakenBalanceCards(container, balances, status) {
+    const items = Object.entries(balances)
+        .filter(([, amount]) => amount > 0)
+        .map(([asset, amount]) => {
+            const price = asset === 'USD' ? 1 : (currentPrices[asset] || 0);
+            const usd   = (amount * price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            return { asset, amount, usd };
+        });
+    _renderCryptoBalanceList(container, items, status);
+}
+
+// Shared row layout for crypto balance lists (kraken.sys / ledger.sys):
+// ticker icon · amount + ticker · USD value · connection-status circle
+function _renderCryptoBalanceList(container, items, status) {
+    if (!container) return;
+    const meta = {
+        ok:    { color: 'var(--green)', label: 'Up to date' },
+        stale: { color: '#e0900a',      label: 'Connected — data may be stale' },
+        error: { color: 'var(--red)',   label: 'Connection issue' },
+    }[status] || { color: 'var(--green)', label: 'Up to date' };
+
     container.innerHTML = '';
-    Object.entries(balances).forEach(([asset, amount]) => {
-        if (amount <= 0) return;
-        const price  = asset === 'USD' ? 1 : (currentPrices[asset] || 0);
-        const usdVal = (amount * price).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-        const card   = document.createElement('div');
-        card.className = 'corp-balance-card';
-        card.innerHTML = `
-            <div class="asset-name">${asset}</div>
-            <div class="asset-amount">${Number(amount).toFixed(4)}</div>
-            <div class="asset-usd">$${usdVal}</div>
+    items.forEach(({ asset, amount, usd }) => {
+        const decimals    = asset === 'USD' ? 2 : 4;
+        const amountLabel = Number(amount).toLocaleString(undefined, { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+        const row = document.createElement('div');
+        row.className = 'crypto-balance-row';
+        row.innerHTML = `
+            <span class="cb-icon"><i class="${getAssetIcon(asset)}"></i></span>
+            <span class="cb-amount">${amountLabel} ${asset}</span>
+            <span class="cb-usd">$${usd}</span>
+            <span class="cb-status" style="background:${meta.color}" title="${meta.label}"></span>
         `;
-        container.appendChild(card);
+        container.appendChild(row);
     });
 }
 
@@ -1064,21 +1101,12 @@ function _renderColdStorage() {
     const bCont = document.getElementById('cold-storage-balances');
     const lCont = document.getElementById('cold-storage-log');
     if (bCont) {
-        bCont.innerHTML = '';
-        mockColdStorage.balances.forEach(b => {
-            const usd  = Math.round(b.amount * (currentPrices[b.asset] || 0));
-            const card = document.createElement('div');
-            card.className = 'corp-balance-card';
-            card.style.cssText = 'display:flex;justify-content:space-between;align-items:center;text-align:left';
-            card.innerHTML = `
-                <div>
-                    <div class="asset-name">${b.asset} <span style="color:var(--green);font-size:10px">SECURED</span></div>
-                    <div class="asset-amount">${b.amount.toFixed(4)} ${b.asset}</div>
-                </div>
-                <div class="asset-usd" style="font-size:13px">$${usd.toLocaleString()}</div>
-            `;
-            bCont.appendChild(card);
-        });
+        const items = mockColdStorage.balances.map(b => ({
+            asset:  b.asset,
+            amount: b.amount,
+            usd:    Math.round(b.amount * (currentPrices[b.asset] || 0)).toLocaleString(),
+        }));
+        _renderCryptoBalanceList(bCont, items, 'ok');
     }
     if (lCont) {
         lCont.innerHTML = '';
@@ -1094,6 +1122,25 @@ function _renderColdStorage() {
             lCont.appendChild(row);
         });
     }
+}
+
+function _renderCryptoAiInsights() {
+    const container = document.getElementById('crypto-ai-insights');
+    if (!container) return;
+    container.innerHTML = '';
+    const iconMap = { ok: 'fa-circle-check', warn: 'fa-triangle-exclamation', info: 'fa-circle-info' };
+    mockCryptoInsights.forEach(ins => {
+        const div = document.createElement('div');
+        div.className = `insight-item ${ins.cls}`;
+        div.innerHTML = `
+            <i class="fa-solid ${ins.icon || iconMap[ins.cls] || 'fa-circle-info'}"></i>
+            <div>
+                <div class="insight-cat">${ins.category}</div>
+                <div class="insight-text">${ins.text}</div>
+            </div>
+        `;
+        container.appendChild(div);
+    });
 }
 
 function _renderInventory() {
@@ -1196,10 +1243,23 @@ function _renderAssetsChart() {
     </svg>`;
 }
 
-function _renderCandlestickChart() {
+function _scaledOHLC(asset) {
+    if (asset === 'BTC') return mockBtcOHLC;
+    const ref = mockBtcOHLC[mockBtcOHLC.length - 1].c;
+    const ratio = (currentPrices[asset] || ref) / ref;
+    return mockBtcOHLC.map(d => ({
+        d: d.d,
+        o: d.o * ratio,
+        h: d.h * ratio,
+        l: d.l * ratio,
+        c: d.c * ratio,
+    }));
+}
+
+function _renderCandlestickChart(asset = tradingViewAsset) {
     const container = document.getElementById('corp-btc-chart');
     if (!container) return;
-    const data = mockBtcOHLC;
+    const data = _scaledOHLC(asset);
     const W=200, H=170, PL=8, PR=8, PT=8, PB=22;
     const iW=W-PL-PR, iH=H-PT-PB;
     const allP=data.flatMap(d=>[d.h,d.l]);
@@ -1218,7 +1278,7 @@ function _renderCandlestickChart() {
     });
     candles+=`<text x="${W-PR}" y="${PT+8}" fill="var(--muted)" font-size="7" font-family="JetBrains Mono" text-anchor="end">$${Math.round(maxP/1000)}K</text>`;
     candles+=`<text x="${W-PR}" y="${PT+iH}" fill="var(--muted)" font-size="7" font-family="JetBrains Mono" text-anchor="end">$${Math.round(minP/1000)}K</text>`;
-    container.innerHTML=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:170px;display:block">${candles}</svg>`;
+    container.innerHTML=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:100%;display:block">${candles}</svg>`;
 }
 
 function cryptoOrderStub(type) {
@@ -1228,6 +1288,133 @@ function cryptoOrderStub(type) {
     btn.textContent = type==='buy'?'ORDER ROUTING...':'SELL ROUTING...';
     btn.disabled = true;
     setTimeout(()=>{ btn.innerHTML=orig; btn.disabled=false; }, 2000);
+}
+
+// ================= UTILITIES — system_check.sys security scanner =================
+function renderUtilitiesScreen() {
+    const list = document.getElementById('security-findings-list');
+    if (list && !securityScanRun) {
+        list.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px 0">Click RUN_SCAN to enumerate running processes and check for suspicious activity.</div>';
+    }
+}
+
+function _mockSecurityScan() {
+    return {
+        mode: 'mock',
+        scanned_at: new Date().toISOString(),
+        process_count: 138,
+        findings: [
+            {
+                pid: 9148,
+                name: 'update_helper.exe',
+                path: 'C:\\Users\\demo\\AppData\\Local\\Temp\\update_helper.exe',
+                severity: 'medium',
+                reason: 'Executable launched from an unusual location (appdata\\local\\temp).',
+            },
+            {
+                pid: 5521,
+                name: 'svchost.exe',
+                path: null,
+                severity: 'low',
+                reason: 'Executable path could not be resolved (possibly protected or unsigned).',
+            },
+            {
+                pid: 7734,
+                name: 'node.exe',
+                path: 'C:\\Program Files\\nodejs\\node.exe',
+                severity: 'low',
+                reason: 'Listening on uncommon port 41223 — verify this is an expected dev service.',
+            },
+        ],
+    };
+}
+
+async function runSecurityScan() {
+    const btn  = document.getElementById('security-scan-btn');
+    const list = document.getElementById('security-findings-list');
+    if (!btn || !list) return;
+
+    securityScanRun = true;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SCANNING...';
+    list.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px 0">Enumerating processes and checking for suspicious indicators...</div>';
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/security/scan`);
+        if (!res.ok) throw new Error();
+        _renderSecurityScan(await res.json());
+    } catch {
+        _renderSecurityScan(_mockSecurityScan());
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> RUN_SCAN';
+    }
+}
+
+function _renderSecurityScan(data) {
+    const badge   = document.getElementById('security-scan-badge');
+    const summary = document.getElementById('security-scan-summary');
+    const list    = document.getElementById('security-findings-list');
+    if (!list) return;
+
+    const findings  = data.findings || [];
+    const scannedAt = data.scanned_at ? new Date(data.scanned_at).toLocaleString() : '—';
+
+    if (badge) {
+        badge.textContent = data.mode === 'live' ? 'LIVE' : 'MOCK';
+        badge.style.color = data.mode === 'live' ? 'var(--green)' : 'var(--gold)';
+    }
+    if (summary) {
+        const noun = findings.length === 1 ? 'finding' : 'findings';
+        summary.textContent = `Scanned ${data.process_count ?? '—'} processes at ${scannedAt} — ${findings.length} ${noun}.`;
+    }
+
+    list.innerHTML = '';
+    if (!findings.length) {
+        list.innerHTML = `
+            <div class="finding-item low">
+                <div class="finding-head"><i class="fa-solid fa-circle-check" style="color:var(--green)"></i><span class="finding-name">No suspicious activity detected</span></div>
+            </div>`;
+        return;
+    }
+
+    const sevIcon = { high: 'fa-triangle-exclamation', medium: 'fa-circle-exclamation', low: 'fa-circle-info' };
+    findings.forEach(f => {
+        const row = document.createElement('div');
+        row.className = `finding-item ${f.severity}`;
+        row.innerHTML = `
+            <div class="finding-head">
+                <i class="fa-solid ${sevIcon[f.severity] || 'fa-circle-info'}"></i>
+                <span class="finding-name">${f.name}</span>
+                <span class="finding-pid">PID ${f.pid ?? '—'}</span>
+                <span class="finding-badge">${f.severity}</span>
+            </div>
+            <div class="finding-reason">${f.reason}</div>
+            ${f.path ? `<div class="finding-path">${f.path}</div>` : ''}
+            <div class="finding-actions">
+                <button class="finding-action-btn" onclick="securityFindingAction('investigate', this)">Investigate</button>
+                <button class="finding-action-btn danger" onclick="securityFindingAction('terminate', this)">Terminate Process</button>
+                <button class="finding-action-btn" onclick="securityFindingAction('ignore', this)">Ignore</button>
+            </div>
+        `;
+        list.appendChild(row);
+    });
+}
+
+function securityFindingAction(action, btn) {
+    if (!btn) return;
+    const labels = { investigate: 'LOOKING UP...', terminate: 'TERMINATING...', ignore: 'IGNORED' };
+    const orig = btn.textContent;
+    btn.textContent = labels[action] || 'WORKING...';
+    btn.disabled = true;
+    setTimeout(() => {
+        if (action === 'ignore') {
+            btn.closest('.finding-item')?.remove();
+        } else {
+            btn.textContent = orig;
+            btn.disabled = false;
+        }
+    }, 1500);
 }
 
 
@@ -1669,7 +1856,7 @@ async function retirementAI(type) {
         const text = data.plan || data.insights || 'No response received.';
         if (modeEl) {
             modeEl.textContent = data.mode === 'live' ? 'AI' : 'MOCK';
-            modeEl.style.cssText = `font-size:10px;font-weight:700;color:${data.mode === 'live' ? 'var(--green)' : 'var(--gold)'}`;
+            modeEl.style.cssText = `font-size:12px;font-weight:700;color:${data.mode === 'live' ? 'var(--green)' : 'var(--gold)'}`;
         }
         output.textContent = text;
     } catch (err) {
