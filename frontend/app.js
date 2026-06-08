@@ -49,6 +49,23 @@ const mockBudgetCategories = [
     { name: 'Videotron',     bal: 0.00,    spent: 98.00,   budget: 98,   icon: 'fa-wifi',                  colorClass: 'bg-terminal-bronze', type: 'fixed' },
 ];
 
+// Per-person budget breakdowns (ERIC / EMILIE sub-tabs)
+const mockBudgetEric = [
+    { name: 'Cashflow',  bal: 1790.73, spent: 1915.27, budget: 3786, icon: 'fa-wallet',           colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'Eco Eric',  bal: 112.30,  spent: 187.70,  budget: 300,  icon: 'fa-seedling',          colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'Transport', bal: 153.72,  spent: 237.28,  budget: 391,  icon: 'fa-car',               colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'Crypto',    bal: 0.00,    spent: 0.00,    budget: 500,  icon: 'fa-brands fa-bitcoin',  colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'REER Eric', bal: 0.00,    spent: 500.00,  budget: 500,  icon: 'fa-piggy-bank',         colorClass: 'bg-terminal-bronze', type: 'fixed' },
+];
+
+const mockBudgetEmilie = [
+    { name: 'Eco Em',    bal: 84.50,  spent: 215.50,  budget: 300,  icon: 'fa-leaf',        colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'Stella',    bal: 0.00,   spent: 288.36,  budget: 186,  icon: 'fa-child',        colorClass: 'bg-terminal-red',    type: 'variable' },
+    { name: 'Garderie',  bal: 0.00,   spent: 210.00,  budget: 210,  icon: 'fa-baby',         colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'Cash Em',   bal: 0.00,   spent: 500.00,  budget: 500,  icon: 'fa-piggy-bank',   colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'REER-OIIQ', bal: 0.00,   spent: 312.00,  budget: 312,  icon: 'fa-sack-dollar',  colorClass: 'bg-terminal-bronze', type: 'fixed' },
+];
+
 // 12 Transactions log
 const mockTransactions = [
     { date: '2026 May 27', type: 'MAY - CASHFLOW', label: 'BANK TRANSFER', amount: 225.71, isPositive: true },
@@ -320,12 +337,376 @@ function triggerViewRender(tabName) {
         renderNewsView();
     } else if (tabName === 'utilities') {
         renderUtilitiesScreen();
+    } else if (tabName === 'settings') {
+        renderSettingsScreen();
     }
+}
+
+function renderSettingsScreen() {
+    loadSheetIds();
+}
+
+// ================= SHEETS MULTI-ID MANAGER =================
+const _defaultSheetEntries = [
+    { name: 'Budget 2026', id: '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms' }
+];
+
+function _buildSheetRow(name, id) {
+    const row = document.createElement('div');
+    row.className = 'sheet-entry';
+    row.innerHTML = `
+        <input class="cred-input sheet-entry-name" type="text" placeholder="NAME (e.g. Budget 2026)" value="${name}">
+        <input class="cred-input sheet-entry-id" type="text" placeholder="SPREADSHEET_ID" value="${id}">
+        <button class="sheet-entry-remove" onclick="removeSheetEntry(this)" title="Remove">×</button>
+    `;
+    return row;
+}
+
+function addSheetEntry(name = '', id = '') {
+    const list = document.getElementById('sheet-id-list');
+    if (!list) return;
+    list.appendChild(_buildSheetRow(name, id));
+}
+
+function removeSheetEntry(btn) {
+    const list = document.getElementById('sheet-id-list');
+    if (list && list.querySelectorAll('.sheet-entry').length <= 1) return;
+    btn.closest('.sheet-entry').remove();
+}
+
+function saveSheetIds() {
+    const entries = [...document.querySelectorAll('#sheet-id-list .sheet-entry')].map(row => ({
+        name: row.querySelector('.sheet-entry-name').value.trim(),
+        id: row.querySelector('.sheet-entry-id').value.trim()
+    })).filter(e => e.name || e.id);
+    localStorage.setItem('dashboard-sheet-ids', JSON.stringify(entries));
+    const btn = document.getElementById('sheets-save-btn');
+    if (btn) {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> SAVED';
+        btn.disabled = true;
+        setTimeout(() => { btn.innerHTML = orig; btn.disabled = false; }, 1500);
+    }
+}
+
+function loadSheetIds() {
+    const list = document.getElementById('sheet-id-list');
+    if (!list) return;
+    const saved = localStorage.getItem('dashboard-sheet-ids');
+    const entries = saved ? JSON.parse(saved) : _defaultSheetEntries;
+    list.innerHTML = '';
+    entries.forEach(e => list.appendChild(_buildSheetRow(e.name, e.id)));
+}
+
+function toggleCred(btn) {
+    const input = btn.closest('.cred-input-wrap').querySelector('input');
+    const icon  = btn.querySelector('i');
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.className = 'fa-solid fa-eye-slash';
+    } else {
+        input.type = 'password';
+        icon.className = 'fa-solid fa-eye';
+    }
+}
+
+// ================= COLOR PICKER =================
+const cpState = {
+    h: 0, s: 100, v: 100,
+    targetVar: null,
+    originalHex: null,
+    targetEl: null,
+    dragging: null
+};
+
+// --- Color math ---
+function hsvToRgb(h, s, v) {
+    s /= 100; v /= 100;
+    const f = n => {
+        const k = (n + h / 60) % 6;
+        return v - v * s * Math.max(0, Math.min(k, 4 - k, 1));
+    };
+    return { r: Math.round(f(5) * 255), g: Math.round(f(3) * 255), b: Math.round(f(1) * 255) };
+}
+function rgbToHsv(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+    let h = 0;
+    if (d !== 0) {
+        if      (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
+        else if (max === g) h = ((b - r) / d + 2) / 6;
+        else                h = ((r - g) / d + 4) / 6;
+    }
+    return { h: h * 360, s: max === 0 ? 0 : (d / max) * 100, v: max * 100 };
+}
+function rgbToHex(r, g, b) {
+    return '#' + [r, g, b].map(v => Math.max(0, Math.min(255, v)).toString(16).padStart(2, '0')).join('');
+}
+function hexToRgb(hex) {
+    hex = hex.replace('#', '');
+    if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+    return { r: parseInt(hex.slice(0, 2), 16) || 0, g: parseInt(hex.slice(2, 4), 16) || 0, b: parseInt(hex.slice(4, 6), 16) || 0 };
+}
+
+// --- Open / close ---
+function openColorPicker(swatchEl) {
+    const varName = swatchEl.querySelector('.swatch-var').textContent.trim();
+    const rawHex  = getComputedStyle(document.documentElement).getPropertyValue(varName).trim() ||
+                    swatchEl.querySelector('.swatch-hex').value.trim();
+    const hex = rawHex.startsWith('#') ? rawHex : '#' + rawHex;
+
+    cpState.targetVar   = varName;
+    cpState.originalHex = hex;
+    cpState.targetEl    = swatchEl;
+
+    const rgb = hexToRgb(hex);
+    const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+    cpState.h = hsv.h; cpState.s = hsv.s; cpState.v = hsv.v;
+
+    document.getElementById('cp-var-name').textContent = varName;
+    document.getElementById('cp-swatch-old').style.background = hex;
+    document.getElementById('cp-overlay').classList.remove('hidden');
+
+    cpDrawGradient();
+    cpDrawHueBar();
+    cpSyncUI();
+}
+
+function cancelColorPicker() {
+    if (cpState.targetVar && cpState.originalHex) {
+        document.documentElement.style.setProperty(cpState.targetVar, cpState.originalHex);
+    }
+    document.getElementById('cp-overlay').classList.add('hidden');
+}
+
+function applyColorPicker() {
+    if (!cpState.targetVar) return;
+    const rgb = hsvToRgb(cpState.h, cpState.s, cpState.v);
+    const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+    document.documentElement.style.setProperty(cpState.targetVar, hex);
+    if (cpState.targetEl) {
+        cpState.targetEl.querySelector('.swatch-color').style.background = hex;
+        cpState.targetEl.querySelector('.swatch-hex').value = hex;
+    }
+    document.getElementById('cp-overlay').classList.add('hidden');
+}
+
+// --- Canvas rendering ---
+function cpDrawGradient() {
+    const canvas = document.getElementById('cp-gradient');
+    const ctx = canvas.getContext('2d');
+    const { width: w, height: h } = canvas;
+    const hueRgb = hsvToRgb(cpState.h, 100, 100);
+
+    const satGrad = ctx.createLinearGradient(0, 0, w, 0);
+    satGrad.addColorStop(0, '#fff');
+    satGrad.addColorStop(1, `rgb(${hueRgb.r},${hueRgb.g},${hueRgb.b})`);
+    ctx.fillStyle = satGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    const valGrad = ctx.createLinearGradient(0, 0, 0, h);
+    valGrad.addColorStop(0, 'rgba(0,0,0,0)');
+    valGrad.addColorStop(1, 'rgba(0,0,0,1)');
+    ctx.fillStyle = valGrad;
+    ctx.fillRect(0, 0, w, h);
+}
+
+function cpDrawHueBar() {
+    const canvas = document.getElementById('cp-hue-bar');
+    const ctx = canvas.getContext('2d');
+    const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    ['#ff0000','#ffff00','#00ff00','#00ffff','#0000ff','#ff00ff','#ff0000']
+        .forEach((c, i) => grad.addColorStop(i / 6, c));
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+function cpUpdateCursors() {
+    const gc = document.getElementById('cp-gradient');
+    const thumb = document.getElementById('cp-gradient-thumb');
+    thumb.style.left = (cpState.s / 100 * gc.width)  + 'px';
+    thumb.style.top  = ((1 - cpState.v / 100) * gc.height) + 'px';
+
+    const hc = document.getElementById('cp-hue-bar');
+    document.getElementById('cp-hue-thumb').style.top = (cpState.h / 360 * hc.height) + 'px';
+}
+
+function cpSyncUI() {
+    const rgb = hsvToRgb(cpState.h, cpState.s, cpState.v);
+    const hex = rgbToHex(rgb.r, rgb.g, rgb.b).slice(1).toUpperCase();
+
+    document.getElementById('cp-h').value = Math.round(cpState.h);
+    document.getElementById('cp-s').value = Math.round(cpState.s);
+    document.getElementById('cp-v').value = Math.round(cpState.v);
+    document.getElementById('cp-r').value = rgb.r;
+    document.getElementById('cp-g').value = rgb.g;
+    document.getElementById('cp-b').value = rgb.b;
+    document.getElementById('cp-hex').value = hex;
+    document.getElementById('cp-swatch-new').style.background = '#' + hex;
+
+    // Live preview on the actual CSS variable
+    if (cpState.targetVar) document.documentElement.style.setProperty(cpState.targetVar, '#' + hex);
+
+    cpUpdateCursors();
+}
+
+// --- Drag interaction ---
+function cpInitDrag() {
+    const gradCanvas = document.getElementById('cp-gradient');
+    const hueCanvas  = document.getElementById('cp-hue-bar');
+
+    function pickGradient(e) {
+        const r   = gradCanvas.getBoundingClientRect();
+        const cx  = e.touches ? e.touches[0].clientX : e.clientX;
+        const cy  = e.touches ? e.touches[0].clientY : e.clientY;
+        cpState.s = Math.max(0, Math.min(100, (cx - r.left) / r.width  * 100));
+        cpState.v = Math.max(0, Math.min(100, (1 - (cy - r.top)  / r.height) * 100));
+        cpSyncUI();
+    }
+    function pickHue(e) {
+        const r  = hueCanvas.getBoundingClientRect();
+        const cy = e.touches ? e.touches[0].clientY : e.clientY;
+        cpState.h = Math.max(0, Math.min(360, (cy - r.top) / r.height * 360));
+        cpDrawGradient();
+        cpSyncUI();
+    }
+
+    gradCanvas.addEventListener('mousedown', e => { cpState.dragging = 'grad'; pickGradient(e); });
+    hueCanvas.addEventListener('mousedown',  e => { cpState.dragging = 'hue';  pickHue(e); });
+    document.addEventListener('mousemove', e => {
+        if (cpState.dragging === 'grad') pickGradient(e);
+        if (cpState.dragging === 'hue')  pickHue(e);
+    });
+    document.addEventListener('mouseup', () => { cpState.dragging = null; });
+}
+
+// --- Input field sync ---
+function cpInitInputs() {
+    document.getElementById('cp-hex').addEventListener('input', function () {
+        const h = this.value.replace(/[^0-9a-fA-F]/g, '');
+        if (h.length === 6) {
+            const rgb = hexToRgb('#' + h);
+            const hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+            cpState.h = hsv.h; cpState.s = hsv.s; cpState.v = hsv.v;
+            cpDrawGradient(); cpSyncUI();
+        }
+    });
+    ['cp-r', 'cp-g', 'cp-b'].forEach(id => {
+        document.getElementById(id).addEventListener('input', () => {
+            const r = +document.getElementById('cp-r').value;
+            const g = +document.getElementById('cp-g').value;
+            const b = +document.getElementById('cp-b').value;
+            const hsv = rgbToHsv(r, g, b);
+            cpState.h = hsv.h; cpState.s = hsv.s; cpState.v = hsv.v;
+            cpDrawGradient(); cpSyncUI();
+        });
+    });
+    ['cp-h', 'cp-s', 'cp-v'].forEach(id => {
+        document.getElementById(id).addEventListener('input', () => {
+            cpState.h = Math.max(0, Math.min(360, +document.getElementById('cp-h').value));
+            cpState.s = Math.max(0, Math.min(100, +document.getElementById('cp-s').value));
+            cpState.v = Math.max(0, Math.min(100, +document.getElementById('cp-v').value));
+            cpDrawGradient(); cpSyncUI();
+        });
+    });
+    // Close on overlay backdrop click
+    document.getElementById('cp-overlay').addEventListener('click', e => {
+        if (e.target === document.getElementById('cp-overlay')) cancelColorPicker();
+    });
+    // Close on Escape
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && !document.getElementById('cp-overlay').classList.contains('hidden'))
+            cancelColorPicker();
+    });
+}
+
+// --- Palette persistence ---
+const PALETTE_DEFAULTS = {
+    '--bg':'#15171a','--panel':'#1e2025','--panel-alt':'#23262a','--header-bg':'#22252a',
+    '--active-bg':'#413b36','--border':'#443f3a','--border-lt':'#2d2a29',
+    '--text':'#dcd6c0','--text-dim':'#a88a66','--muted':'#76634f',
+    '--bronze':'#a88a66','--gold':'#cfa778','--slate':'#cfa778','--green':'#3fc459','--red':'#ed473c'
+};
+
+function savePalette() {
+    const saved = {};
+    document.querySelectorAll('#view-settings .swatch-item').forEach(item => {
+        const v = item.querySelector('.swatch-var')?.textContent.trim();
+        const h = item.querySelector('.swatch-hex')?.value.trim();
+        if (v && h) saved[v] = h;
+    });
+    localStorage.setItem('dashboard-palette', JSON.stringify(saved));
+    const btn = document.getElementById('btn-save-palette');
+    if (btn) { btn.innerHTML = '<i class="fa-solid fa-check"></i> SAVED'; setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> SAVE_PALETTE'; }, 1500); }
+}
+
+function resetPalette() {
+    Object.entries(PALETTE_DEFAULTS).forEach(([varName, hex]) => {
+        document.documentElement.style.setProperty(varName, hex);
+    });
+    document.querySelectorAll('#view-settings .swatch-item').forEach(item => {
+        const v = item.querySelector('.swatch-var')?.textContent.trim();
+        if (v && PALETTE_DEFAULTS[v]) {
+            item.querySelector('.swatch-color').style.background = PALETTE_DEFAULTS[v];
+            item.querySelector('.swatch-hex').value = PALETTE_DEFAULTS[v];
+        }
+    });
+    localStorage.removeItem('dashboard-palette');
+}
+
+function loadPalette() {
+    try {
+        const saved = JSON.parse(localStorage.getItem('dashboard-palette') || '{}');
+        Object.entries(saved).forEach(([varName, hex]) => {
+            document.documentElement.style.setProperty(varName, hex);
+            document.querySelectorAll('#view-settings .swatch-item').forEach(item => {
+                if (item.querySelector('.swatch-var')?.textContent.trim() === varName) {
+                    item.querySelector('.swatch-color').style.background = hex;
+                    item.querySelector('.swatch-hex').value = hex;
+                }
+            });
+        });
+    } catch (_) {}
+}
+
+// Wire swatches to color picker (called once after DOM ready)
+function initColorPicker() {
+    cpInitDrag();
+    cpInitInputs();
+    document.querySelectorAll('#view-settings .swatch-item').forEach(el => {
+        el.addEventListener('click', () => openColorPicker(el));
+    });
+    loadPalette();
 }
 
 // ================= VIEW: STELLA =================
 function renderStellaScreen() {
     _renderStellaCalendar();
+    _initStellaTodos();
+}
+
+function _initStellaTodos() {
+    const list = document.querySelector('#panel-stella-todo .breakdown-list');
+    if (!list || list.dataset.todoInit) return;
+    list.dataset.todoInit = '1';
+    list.addEventListener('click', e => {
+        const row = e.target.closest('.breakdown-row');
+        if (!row) return;
+        const icon = row.querySelector('i');
+        const badge = row.querySelector('.breakdown-amounts');
+        if (!icon) return;
+        const isDone = icon.classList.contains('fa-square-check');
+        if (isDone) {
+            icon.className = 'fa-regular fa-square';
+            icon.style.color = '';
+            if (badge && badge._origText) badge.textContent = badge._origText;
+        } else {
+            if (badge) badge._origText = badge._origText || badge.textContent;
+            icon.className = 'fa-regular fa-square-check';
+            icon.style.color = 'var(--green)';
+            if (badge) badge.textContent = 'DONE';
+        }
+    });
 }
 
 function _renderStellaCalendar() {
@@ -480,6 +861,47 @@ function switchBudgetType(type) {
     if (!container) return;
     container.innerHTML = '';
     mockBudgetCategories.filter(c => c.type === type).forEach(cat => {
+        const ratioPercent = cat.budget > 0 ? Math.round((cat.spent / cat.budget) * 100) : 0;
+        const barWidth = Math.min(ratioPercent, 100);
+        const isOver = ratioPercent > 100;
+        const iconClass = cat.icon.startsWith('fa-brands') ? cat.icon : 'fa-solid ' + cat.icon;
+        const line = document.createElement('div');
+        line.className = 'breakdown-item';
+        line.innerHTML = `
+            <div class="breakdown-row">
+                <div class="breakdown-name">
+                    <i class="${iconClass}"></i>
+                    <span>${cat.name}</span>
+                    <span class="breakdown-bal">BAL: $${cat.bal.toFixed(0)}</span>
+                </div>
+                <div class="breakdown-amounts">$${cat.spent.toFixed(0)} / $${cat.budget.toFixed(0)}</div>
+            </div>
+            <div class="progress-wrap">
+                <div class="progress-track">
+                    <div class="progress-fill ${isOver ? 'over' : ''}" style="width:${barWidth}%"></div>
+                </div>
+                <span class="progress-pct ${isOver ? 'over' : ''}">${ratioPercent}%</span>
+            </div>
+        `;
+        container.appendChild(line);
+    });
+}
+
+function renderBudgetSubBreakdown(sub) {
+    const typeToggle = document.getElementById('budget-type-toggle');
+    const container = document.getElementById('overview-budget-breakdown');
+    if (!container) return;
+
+    if (sub === 'overview') {
+        if (typeToggle) typeToggle.style.display = '';
+        switchBudgetType('variable');
+        return;
+    }
+
+    if (typeToggle) typeToggle.style.display = 'none';
+    const cats = sub === 'eric' ? mockBudgetEric : mockBudgetEmilie;
+    container.innerHTML = '';
+    cats.forEach(cat => {
         const ratioPercent = cat.budget > 0 ? Math.round((cat.spent / cat.budget) * 100) : 0;
         const barWidth = Math.min(ratioPercent, 100);
         const isOver = ratioPercent > 100;

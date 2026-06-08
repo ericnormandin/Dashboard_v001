@@ -85,6 +85,12 @@
                     UTILITIES
                 </span>
             </button>
+            <button class="nav-item" id="nav-settings" data-tab="settings">
+                <span class="nav-item-left">
+                    <i class="fa-solid fa-gear"></i>
+                    SETTINGS
+                </span>
+            </button>
         </nav>
 
         <!-- Globe widget -->
@@ -181,7 +187,7 @@
                     <div style="display:flex;justify-content:flex-end;align-items:center">
                         <div class="month-nav">
                             <button id="budget-prev-month" onclick="budgetMonthNav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-                            <span class="month-name" id="budget-month-label">May</span>
+                            <span class="month-name" id="budget-month-label">May 2026</span>
                             <button id="budget-next-month" onclick="budgetMonthNav(1)"><i class="fa-solid fa-chevron-right"></i></button>
                         </div>
                     </div>
@@ -209,7 +215,7 @@
 
                     <!-- Category Breakdown -->
                     <div class="breakdown-label">CATEGORY_BREAKDOWN:</div>
-                    <div class="sub-tabs" style="margin-bottom:4px">
+                    <div id="budget-type-toggle" class="sub-tabs" style="margin-bottom:4px">
                         <button class="sub-tab active" id="budget-type-variable" onclick="switchBudgetType('variable')">VARIABLE</button>
                         <button class="sub-tab" id="budget-type-fixed" onclick="switchBudgetType('fixed')">FIXED</button>
                     </div>
@@ -1298,12 +1304,507 @@
                 </div>
             </div>
 
+            <!-- ====================================================
+                 VIEW: SETTINGS
+                 ==================================================== -->
+            <div class="view-panel" id="view-settings">
+
+                <!-- Credential panels (cols 1–5) -->
+                <div class="settings-creds-grid">
+
+                <!-- Kraken API -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <span class="panel-label"><i class="fa-brands fa-bitcoin"></i>kraken_api.sys</span>
+                        </div>
+                        <span class="cred-status-badge not-set" id="cred-status-kraken">NOT_SET</span>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">API_KEY</span>
+                        <div class="cred-input-wrap">
+                            <input class="cred-input" type="password" placeholder="Enter Kraken API key..." value="XKRAKEN-K7F2A-MOCK-0000">
+                            <button class="cred-eye" onclick="toggleCred(this)"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">PRIVATE_KEY</span>
+                        <div class="cred-input-wrap">
+                            <input class="cred-input" type="password" placeholder="Enter Kraken private key..." value="bW9ja0tleUJhc2U2NEVuY29kZWQ=">
+                            <button class="cred-eye" onclick="toggleCred(this)"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <button class="cred-save-btn"><i class="fa-solid fa-floppy-disk"></i> SAVE_KRAKEN</button>
+                </div>
+
+                <!-- Google Sheets API -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <span class="panel-label"><i class="fa-brands fa-google"></i>sheets_api.sys</span>
+                        </div>
+                        <span class="cred-status-badge not-set" id="cred-status-sheets">NOT_SET</span>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">SERVICE_ACCOUNT_FILE</span>
+                        <div class="cred-input-wrap">
+                            <input class="cred-input" type="text" value="backend/credentials.json">
+                        </div>
+                    </div>
+                    <span class="cred-label" style="display:block;margin-bottom:5px">SPREADSHEET_IDS</span>
+                    <div id="sheet-id-list"></div>
+                    <button class="sheet-add-btn" onclick="addSheetEntry()"><i class="fa-solid fa-plus"></i> ADD_SHEET</button>
+                    <button class="cred-save-btn" id="sheets-save-btn" onclick="saveSheetIds()"><i class="fa-solid fa-floppy-disk"></i> SAVE_SHEETS</button>
+                </div>
+
+                <!-- Gmail -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <span class="panel-label"><i class="fa-solid fa-envelope"></i>gmail.sys</span>
+                        </div>
+                        <span class="cred-status-badge not-set" id="cred-status-gmail">NOT_SET</span>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">CREDENTIALS_FILE</span>
+                        <div class="cred-input-wrap">
+                            <input class="cred-input" type="text" value="backend/gmail_credentials.json">
+                        </div>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">TOKEN_FILE</span>
+                        <div class="cred-input-wrap">
+                            <input class="cred-input" type="text" value="backend/gmail_token.json">
+                        </div>
+                    </div>
+                    <button class="cred-save-btn"><i class="fa-solid fa-floppy-disk"></i> SAVE_GMAIL</button>
+                </div>
+
+                <!-- Garmin -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <span class="panel-label"><i class="fa-solid fa-person-running"></i>garmin_api.sys</span>
+                        </div>
+                        <span class="cred-status-badge not-set" id="cred-status-garmin">NOT_SET</span>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">EMAIL</span>
+                        <div class="cred-input-wrap">
+                            <input class="cred-input" type="text" value="user@example.com">
+                        </div>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">PASSWORD</span>
+                        <div class="cred-input-wrap">
+                            <input class="cred-input" type="password" value="mock_garmin_password">
+                            <button class="cred-eye" onclick="toggleCred(this)"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <button class="cred-save-btn"><i class="fa-solid fa-floppy-disk"></i> SAVE_GARMIN</button>
+                </div>
+
+                <!-- Claude LLM -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <span class="panel-label"><i class="fa-solid fa-robot"></i>claude_llm.sys</span>
+                        </div>
+                        <span class="cred-status-badge not-set" id="cred-status-claude">NOT_SET</span>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">API_KEY</span>
+                        <div class="cred-input-wrap">
+                            <input class="cred-input" type="password" value="sk-ant-api03-mock-key-00000">
+                            <button class="cred-eye" onclick="toggleCred(this)"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">DEFAULT_MODEL</span>
+                        <div class="cred-input-wrap">
+                            <input class="cred-input" type="text" value="claude-sonnet-4-6">
+                        </div>
+                    </div>
+                    <button class="cred-save-btn"><i class="fa-solid fa-floppy-disk"></i> SAVE_CLAUDE</button>
+                </div>
+
+                <!-- Gemini LLM -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <span class="panel-label"><i class="fa-solid fa-gem"></i>gemini_llm.sys</span>
+                        </div>
+                        <span class="cred-status-badge not-set" id="cred-status-gemini">NOT_SET</span>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">API_KEY</span>
+                        <div class="cred-input-wrap">
+                            <input class="cred-input" type="password" value="AIzaSyMockGeminiKey2026">
+                            <button class="cred-eye" onclick="toggleCred(this)"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">DEFAULT_MODEL</span>
+                        <div class="cred-input-wrap">
+                            <input class="cred-input" type="text" value="gemini-2.0-flash">
+                        </div>
+                    </div>
+                    <button class="cred-save-btn"><i class="fa-solid fa-floppy-disk"></i> SAVE_GEMINI</button>
+                </div>
+
+                <!-- Reddit API -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <span class="panel-label"><i class="fa-brands fa-reddit"></i>reddit_api.sys</span>
+                        </div>
+                        <span class="cred-status-badge not-set" id="cred-status-reddit">NOT_SET</span>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">CLIENT_ID</span>
+                        <div class="cred-input-wrap">
+                            <input class="cred-input" type="text" value="xK9mN3pQr-mock-id">
+                        </div>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">CLIENT_SECRET</span>
+                        <div class="cred-input-wrap">
+                            <input class="cred-input" type="password" value="pQr7SMockSecret2026">
+                            <button class="cred-eye" onclick="toggleCred(this)"><i class="fa-solid fa-eye"></i></button>
+                        </div>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">USERNAME</span>
+                        <div class="cred-input-wrap">
+                            <input class="cred-input" type="text" value="u/mock_user">
+                        </div>
+                    </div>
+                    <button class="cred-save-btn"><i class="fa-solid fa-floppy-disk"></i> SAVE_REDDIT</button>
+                </div>
+
+                <!-- System / General -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <span class="panel-label"><i class="fa-solid fa-sliders"></i>system.sys</span>
+                        </div>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">REFRESH_INTERVAL (s)</span>
+                        <div class="cred-input-wrap">
+                            <input class="cred-input" type="number" value="30" min="5" max="300">
+                        </div>
+                    </div>
+                    <div class="cred-field">
+                        <span class="cred-label">DATA_MODE</span>
+                        <div class="cred-input-wrap">
+                            <select class="cred-input" style="cursor:pointer">
+                                <option value="mock" selected>MOCK</option>
+                                <option value="live">LIVE</option>
+                                <option value="hybrid">HYBRID</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="cred-save-btn"><i class="fa-solid fa-floppy-disk"></i> SAVE_SYSTEM</button>
+                </div>
+
+                </div><!-- end settings-creds-grid -->
+
+                <!-- UI Color Palette (own vertical column) -->
+                <div class="panel settings-palette-col">
+                    <div class="panel-header">
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <span class="panel-label"><i class="fa-solid fa-palette"></i>ui_palette.sys</span>
+                        </div>
+                        <div style="display:flex;gap:6px">
+                            <button id="btn-reset-palette" class="cred-save-btn" style="padding:3px 8px;font-size:10px;margin-top:0" onclick="resetPalette()"><i class="fa-solid fa-rotate-left"></i> RESET</button>
+                            <button id="btn-save-palette" class="cred-save-btn" style="padding:3px 8px;font-size:10px;margin-top:0;border-color:var(--gold);color:var(--gold)" onclick="savePalette()"><i class="fa-solid fa-floppy-disk"></i> SAVE_PALETTE</button>
+                        </div>
+                    </div>
+                    <div class="palette-section-label">BACKGROUNDS &amp; SURFACES</div>
+                    <div class="palette-grid">
+                        <div class="swatch-item">
+                            <div class="swatch-color" style="background:#15171a"></div>
+                            <div class="swatch-meta">
+                                <span class="swatch-var">--bg</span>
+                                <span class="swatch-desc">Page background</span>
+                                <input class="swatch-hex" value="#15171a">
+                            </div>
+                        </div>
+                        <div class="swatch-item">
+                            <div class="swatch-color" style="background:#1e2025"></div>
+                            <div class="swatch-meta">
+                                <span class="swatch-var">--panel</span>
+                                <span class="swatch-desc">Panel / card bg</span>
+                                <input class="swatch-hex" value="#1e2025">
+                            </div>
+                        </div>
+                        <div class="swatch-item">
+                            <div class="swatch-color" style="background:#23262a"></div>
+                            <div class="swatch-meta">
+                                <span class="swatch-var">--panel-alt</span>
+                                <span class="swatch-desc">Alternate panel bg</span>
+                                <input class="swatch-hex" value="#23262a">
+                            </div>
+                        </div>
+                        <div class="swatch-item">
+                            <div class="swatch-color" style="background:#22252a"></div>
+                            <div class="swatch-meta">
+                                <span class="swatch-var">--header-bg</span>
+                                <span class="swatch-desc">Top header bar</span>
+                                <input class="swatch-hex" value="#22252a">
+                            </div>
+                        </div>
+                        <div class="swatch-item">
+                            <div class="swatch-color" style="background:#413b36"></div>
+                            <div class="swatch-meta">
+                                <span class="swatch-var">--active-bg</span>
+                                <span class="swatch-desc">Active / selected row</span>
+                                <input class="swatch-hex" value="#413b36">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="palette-section-label" style="margin-top:10px">BORDERS</div>
+                    <div class="palette-grid">
+                        <div class="swatch-item">
+                            <div class="swatch-color" style="background:#443f3a"></div>
+                            <div class="swatch-meta">
+                                <span class="swatch-var">--border</span>
+                                <span class="swatch-desc">Standard border</span>
+                                <input class="swatch-hex" value="#443f3a">
+                            </div>
+                        </div>
+                        <div class="swatch-item">
+                            <div class="swatch-color" style="background:#2d2a29"></div>
+                            <div class="swatch-meta">
+                                <span class="swatch-var">--border-lt</span>
+                                <span class="swatch-desc">Subtle / thin border</span>
+                                <input class="swatch-hex" value="#2d2a29">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="palette-section-label" style="margin-top:10px">TEXT &amp; ACCENTS</div>
+                    <div class="palette-grid">
+                        <div class="swatch-item">
+                            <div class="swatch-color" style="background:#dcd6c0"></div>
+                            <div class="swatch-meta">
+                                <span class="swatch-var">--text</span>
+                                <span class="swatch-desc">Primary text (cream)</span>
+                                <input class="swatch-hex" value="#dcd6c0">
+                            </div>
+                        </div>
+                        <div class="swatch-item">
+                            <div class="swatch-color" style="background:#a88a66"></div>
+                            <div class="swatch-meta">
+                                <span class="swatch-var">--text-dim</span>
+                                <span class="swatch-desc">Subtext / dim</span>
+                                <input class="swatch-hex" value="#a88a66">
+                            </div>
+                        </div>
+                        <div class="swatch-item">
+                            <div class="swatch-color" style="background:#76634f"></div>
+                            <div class="swatch-meta">
+                                <span class="swatch-var">--muted</span>
+                                <span class="swatch-desc">Labels / muted</span>
+                                <input class="swatch-hex" value="#76634f">
+                            </div>
+                        </div>
+                        <div class="swatch-item">
+                            <div class="swatch-color" style="background:#a88a66"></div>
+                            <div class="swatch-meta">
+                                <span class="swatch-var">--bronze</span>
+                                <span class="swatch-desc">Warm bronze accent</span>
+                                <input class="swatch-hex" value="#a88a66">
+                            </div>
+                        </div>
+                        <div class="swatch-item">
+                            <div class="swatch-color" style="background:#cfa778"></div>
+                            <div class="swatch-meta">
+                                <span class="swatch-var">--gold</span>
+                                <span class="swatch-desc">Primary accent / gold</span>
+                                <input class="swatch-hex" value="#cfa778">
+                            </div>
+                        </div>
+                        <div class="swatch-item">
+                            <div class="swatch-color" style="background:#3fc459"></div>
+                            <div class="swatch-meta">
+                                <span class="swatch-var">--green</span>
+                                <span class="swatch-desc">Positive / ok / live</span>
+                                <input class="swatch-hex" value="#3fc459">
+                            </div>
+                        </div>
+                        <div class="swatch-item">
+                            <div class="swatch-color" style="background:#ed473c"></div>
+                            <div class="swatch-meta">
+                                <span class="swatch-var">--red</span>
+                                <span class="swatch-desc">Negative / error / alert</span>
+                                <input class="swatch-hex" value="#ed473c">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="palette-section-label" style="margin-top:10px">TYPOGRAPHY</div>
+                    <div class="font-swatch-item">
+                        <span class="font-swatch-preview" style="font-size:14px">Aa</span>
+                        <div class="font-swatch-meta">
+                            <span class="swatch-var">--base-fs</span>
+                            <span class="swatch-desc">Body / default text</span>
+                            <input class="swatch-hex" value="14px">
+                        </div>
+                    </div>
+                    <div class="font-swatch-item">
+                        <span class="font-swatch-preview" style="font-size:11px">Aa</span>
+                        <div class="font-swatch-meta">
+                            <span class="swatch-var">--label-fs</span>
+                            <span class="swatch-desc">Labels / captions</span>
+                            <input class="swatch-hex" value="11px">
+                        </div>
+                    </div>
+                    <div class="font-swatch-item">
+                        <span class="font-swatch-preview" style="font-size:24px">Aa</span>
+                        <div class="font-swatch-meta">
+                            <span class="swatch-var">--value-fs</span>
+                            <span class="swatch-desc">Large values / stats</span>
+                            <input class="swatch-hex" value="24px">
+                        </div>
+                    </div>
+                    <div class="font-swatch-item">
+                        <span class="font-swatch-preview" style="font-size:15px">Aa</span>
+                        <div class="font-swatch-meta">
+                            <span class="swatch-var">--clock-fs</span>
+                            <span class="swatch-desc">Clock / timestamps</span>
+                            <input class="swatch-hex" value="15px">
+                        </div>
+                    </div>
+                    <div class="palette-section-label" style="margin-top:10px">FONT STYLES</div>
+                    <div class="font-swatch-item">
+                        <span class="font-swatch-preview" style="font-weight:400">Aa</span>
+                        <div class="font-swatch-meta">
+                            <span class="swatch-var">weight-400</span>
+                            <span class="swatch-desc">Regular — body copy</span>
+                            <input class="swatch-hex" value="400">
+                        </div>
+                    </div>
+                    <div class="font-swatch-item">
+                        <span class="font-swatch-preview" style="font-weight:500">Aa</span>
+                        <div class="font-swatch-meta">
+                            <span class="swatch-var">weight-500</span>
+                            <span class="swatch-desc">Medium — nav items</span>
+                            <input class="swatch-hex" value="500">
+                        </div>
+                    </div>
+                    <div class="font-swatch-item">
+                        <span class="font-swatch-preview" style="font-weight:700">Aa</span>
+                        <div class="font-swatch-meta">
+                            <span class="swatch-var">weight-700</span>
+                            <span class="swatch-desc">Bold — values / badges</span>
+                            <input class="swatch-hex" value="700">
+                        </div>
+                    </div>
+                    <div class="font-swatch-item font-swatch-family">
+                        <span class="font-swatch-preview" style="font-size:13px;letter-spacing:0.05em">JM</span>
+                        <div class="font-swatch-meta">
+                            <span class="swatch-var">font-family</span>
+                            <span class="swatch-desc">JetBrains Mono</span>
+                            <input class="swatch-hex" value="'JetBrains Mono'">
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- end view-settings -->
+
         </div><!-- end content-scroll -->
 
 
     </div><!-- end main-area -->
 </div><!-- end shell -->
 
+
+<!-- ============================================================
+     MODAL: Color Picker
+     ============================================================ -->
+<div id="cp-overlay" class="hidden">
+    <div id="cp-modal" class="panel">
+        <div class="panel-header">
+            <div style="display:flex;align-items:center;gap:6px">
+                <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                <span class="panel-label"><i class="fa-solid fa-circle-half-stroke"></i>color_picker.sys</span>
+            </div>
+            <span id="cp-var-name" style="font-size:11px;color:var(--gold);letter-spacing:0.1em;font-weight:700"></span>
+        </div>
+        <div class="cp-body">
+            <div class="cp-canvas-area">
+                <div class="cp-gradient-wrap">
+                    <canvas id="cp-gradient" width="220" height="220"></canvas>
+                    <div id="cp-gradient-thumb"></div>
+                </div>
+                <div class="cp-hue-wrap">
+                    <canvas id="cp-hue-bar" width="18" height="220"></canvas>
+                    <div id="cp-hue-thumb"></div>
+                </div>
+            </div>
+            <div class="cp-right">
+                <div class="cp-previews">
+                    <div class="cp-preview-block">
+                        <div class="cp-preview-label">BEFORE</div>
+                        <div id="cp-swatch-old" class="cp-swatch"></div>
+                    </div>
+                    <div class="cp-preview-block">
+                        <div class="cp-preview-label">AFTER</div>
+                        <div id="cp-swatch-new" class="cp-swatch"></div>
+                    </div>
+                </div>
+                <div class="cp-input-section">
+                    <div class="cp-input-row">
+                        <label class="cp-lbl">H</label>
+                        <input class="cp-num" id="cp-h" type="number" min="0" max="360">
+                        <label class="cp-lbl" style="color:var(--muted);width:auto">°</label>
+                    </div>
+                    <div class="cp-input-row">
+                        <label class="cp-lbl">S</label>
+                        <input class="cp-num" id="cp-s" type="number" min="0" max="100">
+                        <label class="cp-lbl" style="color:var(--muted);width:auto">%</label>
+                    </div>
+                    <div class="cp-input-row">
+                        <label class="cp-lbl">V</label>
+                        <input class="cp-num" id="cp-v" type="number" min="0" max="100">
+                        <label class="cp-lbl" style="color:var(--muted);width:auto">%</label>
+                    </div>
+                    <div class="cp-divider"></div>
+                    <div class="cp-input-row">
+                        <label class="cp-lbl">R</label>
+                        <input class="cp-num" id="cp-r" type="number" min="0" max="255">
+                    </div>
+                    <div class="cp-input-row">
+                        <label class="cp-lbl">G</label>
+                        <input class="cp-num" id="cp-g" type="number" min="0" max="255">
+                    </div>
+                    <div class="cp-input-row">
+                        <label class="cp-lbl">B</label>
+                        <input class="cp-num" id="cp-b" type="number" min="0" max="255">
+                    </div>
+                    <div class="cp-divider"></div>
+                    <div class="cp-input-row">
+                        <label class="cp-lbl">#</label>
+                        <input class="cp-hex-input" id="cp-hex" type="text" maxlength="6" spellcheck="false">
+                    </div>
+                </div>
+                <div class="cp-actions">
+                    <button class="cred-save-btn" onclick="cancelColorPicker()" style="flex:1;margin-top:0">CANCEL</button>
+                    <button class="cred-save-btn cp-apply-btn" onclick="applyColorPicker()" style="flex:1;margin-top:0">APPLY</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- ============================================================
      MODAL: Add Transaction
@@ -1437,13 +1938,19 @@
     function switchBudgetSub(sub) {
         document.querySelectorAll('#panel-cashflow-sys .sub-tab').forEach(b => b.classList.remove('active'));
         document.getElementById(`sub-tab-${sub}`)?.classList.add('active');
+        renderBudgetSubBreakdown(sub);
     }
+
+    let _budgetYear = 2026;
     function budgetMonthNav(dir) {
         const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         const lbl = document.getElementById('budget-month-label');
-        let idx = months.indexOf(lbl.textContent);
-        idx = (idx + dir + 12) % 12;
-        lbl.textContent = months[idx];
+        const parts = lbl.textContent.split(' ');
+        let idx = months.indexOf(parts[0]);
+        idx = idx + dir;
+        if (idx < 0) { idx = 11; _budgetYear--; }
+        else if (idx > 11) { idx = 0; _budgetYear++; }
+        lbl.textContent = months[idx] + ' ' + _budgetYear;
     }
 
     // Submit transaction stub
@@ -1467,6 +1974,7 @@
         renderOverviewScreen();
         renderStellaScreen();
         checkAPIStatus();
+        initColorPicker();
     }, 100);
 </script>
 </body>
