@@ -479,6 +479,29 @@ nav.sidebar-nav {
 .dot-gold  { background: var(--gold); }
 .dot-green { background: var(--green); }
 
+.panel-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    background: var(--gold);
+    box-shadow: 0 0 5px rgba(var(--gold-rgb), 0.5);
+}
+.panel-status-dot.dot-status-live {
+    background: var(--green);
+    box-shadow: 0 0 6px rgba(var(--green-rgb), 0.6);
+    animation: pulse 2s infinite;
+}
+.panel-status-dot.dot-status-mock {
+    background: var(--gold);
+    box-shadow: 0 0 5px rgba(var(--gold-rgb), 0.5);
+}
+.panel-status-dot.dot-status-offline {
+    background: var(--red);
+    box-shadow: 0 0 5px rgba(var(--red-rgb), 0.5);
+}
+
 .panel-label {
     font-size: 12px;
     color: var(--muted);
@@ -2470,6 +2493,7 @@ nav.sidebar-nav {
     .panel-label       { font-size: 14px; }
     .panel-dots .dot   { width: 11px; height: 11px; }
     .dot               { width: 11px; height: 11px; }
+    .panel-status-dot  { width: 10px; height: 10px; }
 
     /* Budget.sys */
     .tab-btn           { font-size: 14px; padding: 7px 14px; }

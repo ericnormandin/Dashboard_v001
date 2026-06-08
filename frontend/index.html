@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -173,11 +173,7 @@
 
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots">
-                                <div class="dot dot-red"></div>
-                                <div class="dot dot-gold"></div>
-                                <div class="dot dot-green"></div>
-                            </div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-dollar-sign"></i>cashflow.sys</span>
                         </div>
                         <span style="font-size:12px;color:var(--muted);letter-spacing:0.06em">$ &gt;</span>
@@ -233,11 +229,7 @@
                     <div class="panel" id="panel-crypto-sys">
                         <div class="panel-header">
                             <div style="display:flex;align-items:center;gap:6px">
-                                <div class="panel-dots">
-                                    <div class="dot dot-red"></div>
-                                    <div class="dot dot-gold"></div>
-                                    <div class="dot dot-green"></div>
-                                </div>
+                                <div class="panel-status-dot dot-status-mock" data-status-source="kraken"></div>
                                 <span class="panel-label"><i class="fa-solid fa-arrow-trend-up"></i>crypto.sys</span>
                             </div>
                         </div>
@@ -302,11 +294,7 @@
                     <div class="panel" id="panel-mail-sys">
                         <div class="panel-header">
                             <div style="display:flex;align-items:center;gap:6px">
-                                <div class="panel-dots">
-                                    <div class="dot dot-red"></div>
-                                    <div class="dot dot-gold"></div>
-                                    <div class="dot dot-green"></div>
-                                </div>
+                                <div class="panel-status-dot dot-status-mock"></div>
                                 <span class="panel-label"><i class="fa-solid fa-envelope"></i>mail.sys</span>
                             </div>
                         </div>
@@ -352,11 +340,7 @@
                     <div class="panel" id="panel-health-sys">
                         <div class="panel-header">
                             <div style="display:flex;align-items:center;gap:6px">
-                                <div class="panel-dots">
-                                    <div class="dot dot-red"></div>
-                                    <div class="dot dot-gold"></div>
-                                    <div class="dot dot-green"></div>
-                                </div>
+                                <div class="panel-status-dot dot-status-mock"></div>
                                 <span class="panel-label"><i class="fa-solid fa-heart-pulse"></i>health.sys</span>
                             </div>
                         </div>
@@ -430,11 +414,7 @@
                     <div class="panel" id="panel-calendar-sys">
                         <div class="panel-header">
                             <div style="display:flex;align-items:center;gap:6px">
-                                <div class="panel-dots">
-                                    <div class="dot dot-red"></div>
-                                    <div class="dot dot-gold"></div>
-                                    <div class="dot dot-green"></div>
-                                </div>
+                                <div class="panel-status-dot dot-status-mock"></div>
                                 <span class="panel-label"><i class="fa-solid fa-calendar"></i>calendar.sys</span>
                             </div>
                         </div>
@@ -464,11 +444,7 @@
 
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots">
-                                <div class="dot dot-red"></div>
-                                <div class="dot dot-gold"></div>
-                                <div class="dot dot-green"></div>
-                            </div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-piggy-bank"></i>retirement_goal.sys</span>
                         </div>
                     </div>
@@ -572,11 +548,7 @@
                     <div class="panel" id="panel-ai-insights">
                         <div class="panel-header">
                             <div style="display:flex;align-items:center;gap:6px">
-                                <div class="panel-dots">
-                                    <div class="dot dot-red"></div>
-                                    <div class="dot dot-gold"></div>
-                                    <div class="dot dot-green"></div>
-                                </div>
+                                <div class="panel-status-dot dot-status-mock"></div>
                                 <span class="panel-label"><i class="fa-solid fa-brain"></i>ai_insights.sys</span>
                             </div>
                         </div>
@@ -609,11 +581,7 @@
                     <div class="panel" id="panel-news-sys">
                         <div class="panel-header">
                             <div style="display:flex;align-items:center;gap:6px">
-                                <div class="panel-dots">
-                                    <div class="dot dot-red"></div>
-                                    <div class="dot dot-gold"></div>
-                                    <div class="dot dot-green"></div>
-                                </div>
+                                <div class="panel-status-dot dot-status-mock"></div>
                                 <span class="panel-label"><i class="fa-solid fa-newspaper"></i>news.sys</span>
                             </div>
                         </div>
@@ -637,11 +605,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots">
-                                <div class="dot dot-red"></div>
-                                <div class="dot dot-gold"></div>
-                                <div class="dot dot-green"></div>
-                            </div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-list-check"></i>CATEGORIES_BREAKDOWN</span>
                         </div>
                     </div>
@@ -654,7 +618,10 @@
                 <div class="col-stack">
                     <div class="panel">
                         <div class="panel-header">
-                            <span class="panel-label"><i class="fa-solid fa-chart-pie"></i>TOP_CATEGORIES</span>
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <div class="panel-status-dot dot-status-mock"></div>
+                                <span class="panel-label"><i class="fa-solid fa-chart-pie"></i>TOP_CATEGORIES</span>
+                            </div>
                         </div>
                         <div style="display:flex;flex-direction:column;gap:10px" id="budget-top-categories">
                             <!-- Rendered dynamically by app.js -->
@@ -664,7 +631,10 @@
                     <div class="panel" style="flex:1">
                         <div class="panel-header">
                             <div style="display:flex;align-items:center;justify-content:space-between;width:100%">
-                                <span class="panel-label"><i class="fa-solid fa-clock-rotate-left"></i>TRANSACTION_LOG</span>
+                                <div style="display:flex;align-items:center;gap:6px">
+                                    <div class="panel-status-dot dot-status-mock"></div>
+                                    <span class="panel-label"><i class="fa-solid fa-clock-rotate-left"></i>TRANSACTION_LOG</span>
+                                </div>
                                 <span id="budget-tx-counter" class="text-gold font-bold text-[9px]">0 TX</span>
                             </div>
                         </div>
@@ -677,7 +647,10 @@
                 <!-- Column 3: year table -->
                 <div class="panel" style="grid-column: span 1">
                     <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-table"></i>YEARLY_BREAKDOWN_2026</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-status-dot dot-status-mock"></div>
+                            <span class="panel-label"><i class="fa-solid fa-table"></i>YEARLY_BREAKDOWN_2026</span>
+                        </div>
                     </div>
                     <div style="overflow-x:auto;width:100%">
                         <table style="width:100%;border-collapse:collapse;font-size:12px" class="mono text-left">
@@ -716,11 +689,7 @@
                 <div class="panel" id="panel-stella-basic-info" style="grid-area:basicinfo">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots">
-                                <div class="dot dot-red"></div>
-                                <div class="dot dot-gold"></div>
-                                <div class="dot dot-green"></div>
-                            </div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-id-card"></i>basic_infos.sys</span>
                         </div>
                     </div>
@@ -739,11 +708,7 @@
                 <div class="panel" id="panel-stella-photos" style="grid-area:photos">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots">
-                                <div class="dot dot-red"></div>
-                                <div class="dot dot-gold"></div>
-                                <div class="dot dot-green"></div>
-                            </div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-images"></i>photos.sys</span>
                         </div>
                         <span style="font-size:12px;color:var(--muted)">42 PHOTOS · 6 ALBUMS</span>
@@ -769,11 +734,7 @@
                 <div class="panel" id="panel-stella-ai-insights" style="grid-area:aiinsights">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots">
-                                <div class="dot dot-red"></div>
-                                <div class="dot dot-gold"></div>
-                                <div class="dot dot-green"></div>
-                            </div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-brain"></i>ai_insights.sys</span>
                         </div>
                     </div>
@@ -805,11 +766,7 @@
                 <div class="panel" id="panel-stella-todo" style="grid-area:todo">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots">
-                                <div class="dot dot-red"></div>
-                                <div class="dot dot-gold"></div>
-                                <div class="dot dot-green"></div>
-                            </div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-list-check"></i>to_do.sys</span>
                         </div>
                     </div>
@@ -827,11 +784,7 @@
                 <div class="panel" id="panel-stella-budget" style="grid-area:budget">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots">
-                                <div class="dot dot-red"></div>
-                                <div class="dot dot-gold"></div>
-                                <div class="dot dot-green"></div>
-                            </div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-piggy-bank"></i>budget.sys</span>
                         </div>
                     </div>
@@ -860,11 +813,7 @@
                 <div class="panel" id="panel-stella-calendar" style="grid-area:calendar">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots">
-                                <div class="dot dot-red"></div>
-                                <div class="dot dot-gold"></div>
-                                <div class="dot dot-green"></div>
-                            </div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-calendar-days"></i>calendar.sys</span>
                         </div>
                         <span style="font-size:12px;color:var(--muted)">JUNE 2026</span>
@@ -884,11 +833,7 @@
                 <div class="panel" id="panel-stella-timeline" style="grid-area:timeline">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots">
-                                <div class="dot dot-red"></div>
-                                <div class="dot dot-gold"></div>
-                                <div class="dot dot-green"></div>
-                            </div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-timeline"></i>time_line.sys</span>
                         </div>
                         <span style="font-size:12px;color:var(--muted)">MILESTONES</span>
@@ -949,11 +894,7 @@
                 <div class="panel" id="panel-stella-news" style="grid-area:news">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots">
-                                <div class="dot dot-red"></div>
-                                <div class="dot dot-gold"></div>
-                                <div class="dot dot-green"></div>
-                            </div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-newspaper"></i>news.sys</span>
                         </div>
                     </div>
@@ -986,11 +927,7 @@
                 <div class="panel" id="panel-stella-health" style="grid-area:health">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots">
-                                <div class="dot dot-red"></div>
-                                <div class="dot dot-gold"></div>
-                                <div class="dot dot-green"></div>
-                            </div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-heart-pulse"></i>health.sys</span>
                         </div>
                         <span style="font-size:12px;color:var(--muted)">AGE 3Y 4MO</span>
@@ -1066,7 +1003,10 @@
                 <!-- ROW 1 / COL 1: portfolio.sys -->
                 <div class="panel" id="panel-portfolio-chart" style="grid-area:portfolio">
                     <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-chart-area"></i>portfolio.sys</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-status-dot dot-status-mock"></div>
+                            <span class="panel-label"><i class="fa-solid fa-chart-area"></i>portfolio.sys</span>
+                        </div>
                         <span style="font-size:12px;color:var(--muted)">30-DAY · DCA</span>
                     </div>
                     <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:6px">
@@ -1082,11 +1022,7 @@
                 <div class="panel" id="panel-trading-co" style="grid-area:tradingco">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots">
-                                <div class="dot dot-red"></div>
-                                <div class="dot dot-gold"></div>
-                                <div class="dot dot-green"></div>
-                            </div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-brands fa-bitcoin"></i>trading_co.sys</span>
                         </div>
                     </div>
@@ -1110,7 +1046,10 @@
                 <!-- ROW 1 / COL 2: trading_view.sys -->
                 <div class="panel" id="panel-btc-chart" style="grid-area:btcmarket;display:flex;flex-direction:column">
                     <div class="panel-header">
-                        <span class="panel-label"><i class="fa-brands fa-bitcoin"></i>trading_view.sys</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-status-dot dot-status-mock"></div>
+                            <span class="panel-label"><i class="fa-brands fa-bitcoin"></i>trading_view.sys</span>
+                        </div>
                         <span style="font-size:12px;color:var(--muted)">CANDLES</span>
                     </div>
                     <div style="display:flex;gap:var(--grid-gap);flex:1;min-height:0">
@@ -1129,7 +1068,10 @@
                 <div style="grid-area:splitrow;display:flex;gap:var(--grid-gap);min-height:0">
                     <div class="panel" id="panel-fear-greed" style="flex:1">
                         <div class="panel-header">
-                            <span class="panel-label"><i class="fa-solid fa-gauge-high"></i>fear_greed.sys</span>
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <div class="panel-status-dot dot-status-mock"></div>
+                                <span class="panel-label"><i class="fa-solid fa-gauge-high"></i>fear_greed.sys</span>
+                            </div>
                             <span style="font-size:12px;color:var(--muted)">INDEX</span>
                         </div>
                         <div class="gauge-wrap" style="height:auto;flex:1;min-height:0">
@@ -1143,7 +1085,10 @@
                     </div>
                     <div class="panel" id="panel-crypto-ai-insights" style="flex:1">
                         <div class="panel-header">
-                            <span class="panel-label"><i class="fa-solid fa-brain"></i>ai_insights.sys</span>
+                            <div style="display:flex;align-items:center;gap:6px">
+                                <div class="panel-status-dot dot-status-mock"></div>
+                                <span class="panel-label"><i class="fa-solid fa-brain"></i>ai_insights.sys</span>
+                            </div>
                             <span style="font-size:12px;color:var(--muted)">LIVE</span>
                         </div>
                         <div class="ai-status">
@@ -1161,7 +1106,10 @@
                 <!-- ROW 1 / COL 3: kraken.sys -->
                 <div class="panel" id="panel-kraken-ops" style="grid-area:kraken">
                     <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-building-columns"></i>kraken.sys</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-status-dot dot-status-mock" data-status-source="kraken"></div>
+                            <span class="panel-label"><i class="fa-solid fa-building-columns"></i>kraken.sys</span>
+                        </div>
                         <span class="corp-status-badge" id="kraken-mode-badge">MOCK</span>
                     </div>
                     <div class="breakdown-label">EXCHANGE_BALANCES:</div>
@@ -1177,7 +1125,10 @@
                 <!-- ROW 1 / COL 4: ledger.sys -->
                 <div class="panel" id="panel-cold-storage" style="grid-area:ledger">
                     <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-hard-drive"></i>ledger.sys</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-status-dot dot-status-mock"></div>
+                            <span class="panel-label"><i class="fa-solid fa-hard-drive"></i>ledger.sys</span>
+                        </div>
                     </div>
                     <div class="breakdown-label">OFFLINE_BALANCES:</div>
                     <div id="cold-storage-balances" class="crypto-balance-list" style="margin-bottom:4px"></div>
@@ -1188,7 +1139,10 @@
                 <!-- ROW 2 / COL 3-4: news.sys -->
                 <div class="panel" id="panel-crypto-news" style="grid-area:news">
                     <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-newspaper"></i>news.sys</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-status-dot dot-status-mock"></div>
+                            <span class="panel-label"><i class="fa-solid fa-newspaper"></i>news.sys</span>
+                        </div>
                         <span style="font-size:12px;color:var(--muted)">CRYPTO_FEED</span>
                     </div>
                     <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em">LATEST_HEADLINES:</div>
@@ -1204,7 +1158,10 @@
                 <!-- Column 1: indexes list -->
                 <div class="panel" style="grid-column: 1">
                     <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-chart-line"></i>GLOBAL_MARKET_INDEXES</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-status-dot dot-status-mock"></div>
+                            <span class="panel-label"><i class="fa-solid fa-chart-line"></i>GLOBAL_MARKET_INDEXES</span>
+                        </div>
                     </div>
                     <div id="investment-indexes-list" style="display:flex;flex-direction:column;gap:10px">
                         <!-- Rendered dynamically by app.js -->
@@ -1214,7 +1171,10 @@
                 <!-- Column 2 & 3: accounts grid -->
                 <div class="panel" style="grid-column: span 2">
                     <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-vault"></i>PORTFOLIO_DESKS</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-status-dot dot-status-mock"></div>
+                            <span class="panel-label"><i class="fa-solid fa-vault"></i>PORTFOLIO_DESKS</span>
+                        </div>
                     </div>
                     <div id="investment-accounts-grid" style="display:grid;grid-template-columns:repeat(2, 1fr);gap:12px">
                         <!-- Rendered dynamically by app.js -->
@@ -1229,7 +1189,10 @@
                 <!-- Column 1: log activities -->
                 <div class="panel" style="grid-column: 1">
                     <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-heart-pulse"></i>BIOMETRIC_ACTIVITY_LOG</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-status-dot dot-status-mock"></div>
+                            <span class="panel-label"><i class="fa-solid fa-heart-pulse"></i>BIOMETRIC_ACTIVITY_LOG</span>
+                        </div>
                     </div>
                     <div id="health-log-activities" style="display:flex;flex-direction:column;gap:10px">
                         <!-- Rendered dynamically by app.js -->
@@ -1239,7 +1202,10 @@
                 <!-- Column 2 & 3: nutrition grid -->
                 <div class="panel" style="grid-column: span 2">
                     <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-apple-whole"></i>WELLNESS_METRICS</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-status-dot dot-status-mock"></div>
+                            <span class="panel-label"><i class="fa-solid fa-apple-whole"></i>WELLNESS_METRICS</span>
+                        </div>
                     </div>
                     <div id="health-nutrition-grid" style="display:grid;grid-template-columns:repeat(2, 1fr);gap:12px">
                         <!-- Rendered dynamically by app.js -->
@@ -1254,7 +1220,10 @@
                 <!-- Column 1: Top Stories -->
                 <div class="panel" style="grid-column:1">
                     <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-newspaper"></i>TOP_STORIES</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-status-dot dot-status-mock"></div>
+                            <span class="panel-label"><i class="fa-solid fa-newspaper"></i>TOP_STORIES</span>
+                        </div>
                         <span style="font-size:12px;color:var(--muted)">GENERAL &amp; MARKETS</span>
                     </div>
                     <div id="news-general-list" class="news-list"></div>
@@ -1262,7 +1231,10 @@
                 <!-- Column 2: Crypto News -->
                 <div class="panel" style="grid-column:2">
                     <div class="panel-header">
-                        <span class="panel-label"><i class="fa-brands fa-bitcoin"></i>CRYPTO_FEED</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-status-dot dot-status-mock"></div>
+                            <span class="panel-label"><i class="fa-brands fa-bitcoin"></i>CRYPTO_FEED</span>
+                        </div>
                         <span style="font-size:12px;color:var(--muted)">DIGITAL ASSETS</span>
                     </div>
                     <div id="news-crypto-list" class="news-list"></div>
@@ -1270,7 +1242,10 @@
                 <!-- Column 3: Tech & AI News -->
                 <div class="panel" style="grid-column:3">
                     <div class="panel-header">
-                        <span class="panel-label"><i class="fa-solid fa-microchip"></i>TECH_AI_FEED</span>
+                        <div style="display:flex;align-items:center;gap:6px">
+                            <div class="panel-status-dot dot-status-mock"></div>
+                            <span class="panel-label"><i class="fa-solid fa-microchip"></i>TECH_AI_FEED</span>
+                        </div>
                         <span style="font-size:12px;color:var(--muted)">TECHNOLOGY &amp; AI</span>
                     </div>
                     <div id="news-tech-list" class="news-list"></div>
@@ -1284,11 +1259,7 @@
                 <div class="panel" id="panel-system-check" style="grid-column:1/-1;display:flex;flex-direction:column">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots">
-                                <div class="dot dot-red"></div>
-                                <div class="dot dot-gold"></div>
-                                <div class="dot dot-green"></div>
-                            </div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-shield-halved"></i>system_check.sys</span>
                         </div>
                         <span class="corp-status-badge" id="security-scan-badge">IDLE</span>
@@ -1316,7 +1287,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <div class="panel-status-dot dot-status-mock" data-status-source="kraken"></div>
                             <span class="panel-label"><i class="fa-brands fa-bitcoin"></i>kraken_api.sys</span>
                         </div>
                         <span class="cred-status-badge not-set" id="cred-status-kraken">NOT_SET</span>
@@ -1342,7 +1313,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <div class="panel-status-dot dot-status-mock" data-status-source="sheets"></div>
                             <span class="panel-label"><i class="fa-brands fa-google"></i>sheets_api.sys</span>
                         </div>
                         <span class="cred-status-badge not-set" id="cred-status-sheets">NOT_SET</span>
@@ -1363,7 +1334,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <div class="panel-status-dot dot-status-mock" data-status-source="sheets"></div>
                             <span class="panel-label"><i class="fa-solid fa-envelope"></i>gmail.sys</span>
                         </div>
                         <span class="cred-status-badge not-set" id="cred-status-gmail">NOT_SET</span>
@@ -1387,7 +1358,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-person-running"></i>garmin_api.sys</span>
                         </div>
                         <span class="cred-status-badge not-set" id="cred-status-garmin">NOT_SET</span>
@@ -1412,7 +1383,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-robot"></i>claude_llm.sys</span>
                         </div>
                         <span class="cred-status-badge not-set" id="cred-status-claude">NOT_SET</span>
@@ -1437,7 +1408,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-gem"></i>gemini_llm.sys</span>
                         </div>
                         <span class="cred-status-badge not-set" id="cred-status-gemini">NOT_SET</span>
@@ -1462,7 +1433,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-brands fa-reddit"></i>reddit_api.sys</span>
                         </div>
                         <span class="cred-status-badge not-set" id="cred-status-reddit">NOT_SET</span>
@@ -1493,7 +1464,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-sliders"></i>system.sys</span>
                         </div>
                     </div>
@@ -1522,7 +1493,7 @@
                 <div class="panel settings-palette-col">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
-                            <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                            <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-palette"></i>ui_palette.sys</span>
                         </div>
                         <div style="display:flex;gap:6px">
@@ -1735,7 +1706,7 @@
     <div id="cp-modal" class="panel">
         <div class="panel-header">
             <div style="display:flex;align-items:center;gap:6px">
-                <div class="panel-dots"><div class="dot dot-red"></div><div class="dot dot-gold"></div><div class="dot dot-green"></div></div>
+                <div class="panel-status-dot dot-status-mock"></div>
                 <span class="panel-label"><i class="fa-solid fa-circle-half-stroke"></i>color_picker.sys</span>
             </div>
             <span id="cp-var-name" style="font-size:11px;color:var(--gold);letter-spacing:0.1em;font-weight:700"></span>

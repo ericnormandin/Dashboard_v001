@@ -802,6 +802,8 @@ async function checkAPIStatus() {
         if (statusSheetsEl) statusSheetsEl.className = isLiveSheets ? "text-terminal-green font-bold" : "text-terminal-bronze font-bold";
         if (statusSheetsEl) statusSheetsEl.textContent = isLiveSheets ? "CONNECTED LIVE" : "DEMO MOCK";
 
+        updatePanelStatusDots(isLiveKraken, isLiveSheets, false);
+
         if (!isLiveKraken || !isLiveSheets) {
             document.getElementById('global-mock-banner').classList.add('visible');
             appendConsoleLog('Simulated mocked pipelines active for incomplete keys', 'warn');
@@ -809,12 +811,13 @@ async function checkAPIStatus() {
             document.getElementById('global-mock-banner').classList.remove('visible');
             appendConsoleLog('All enterprise integrations loaded successfully', 'success');
         }
-        
+
     } catch (err) {
         console.error('Offline diagnostic fallback:', err);
         updateStatusDot('kraken', 'offline');
         updateStatusDot('sheets', 'offline');
-        
+        updatePanelStatusDots(false, false, true);
+
         document.getElementById('global-mock-banner').classList.add('visible');
         appendConsoleLog('Failed connection to REST backend server. Offline mock simulation activated.', 'error');
     }
@@ -849,6 +852,24 @@ function updateStatusDot(target, mode) {
         const label = badge.querySelector('span:last-child');
         if (label) { label.textContent = 'OFFLINE'; label.style.color = 'var(--red)'; }
     }
+}
+
+function updatePanelStatusDots(krakenLive, sheetsLive, isOffline) {
+    document.querySelectorAll('.panel-status-dot').forEach(dot => {
+        dot.classList.remove('dot-status-live', 'dot-status-mock', 'dot-status-offline');
+        const source = dot.dataset.statusSource;
+        let state;
+        if (isOffline) {
+            state = 'dot-status-offline';
+        } else if (source === 'kraken') {
+            state = krakenLive ? 'dot-status-live' : 'dot-status-mock';
+        } else if (source === 'sheets') {
+            state = sheetsLive ? 'dot-status-live' : 'dot-status-mock';
+        } else {
+            state = (krakenLive && sheetsLive) ? 'dot-status-live' : 'dot-status-mock';
+        }
+        dot.classList.add(state);
+    });
 }
 
 
