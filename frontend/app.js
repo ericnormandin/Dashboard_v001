@@ -21,13 +21,32 @@ let securityScanRun = false;
 
 // Category breakdowns for budget.sys
 const mockBudgetCategories = [
-    { name: 'Cashflow',  bal: 1790.73, spent: 1915.27, budget: 3786, icon: 'fa-wallet',            colorClass: 'bg-terminal-bronze', type: 'variable' },
-    { name: 'Food',      bal: 211.05,  spent: 915.95,  budget: 1127, icon: 'fa-utensils',          colorClass: 'bg-terminal-bronze', type: 'variable' },
-    { name: 'Resto',     bal: 139.84,  spent: 169.16,  budget: 309,  icon: 'fa-champagne-glasses', colorClass: 'bg-terminal-bronze', type: 'variable' },
-    { name: 'Stella',    bal: 0.00,    spent: 288.36,  budget: 186,  icon: 'fa-child',             colorClass: 'bg-terminal-red',    type: 'variable' },
-    { name: 'Transport', bal: 153.72,  spent: 237.28,  budget: 391,  icon: 'fa-car',               colorClass: 'bg-terminal-bronze', type: 'variable' },
-    { name: 'Crypto',    bal: 0.00,    spent: 0.00,    budget: 0,    icon: 'fa-brands fa-bitcoin',  colorClass: 'bg-terminal-bronze', type: 'fixed' },
-    { name: 'Media',     bal: 0.00,    spent: 185.07,  budget: 104,  icon: 'fa-tv',                colorClass: 'bg-terminal-red',    type: 'fixed' },
+    // --- VARIABLE ---
+    { name: 'Cashflow',      bal: 1790.73, spent: 1915.27, budget: 3786, icon: 'fa-wallet',               colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'Crypto',        bal: 0.00,    spent: 0.00,    budget: 500,  icon: 'fa-brands fa-bitcoin',     colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'Eco Em',        bal: 84.50,   spent: 215.50,  budget: 300,  icon: 'fa-leaf',                  colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'Eco Eric',      bal: 112.30,  spent: 187.70,  budget: 300,  icon: 'fa-seedling',              colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'Food',          bal: 211.05,  spent: 915.95,  budget: 1127, icon: 'fa-utensils',              colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'Media',         bal: 0.00,    spent: 185.07,  budget: 150,  icon: 'fa-tv',                    colorClass: 'bg-terminal-red',    type: 'variable' },
+    { name: 'Reno',          bal: 220.00,  spent: 380.00,  budget: 600,  icon: 'fa-hammer',                colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'Resto',         bal: 139.84,  spent: 169.16,  budget: 309,  icon: 'fa-champagne-glasses',     colorClass: 'bg-terminal-bronze', type: 'variable' },
+    { name: 'Stella',        bal: 0.00,    spent: 288.36,  budget: 186,  icon: 'fa-child',                 colorClass: 'bg-terminal-red',    type: 'variable' },
+    { name: 'Transport',     bal: 153.72,  spent: 237.28,  budget: 391,  icon: 'fa-car',                   colorClass: 'bg-terminal-bronze', type: 'variable' },
+    // --- FIXED ---
+    { name: 'Cash Em',       bal: 0.00,    spent: 500.00,  budget: 500,  icon: 'fa-piggy-bank',            colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'Condo Fees',    bal: 0.00,    spent: 415.00,  budget: 415,  icon: 'fa-building',              colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'Garderie',      bal: 0.00,    spent: 210.00,  budget: 210,  icon: 'fa-baby',                  colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'House Keeping', bal: 0.00,    spent: 195.00,  budget: 195,  icon: 'fa-broom',                 colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'Hydro',         bal: 0.00,    spent: 148.00,  budget: 148,  icon: 'fa-bolt',                  colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'Hypotheque',    bal: 0.00,    spent: 2074.00, budget: 2074, icon: 'fa-house',                 colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'Insurance',     bal: 0.00,    spent: 220.00,  budget: 220,  icon: 'fa-shield-halved',         colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'REER Eric',     bal: 0.00,    spent: 500.00,  budget: 500,  icon: 'fa-piggy-bank',            colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'REER-OIIQ',     bal: 0.00,    spent: 312.00,  budget: 312,  icon: 'fa-sack-dollar',           colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'Reno',          bal: 0.00,    spent: 500.00,  budget: 500,  icon: 'fa-screwdriver-wrench',    colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'STM',           bal: 0.00,    spent: 105.00,  budget: 105,  icon: 'fa-bus',                   colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'Taxe M',        bal: 0.00,    spent: 285.00,  budget: 285,  icon: 'fa-landmark',              colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'Taxe S',        bal: 0.00,    spent: 198.00,  budget: 198,  icon: 'fa-landmark',              colorClass: 'bg-terminal-bronze', type: 'fixed' },
+    { name: 'Videotron',     bal: 0.00,    spent: 98.00,   budget: 98,   icon: 'fa-wifi',                  colorClass: 'bg-terminal-bronze', type: 'fixed' },
 ];
 
 // 12 Transactions log
@@ -452,47 +471,45 @@ function updateStatusDot(target, mode) {
 }
 
 
+function switchBudgetType(type) {
+    ['variable', 'fixed'].forEach(t => {
+        const btn = document.getElementById('budget-type-' + t);
+        if (btn) btn.classList.toggle('active', t === type);
+    });
+    const container = document.getElementById('overview-budget-breakdown');
+    if (!container) return;
+    container.innerHTML = '';
+    mockBudgetCategories.filter(c => c.type === type).forEach(cat => {
+        const ratioPercent = cat.budget > 0 ? Math.round((cat.spent / cat.budget) * 100) : 0;
+        const barWidth = Math.min(ratioPercent, 100);
+        const isOver = ratioPercent > 100;
+        const iconClass = cat.icon.startsWith('fa-brands') ? cat.icon : 'fa-solid ' + cat.icon;
+        const line = document.createElement('div');
+        line.className = 'breakdown-item';
+        line.innerHTML = `
+            <div class="breakdown-row">
+                <div class="breakdown-name">
+                    <i class="${iconClass}"></i>
+                    <span>${cat.name}</span>
+                    <span class="breakdown-bal">BAL: $${cat.bal.toFixed(0)}</span>
+                </div>
+                <div class="breakdown-amounts">$${cat.spent.toFixed(0)} / $${cat.budget.toFixed(0)}</div>
+            </div>
+            <div class="progress-wrap">
+                <div class="progress-track">
+                    <div class="progress-fill ${isOver ? 'over' : ''}" style="width:${barWidth}%"></div>
+                </div>
+                <span class="progress-pct ${isOver ? 'over' : ''}">${ratioPercent}%</span>
+            </div>
+        `;
+        container.appendChild(line);
+    });
+}
+
 // ================= VIEW: OVERVIEW MODULE =================
 function renderOverviewScreen() {
     // 1. Budget category breakdown
-    const overviewBudgetBreakdown = document.getElementById('overview-budget-breakdown');
-    if (overviewBudgetBreakdown) {
-        overviewBudgetBreakdown.innerHTML = '';
-        const renderCat = (cat) => {
-            const ratioPercent = cat.budget > 0 ? Math.round((cat.spent / cat.budget) * 100) : 0;
-            const barWidth = Math.min(ratioPercent, 100);
-            const isOver = ratioPercent > 100;
-            const line = document.createElement('div');
-            line.className = 'breakdown-item';
-            line.innerHTML = `
-                <div class="breakdown-row">
-                    <div class="breakdown-name">
-                        <i class="fa-solid ${cat.icon}"></i>
-                        <span>${cat.name}</span>
-                        <span class="breakdown-bal">BAL: $${cat.bal.toFixed(0)}</span>
-                    </div>
-                    <div class="breakdown-amounts">$${cat.spent.toFixed(0)} / $${cat.budget.toFixed(0)}</div>
-                </div>
-                <div class="progress-wrap">
-                    <div class="progress-track">
-                        <div class="progress-fill ${isOver ? 'over' : ''}" style="width:${barWidth}%"></div>
-                    </div>
-                    <span class="progress-pct ${isOver ? 'over' : ''}">${ratioPercent}%</span>
-                </div>
-            `;
-            overviewBudgetBreakdown.appendChild(line);
-        };
-        const addDivider = (label) => {
-            const d = document.createElement('div');
-            d.style.cssText = 'font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;padding:4px 0 2px;border-top:1px solid var(--border);margin-top:4px';
-            d.textContent = label;
-            overviewBudgetBreakdown.appendChild(d);
-        };
-        addDivider('VARIABLE');
-        mockBudgetCategories.filter(c => c.type === 'variable').forEach(renderCat);
-        addDivider('FIXED');
-        mockBudgetCategories.filter(c => c.type === 'fixed').forEach(renderCat);
-    }
+    switchBudgetType('variable');
 
     // 2. Crypto holdings
     const overviewCryptoHoldings = document.getElementById('overview-crypto-holdings');
