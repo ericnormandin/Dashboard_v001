@@ -829,65 +829,19 @@
                     </div>
                 </div>
 
-                <!-- time_line.sys -->
+                <!-- timeline.sys -->
                 <div class="panel" id="panel-stella-timeline" style="grid-area:timeline">
                     <div class="panel-header">
                         <div style="display:flex;align-items:center;gap:6px">
                             <div class="panel-status-dot dot-status-mock"></div>
-                            <span class="panel-label"><i class="fa-solid fa-timeline"></i>time_line.sys</span>
+                            <span class="panel-label"><i class="fa-solid fa-timeline"></i>timeline.sys</span>
                         </div>
-                        <span style="font-size:12px;color:var(--muted)">MILESTONES</span>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span style="font-size:12px;color:var(--muted)">MILESTONES</span>
+                            <button class="stella-add-btn" onclick="openStellaNewMilestone()"><i class="fa-solid fa-plus"></i> CREATE_MILESTONE</button>
+                        </div>
                     </div>
-                    <div class="ret-tl-scroll"><div class="ret-tl-track">
-                        <div class="ret-tl-col">
-                            <div class="ret-tl-content">
-                                <div class="ret-tl-year">2023</div>
-                                <div class="ret-tl-val">Born</div>
-                                <div class="ret-tl-label">Feb 14 · 3.4 kg</div>
-                            </div>
-                            <div class="ret-tl-spine"><div class="ret-tl-dot"></div><div class="ret-tl-line"></div></div>
-                        </div>
-                        <div class="ret-tl-col">
-                            <div class="ret-tl-content">
-                                <div class="ret-tl-year">2024</div>
-                                <div class="ret-tl-val">First steps</div>
-                                <div class="ret-tl-label">Apr · 13 months</div>
-                            </div>
-                            <div class="ret-tl-spine"><div class="ret-tl-dot"></div><div class="ret-tl-line"></div></div>
-                        </div>
-                        <div class="ret-tl-col">
-                            <div class="ret-tl-content">
-                                <div class="ret-tl-year">2024</div>
-                                <div class="ret-tl-val">First words</div>
-                                <div class="ret-tl-label">Sep · "mama" / "dada"</div>
-                            </div>
-                            <div class="ret-tl-spine"><div class="ret-tl-dot"></div><div class="ret-tl-line"></div></div>
-                        </div>
-                        <div class="ret-tl-col now">
-                            <div class="ret-tl-content">
-                                <div class="ret-tl-year"><span class="ret-tl-now-badge">NOW</span>2026</div>
-                                <div class="ret-tl-val">Daycare</div>
-                                <div class="ret-tl-label">Started Jan · loves it</div>
-                            </div>
-                            <div class="ret-tl-spine"><div class="ret-tl-dot now"></div><div class="ret-tl-line"></div></div>
-                        </div>
-                        <div class="ret-tl-col">
-                            <div class="ret-tl-content">
-                                <div class="ret-tl-year">2027</div>
-                                <div class="ret-tl-val">Swim lessons</div>
-                                <div class="ret-tl-label">Planned · summer term</div>
-                            </div>
-                            <div class="ret-tl-spine"><div class="ret-tl-dot"></div><div class="ret-tl-line"></div></div>
-                        </div>
-                        <div class="ret-tl-col goal">
-                            <div class="ret-tl-content">
-                                <div class="ret-tl-year">2029</div>
-                                <div class="ret-tl-val">Kindergarten</div>
-                                <div class="ret-tl-label">Sep · starts school</div>
-                            </div>
-                            <div class="ret-tl-spine"><div class="ret-tl-dot goal"></div></div>
-                        </div>
-                    </div></div>
+                    <div class="ret-tl-scroll"><div class="ret-tl-track" id="stella-timeline-track"></div></div>
                 </div>
 
                 <!-- news.sys -->
@@ -1501,194 +1455,107 @@
                             <button id="btn-save-palette" class="cred-save-btn" style="padding:3px 8px;font-size:10px;margin-top:0;border-color:var(--gold);color:var(--gold)" onclick="savePalette()"><i class="fa-solid fa-floppy-disk"></i> SAVE_PALETTE</button>
                         </div>
                     </div>
-                    <div class="palette-section-label">BACKGROUNDS &amp; SURFACES</div>
-                    <div class="palette-grid">
-                        <div class="swatch-item">
-                            <div class="swatch-color" style="background:#15171a"></div>
-                            <div class="swatch-meta">
-                                <span class="swatch-var">--bg</span>
-                                <span class="swatch-desc">Page background</span>
-                                <input class="swatch-hex" value="#15171a">
-                            </div>
+                    <div class="palette-table">
+
+                        <div class="palette-sect-hdr">BACKGROUNDS &amp; SURFACES</div>
+                        <div class="palette-row swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var">--bg</span><span class="palette-row-desc">Page background</span></div>
+                            <div class="palette-row-swatch"><div class="swatch-color" style="background:#15171a"></div><input class="swatch-hex" value="#15171a"></div>
                         </div>
-                        <div class="swatch-item">
-                            <div class="swatch-color" style="background:#1e2025"></div>
-                            <div class="swatch-meta">
-                                <span class="swatch-var">--panel</span>
-                                <span class="swatch-desc">Panel / card bg</span>
-                                <input class="swatch-hex" value="#1e2025">
-                            </div>
+                        <div class="palette-row swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var">--panel</span><span class="palette-row-desc">Panel / card bg</span></div>
+                            <div class="palette-row-swatch"><div class="swatch-color" style="background:#1e2025"></div><input class="swatch-hex" value="#1e2025"></div>
                         </div>
-                        <div class="swatch-item">
-                            <div class="swatch-color" style="background:#23262a"></div>
-                            <div class="swatch-meta">
-                                <span class="swatch-var">--panel-alt</span>
-                                <span class="swatch-desc">Alternate panel bg</span>
-                                <input class="swatch-hex" value="#23262a">
-                            </div>
+                        <div class="palette-row swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var">--panel-alt</span><span class="palette-row-desc">Alternate panel bg</span></div>
+                            <div class="palette-row-swatch"><div class="swatch-color" style="background:#23262a"></div><input class="swatch-hex" value="#23262a"></div>
                         </div>
-                        <div class="swatch-item">
-                            <div class="swatch-color" style="background:#22252a"></div>
-                            <div class="swatch-meta">
-                                <span class="swatch-var">--header-bg</span>
-                                <span class="swatch-desc">Top header bar</span>
-                                <input class="swatch-hex" value="#22252a">
-                            </div>
+                        <div class="palette-row swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var">--header-bg</span><span class="palette-row-desc">Top header bar</span></div>
+                            <div class="palette-row-swatch"><div class="swatch-color" style="background:#22252a"></div><input class="swatch-hex" value="#22252a"></div>
                         </div>
-                        <div class="swatch-item">
-                            <div class="swatch-color" style="background:#413b36"></div>
-                            <div class="swatch-meta">
-                                <span class="swatch-var">--active-bg</span>
-                                <span class="swatch-desc">Active / selected row</span>
-                                <input class="swatch-hex" value="#413b36">
-                            </div>
+                        <div class="palette-row swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var">--active-bg</span><span class="palette-row-desc">Active / selected row</span></div>
+                            <div class="palette-row-swatch"><div class="swatch-color" style="background:#413b36"></div><input class="swatch-hex" value="#413b36"></div>
                         </div>
+
+                        <div class="palette-sect-hdr">BORDERS</div>
+                        <div class="palette-row swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var">--border</span><span class="palette-row-desc">Standard border</span></div>
+                            <div class="palette-row-swatch"><div class="swatch-color" style="background:#443f3a"></div><input class="swatch-hex" value="#443f3a"></div>
+                        </div>
+                        <div class="palette-row swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var">--border-lt</span><span class="palette-row-desc">Subtle / thin border</span></div>
+                            <div class="palette-row-swatch"><div class="swatch-color" style="background:#2d2a29"></div><input class="swatch-hex" value="#2d2a29"></div>
+                        </div>
+
+                        <div class="palette-sect-hdr">TEXT &amp; ACCENTS</div>
+                        <div class="palette-row swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var">--text</span><span class="palette-row-desc">Primary text (cream)</span></div>
+                            <div class="palette-row-swatch"><div class="swatch-color" style="background:#dcd6c0"></div><input class="swatch-hex" value="#dcd6c0"></div>
+                        </div>
+                        <div class="palette-row swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var">--text-dim</span><span class="palette-row-desc">Subtext / dim</span></div>
+                            <div class="palette-row-swatch"><div class="swatch-color" style="background:#a88a66"></div><input class="swatch-hex" value="#a88a66"></div>
+                        </div>
+                        <div class="palette-row swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var">--muted</span><span class="palette-row-desc">Labels / muted</span></div>
+                            <div class="palette-row-swatch"><div class="swatch-color" style="background:#76634f"></div><input class="swatch-hex" value="#76634f"></div>
+                        </div>
+                        <div class="palette-row swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var">--bronze</span><span class="palette-row-desc">Warm bronze accent</span></div>
+                            <div class="palette-row-swatch"><div class="swatch-color" style="background:#a88a66"></div><input class="swatch-hex" value="#a88a66"></div>
+                        </div>
+                        <div class="palette-row swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var">--gold</span><span class="palette-row-desc">Primary accent / gold</span></div>
+                            <div class="palette-row-swatch"><div class="swatch-color" style="background:#cfa778"></div><input class="swatch-hex" value="#cfa778"></div>
+                        </div>
+                        <div class="palette-row swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var">--green</span><span class="palette-row-desc">Positive / ok / live</span></div>
+                            <div class="palette-row-swatch"><div class="swatch-color" style="background:#3fc459"></div><input class="swatch-hex" value="#3fc459"></div>
+                        </div>
+                        <div class="palette-row swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var">--red</span><span class="palette-row-desc">Negative / error / alert</span></div>
+                            <div class="palette-row-swatch"><div class="swatch-color" style="background:#ed473c"></div><input class="swatch-hex" value="#ed473c"></div>
+                        </div>
+
+                        <div class="palette-sect-hdr">TYPOGRAPHY</div>
+                        <div class="palette-row font-swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var" style="font-size:14px">--base-fs</span><span class="palette-row-desc">Body · 14px</span></div>
+                            <div class="palette-row-value"><span class="palette-font-preview" style="font-size:14px">Aa</span><input class="swatch-hex" value="14px"></div>
+                        </div>
+                        <div class="palette-row font-swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var" style="font-size:11px">--label-fs</span><span class="palette-row-desc">Labels · 11px</span></div>
+                            <div class="palette-row-value"><span class="palette-font-preview" style="font-size:11px">Aa</span><input class="swatch-hex" value="11px"></div>
+                        </div>
+                        <div class="palette-row font-swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var" style="font-size:24px">--value-fs</span><span class="palette-row-desc">Large values · 24px</span></div>
+                            <div class="palette-row-value"><span class="palette-font-preview" style="font-size:24px">Aa</span><input class="swatch-hex" value="24px"></div>
+                        </div>
+                        <div class="palette-row font-swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var" style="font-size:15px">--clock-fs</span><span class="palette-row-desc">Clock · 15px</span></div>
+                            <div class="palette-row-value"><span class="palette-font-preview" style="font-size:15px">Aa</span><input class="swatch-hex" value="15px"></div>
+                        </div>
+
+                        <div class="palette-sect-hdr">FONT STYLES</div>
+                        <div class="palette-row font-swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var" style="font-weight:400">weight-400</span><span class="palette-row-desc">Regular — body copy</span></div>
+                            <div class="palette-row-value"><span class="palette-font-preview" style="font-weight:400">Aa</span><input class="swatch-hex" value="400"></div>
+                        </div>
+                        <div class="palette-row font-swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var" style="font-weight:500">weight-500</span><span class="palette-row-desc">Medium — nav items</span></div>
+                            <div class="palette-row-value"><span class="palette-font-preview" style="font-weight:500">Aa</span><input class="swatch-hex" value="500"></div>
+                        </div>
+                        <div class="palette-row font-swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var" style="font-weight:700">weight-700</span><span class="palette-row-desc">Bold — values / badges</span></div>
+                            <div class="palette-row-value"><span class="palette-font-preview" style="font-weight:700">Aa</span><input class="swatch-hex" value="700"></div>
+                        </div>
+                        <div class="palette-row font-swatch-item">
+                            <div class="palette-row-label"><span class="swatch-var" style="font-family:'JetBrains Mono',monospace">font-family</span><span class="palette-row-desc">JetBrains Mono</span></div>
+                            <div class="palette-row-value"><span class="palette-font-preview" style="font-family:'JetBrains Mono',monospace;letter-spacing:0.05em">Aa</span><input class="swatch-hex" value="'JetBrains Mono'"></div>
+                        </div>
+
                     </div>
-                    <div class="palette-section-label" style="margin-top:10px">BORDERS</div>
-                    <div class="palette-grid">
-                        <div class="swatch-item">
-                            <div class="swatch-color" style="background:#443f3a"></div>
-                            <div class="swatch-meta">
-                                <span class="swatch-var">--border</span>
-                                <span class="swatch-desc">Standard border</span>
-                                <input class="swatch-hex" value="#443f3a">
-                            </div>
-                        </div>
-                        <div class="swatch-item">
-                            <div class="swatch-color" style="background:#2d2a29"></div>
-                            <div class="swatch-meta">
-                                <span class="swatch-var">--border-lt</span>
-                                <span class="swatch-desc">Subtle / thin border</span>
-                                <input class="swatch-hex" value="#2d2a29">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="palette-section-label" style="margin-top:10px">TEXT &amp; ACCENTS</div>
-                    <div class="palette-grid">
-                        <div class="swatch-item">
-                            <div class="swatch-color" style="background:#dcd6c0"></div>
-                            <div class="swatch-meta">
-                                <span class="swatch-var">--text</span>
-                                <span class="swatch-desc">Primary text (cream)</span>
-                                <input class="swatch-hex" value="#dcd6c0">
-                            </div>
-                        </div>
-                        <div class="swatch-item">
-                            <div class="swatch-color" style="background:#a88a66"></div>
-                            <div class="swatch-meta">
-                                <span class="swatch-var">--text-dim</span>
-                                <span class="swatch-desc">Subtext / dim</span>
-                                <input class="swatch-hex" value="#a88a66">
-                            </div>
-                        </div>
-                        <div class="swatch-item">
-                            <div class="swatch-color" style="background:#76634f"></div>
-                            <div class="swatch-meta">
-                                <span class="swatch-var">--muted</span>
-                                <span class="swatch-desc">Labels / muted</span>
-                                <input class="swatch-hex" value="#76634f">
-                            </div>
-                        </div>
-                        <div class="swatch-item">
-                            <div class="swatch-color" style="background:#a88a66"></div>
-                            <div class="swatch-meta">
-                                <span class="swatch-var">--bronze</span>
-                                <span class="swatch-desc">Warm bronze accent</span>
-                                <input class="swatch-hex" value="#a88a66">
-                            </div>
-                        </div>
-                        <div class="swatch-item">
-                            <div class="swatch-color" style="background:#cfa778"></div>
-                            <div class="swatch-meta">
-                                <span class="swatch-var">--gold</span>
-                                <span class="swatch-desc">Primary accent / gold</span>
-                                <input class="swatch-hex" value="#cfa778">
-                            </div>
-                        </div>
-                        <div class="swatch-item">
-                            <div class="swatch-color" style="background:#3fc459"></div>
-                            <div class="swatch-meta">
-                                <span class="swatch-var">--green</span>
-                                <span class="swatch-desc">Positive / ok / live</span>
-                                <input class="swatch-hex" value="#3fc459">
-                            </div>
-                        </div>
-                        <div class="swatch-item">
-                            <div class="swatch-color" style="background:#ed473c"></div>
-                            <div class="swatch-meta">
-                                <span class="swatch-var">--red</span>
-                                <span class="swatch-desc">Negative / error / alert</span>
-                                <input class="swatch-hex" value="#ed473c">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="palette-section-label" style="margin-top:10px">TYPOGRAPHY</div>
-                    <div class="font-swatch-item">
-                        <span class="font-swatch-preview" style="font-size:14px">Aa</span>
-                        <div class="font-swatch-meta">
-                            <span class="swatch-var">--base-fs</span>
-                            <span class="swatch-desc">Body / default text</span>
-                            <input class="swatch-hex" value="14px">
-                        </div>
-                    </div>
-                    <div class="font-swatch-item">
-                        <span class="font-swatch-preview" style="font-size:11px">Aa</span>
-                        <div class="font-swatch-meta">
-                            <span class="swatch-var">--label-fs</span>
-                            <span class="swatch-desc">Labels / captions</span>
-                            <input class="swatch-hex" value="11px">
-                        </div>
-                    </div>
-                    <div class="font-swatch-item">
-                        <span class="font-swatch-preview" style="font-size:24px">Aa</span>
-                        <div class="font-swatch-meta">
-                            <span class="swatch-var">--value-fs</span>
-                            <span class="swatch-desc">Large values / stats</span>
-                            <input class="swatch-hex" value="24px">
-                        </div>
-                    </div>
-                    <div class="font-swatch-item">
-                        <span class="font-swatch-preview" style="font-size:15px">Aa</span>
-                        <div class="font-swatch-meta">
-                            <span class="swatch-var">--clock-fs</span>
-                            <span class="swatch-desc">Clock / timestamps</span>
-                            <input class="swatch-hex" value="15px">
-                        </div>
-                    </div>
-                    <div class="palette-section-label" style="margin-top:10px">FONT STYLES</div>
-                    <div class="font-swatch-item">
-                        <span class="font-swatch-preview" style="font-weight:400">Aa</span>
-                        <div class="font-swatch-meta">
-                            <span class="swatch-var">weight-400</span>
-                            <span class="swatch-desc">Regular — body copy</span>
-                            <input class="swatch-hex" value="400">
-                        </div>
-                    </div>
-                    <div class="font-swatch-item">
-                        <span class="font-swatch-preview" style="font-weight:500">Aa</span>
-                        <div class="font-swatch-meta">
-                            <span class="swatch-var">weight-500</span>
-                            <span class="swatch-desc">Medium — nav items</span>
-                            <input class="swatch-hex" value="500">
-                        </div>
-                    </div>
-                    <div class="font-swatch-item">
-                        <span class="font-swatch-preview" style="font-weight:700">Aa</span>
-                        <div class="font-swatch-meta">
-                            <span class="swatch-var">weight-700</span>
-                            <span class="swatch-desc">Bold — values / badges</span>
-                            <input class="swatch-hex" value="700">
-                        </div>
-                    </div>
-                    <div class="font-swatch-item font-swatch-family">
-                        <span class="font-swatch-preview" style="font-size:13px;letter-spacing:0.05em">JM</span>
-                        <div class="font-swatch-meta">
-                            <span class="swatch-var">font-family</span>
-                            <span class="swatch-desc">JetBrains Mono</span>
-                            <input class="swatch-hex" value="'JetBrains Mono'">
-                        </div>
-                    </div>
-                </div>
 
             </div><!-- end view-settings -->
 
@@ -1948,5 +1815,46 @@
         initColorPicker();
     }, 100);
 </script>
+
+<!-- Stella milestone popup (create / view) -->
+<div class="stella-popup-overlay" id="stella-event-popup" onclick="closeStellaPopup(event)">
+    <div class="stella-popup-inner" onclick="event.stopPropagation()">
+        <div class="stella-popup-header">
+            <span class="panel-label" id="stella-popup-title-bar"><i class="fa-solid fa-timeline"></i> NEW_MILESTONE</span>
+            <button class="stella-popup-close" onclick="closeStellaPopup()">&#x2715;</button>
+        </div>
+        <div class="stella-popup-body">
+            <div class="stella-form-row">
+                <label class="stella-form-label">TITLE</label>
+                <input class="stella-form-input" id="stella-ms-title" type="text" placeholder="e.g. First birthday">
+            </div>
+            <div class="stella-form-row">
+                <label class="stella-form-label">DATE</label>
+                <input class="stella-form-input" id="stella-ms-date" type="text" placeholder="YYYY-MM-DD or YYYY-MMM">
+                <span class="stella-form-hint">e.g. 2024-02-14 or 2024-FEB</span>
+            </div>
+            <div class="stella-form-row">
+                <label class="stella-form-label">PHOTO</label>
+                <div class="stella-photo-drop" id="stella-photo-drop"
+                     ondragover="stellaPhotoDragOver(event)"
+                     ondrop="stellaPhotoDrop(event)"
+                     onclick="document.getElementById('stella-photo-file').click()">
+                    <i class="fa-solid fa-image" style="font-size:20px;color:var(--muted);margin-bottom:6px"></i>
+                    <div style="font-size:11px;color:var(--muted)">DROP PHOTO HERE or CLICK TO BROWSE</div>
+                    <img id="stella-photo-preview" src="" alt="" style="display:none;max-width:100%;max-height:120px;margin-top:8px;border:1px solid var(--border)">
+                </div>
+                <input type="file" id="stella-photo-file" accept="image/*" style="display:none" onchange="stellaPhotoFile(event)">
+            </div>
+            <div class="stella-form-row">
+                <label class="stella-form-label">DESCRIPTION</label>
+                <textarea class="stella-form-input stella-form-textarea" id="stella-ms-desc" placeholder="Short note about this milestone..."></textarea>
+            </div>
+        </div>
+        <div class="stella-popup-actions">
+            <button class="stella-popup-save" onclick="saveStellaNewMilestone()"><i class="fa-solid fa-floppy-disk"></i> SAVE_MILESTONE</button>
+            <button class="stella-popup-cancel" onclick="closeStellaPopup()">CANCEL</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>

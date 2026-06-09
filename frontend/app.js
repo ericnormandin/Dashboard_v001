@@ -19,6 +19,16 @@ let securityScanRun = false;
 
 // ================= MOCKUP DATASETS (ACCORDING TO DESIGN SPECIFICATIONS) =================
 
+// Stella timeline milestones
+const mockStellaTimeline = [
+    { date: '2023-02-14', title: 'Born',        label: 'Feb 14 · 3.4 kg',          description: 'Stella arrived on Valentine\'s Day, weighing 3.4 kg.',  photo: null },
+    { date: '2024-04',    title: 'First steps', label: 'Apr · 13 months',           description: 'Took her first independent steps at 13 months.',         photo: null },
+    { date: '2024-09',    title: 'First words', label: 'Sep · "mama" / "dada"',     description: 'Started saying "mama" and "dada" clearly.',             photo: null },
+    { date: '2026-01',    title: 'Daycare',     label: 'Started Jan · loves it',    description: 'Started daycare in January 2026. Loves it.',             photo: null, isNow: true },
+    { date: '2027',       title: 'Swim lessons',label: 'Planned · summer term',     description: 'Planned summer swim lessons.',                           photo: null },
+    { date: '2029-09',    title: 'Kindergarten',label: 'Sep · starts school',       description: 'Starts kindergarten in September 2029.',                 photo: null, isGoal: true },
+];
+
 // Category breakdowns for budget.sys
 const mockBudgetCategories = [
     // --- VARIABLE ---
@@ -681,6 +691,7 @@ function initColorPicker() {
 
 // ================= VIEW: STELLA =================
 function renderStellaScreen() {
+    _renderStellaTimeline();
     _renderStellaCalendar();
     _initStellaTodos();
 }
@@ -707,6 +718,135 @@ function _initStellaTodos() {
             if (badge) badge.textContent = 'DONE';
         }
     });
+}
+
+function _renderStellaTimeline() {
+    const track = document.getElementById('stella-timeline-track');
+    if (!track) return;
+    track.innerHTML = mockStellaTimeline.map((m, i) => {
+        const year = m.date.slice(0, 4);
+        const isLast = i === mockStellaTimeline.length - 1;
+        const photo = m.photo ? `<img class="stella-tl-photo" src="${m.photo}" alt="${m.title}">` : '';
+        return `
+            <div class="ret-tl-col${m.isNow ? ' now' : ''}${m.isGoal ? ' goal' : ''}" style="cursor:pointer" onclick="openStellaViewMilestone(${i})">
+                ${photo}
+                <div class="ret-tl-content">
+                    <div class="ret-tl-year">${m.isNow ? '<span class="ret-tl-now-badge">NOW</span>' : ''}${year}</div>
+                    <div class="ret-tl-val">${m.title}</div>
+                    <div class="ret-tl-label">${m.label}</div>
+                </div>
+                <div class="ret-tl-spine">
+                    <div class="ret-tl-dot${m.isNow ? ' now' : ''}${m.isGoal ? ' goal' : ''}"></div>
+                    ${!isLast ? '<div class="ret-tl-line"></div>' : ''}
+                </div>
+            </div>`;
+    }).join('');
+}
+
+// ── Stella milestone popup ─────────────────────────────────────────────────
+
+function openStellaNewMilestone() {
+    const popup = document.getElementById('stella-event-popup');
+    if (!popup) return;
+    document.getElementById('stella-popup-title-bar').innerHTML = '<i class="fa-solid fa-plus"></i> NEW_MILESTONE';
+    document.getElementById('stella-ms-title').value = '';
+    document.getElementById('stella-ms-date').value = '';
+    document.getElementById('stella-ms-desc').value = '';
+    _stellaPhotoClear();
+    popup.dataset.mode = 'create';
+    popup.classList.add('visible');
+}
+
+function openStellaViewMilestone(index) {
+    const m = mockStellaTimeline[index];
+    if (!m) return;
+    const popup = document.getElementById('stella-event-popup');
+    document.getElementById('stella-popup-title-bar').innerHTML = `<i class="fa-solid fa-timeline"></i> ${m.title}`;
+    document.getElementById('stella-ms-title').value = m.title;
+    document.getElementById('stella-ms-date').value = m.date;
+    document.getElementById('stella-ms-desc').value = m.description || '';
+    _stellaPhotoClear();
+    if (m.photo) {
+        const preview = document.getElementById('stella-photo-preview');
+        preview.src = m.photo;
+        preview.style.display = 'block';
+        document.getElementById('stella-photo-drop').dataset.photo = m.photo;
+    }
+    popup.dataset.mode = 'view';
+    popup.dataset.editIndex = index;
+    popup.classList.add('visible');
+}
+
+function closeStellaPopup(e) {
+    if (e && e.target !== document.getElementById('stella-event-popup')) return;
+    const popup = document.getElementById('stella-event-popup');
+    if (popup) popup.classList.remove('visible');
+}
+
+function saveStellaNewMilestone() {
+    const title = document.getElementById('stella-ms-title').value.trim();
+    const date  = document.getElementById('stella-ms-date').value.trim();
+    const desc  = document.getElementById('stella-ms-desc').value.trim();
+    const photo = document.getElementById('stella-photo-drop').dataset.photo || null;
+
+    if (!title || !date) {
+        document.getElementById('stella-ms-title').style.borderColor = title ? '' : 'var(--red)';
+        document.getElementById('stella-ms-date').style.borderColor  = date  ? '' : 'var(--red)';
+        return;
+    }
+
+    const year = date.slice(0, 4);
+    // Build a short label from date
+    const parts = date.split('-');
+    const monthNames = ['','JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    let label = year;
+    if (parts[1]) {
+        const mIdx = parseInt(parts[1], 10);
+        const mName = isNaN(mIdx) ? parts[1].toUpperCase() : (monthNames[mIdx] || parts[1].toUpperCase());
+        label = parts[2] ? `${mName} ${parseInt(parts[2], 10)}` : mName;
+    }
+
+    mockStellaTimeline.push({ date, title, label, description: desc, photo });
+    // Sort by date string (lexicographic, works for YYYY-MM-DD and YYYY-MM)
+    mockStellaTimeline.sort((a, b) => a.date.localeCompare(b.date));
+
+    _renderStellaTimeline();
+    document.getElementById('stella-event-popup').classList.remove('visible');
+}
+
+function stellaPhotoDragOver(e) {
+    e.preventDefault();
+    document.getElementById('stella-photo-drop').classList.add('drag-over');
+}
+
+function stellaPhotoDrop(e) {
+    e.preventDefault();
+    document.getElementById('stella-photo-drop').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) _stellaPhotoLoad(file);
+}
+
+function stellaPhotoFile(e) {
+    const file = e.target.files[0];
+    if (file) _stellaPhotoLoad(file);
+}
+
+function _stellaPhotoLoad(file) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+        const preview = document.getElementById('stella-photo-preview');
+        preview.src = ev.target.result;
+        preview.style.display = 'block';
+        document.getElementById('stella-photo-drop').dataset.photo = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function _stellaPhotoClear() {
+    const drop = document.getElementById('stella-photo-drop');
+    const preview = document.getElementById('stella-photo-preview');
+    if (drop) { drop.dataset.photo = ''; drop.classList.remove('drag-over'); }
+    if (preview) { preview.src = ''; preview.style.display = 'none'; }
 }
 
 function _renderStellaCalendar() {

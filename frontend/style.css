@@ -1823,6 +1823,163 @@ nav.sidebar-nav {
     flex-shrink: 0;
 }
 
+/* ── CREATE_MILESTONE button ── */
+.stella-add-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    background: rgba(var(--bronze-rgb), 0.08);
+    border: 1px solid rgba(var(--bronze-rgb), 0.3);
+    color: var(--bronze);
+    cursor: pointer;
+    white-space: nowrap;
+}
+.stella-add-btn:hover { background: rgba(var(--bronze-rgb), 0.18); color: var(--gold); border-color: var(--gold); }
+
+/* ── Stella milestone photo thumb on timeline ── */
+.stella-tl-photo {
+    width: 60px;
+    height: 44px;
+    object-fit: cover;
+    border: 1px solid var(--border);
+    margin-bottom: 4px;
+    align-self: center;
+}
+
+/* ── Stella event popup overlay ── */
+.stella-popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+.stella-popup-overlay.visible { display: flex; }
+
+.stella-popup-inner {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    width: 420px;
+    max-width: 96vw;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.stella-popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    background: var(--panel-alt);
+}
+
+.stella-popup-close {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    padding: 2px 4px;
+}
+.stella-popup-close:hover { color: var(--text); }
+
+.stella-popup-body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.stella-form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stella-form-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.stella-form-hint {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+}
+
+.stella-form-input {
+    background: var(--panel-alt);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    padding: 6px 8px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+.stella-form-input:focus { border-color: var(--bronze); }
+
+.stella-form-textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.stella-photo-drop {
+    border: 1px dashed var(--border);
+    background: var(--panel-alt);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    min-height: 70px;
+    transition: border-color 0.2s;
+}
+.stella-photo-drop:hover,
+.stella-photo-drop.drag-over { border-color: var(--bronze); background: rgba(var(--bronze-rgb), 0.06); }
+
+.stella-popup-actions {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+    border-top: 1px solid var(--border);
+    background: var(--panel-alt);
+}
+
+.stella-popup-save {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 6px 14px;
+    background: rgba(var(--bronze-rgb), 0.12);
+    border: 1px solid rgba(var(--bronze-rgb), 0.4);
+    color: var(--gold);
+    cursor: pointer;
+}
+.stella-popup-save:hover { background: rgba(var(--bronze-rgb), 0.22); }
+
+.stella-popup-cancel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 6px 14px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+}
+.stella-popup-cancel:hover { border-color: var(--muted); color: var(--text); }
+
 .stella-photo-frame {
     aspect-ratio: 1;
     max-width: 140px;
@@ -2592,13 +2749,14 @@ nav.sidebar-nav {
    SETTINGS VIEW
    ============================================================ */
 #view-settings {
-    grid-template-columns: 1fr 260px;
+    grid-template-columns: repeat(6, 1fr);
     gap: var(--grid-gap);
     align-items: stretch;
     overflow-y: auto;
 }
 .settings-creds-grid {
     display: grid;
+    grid-column: 1 / span 5;
     grid-template-columns: repeat(5, 1fr);
     gap: var(--grid-gap);
     align-items: start;
@@ -2705,75 +2863,93 @@ nav.sidebar-nav {
 }
 .sheet-add-btn:hover { color: var(--gold); border-color: var(--bronze); }
 
-/* Color palette panel */
-.palette-section-label {
+/* Color palette panel — 2-column table layout */
+.palette-table {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.palette-sect-hdr {
     font-size: 10px;
     color: var(--muted);
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    margin-bottom: 6px;
-    padding-bottom: 4px;
+    padding: 8px 0 3px;
     border-bottom: 1px solid var(--border-lt);
+    margin-bottom: 2px;
 }
-.palette-grid {
+.palette-sect-hdr:first-child { padding-top: 2px; }
+.palette-row {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 6px;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px;
+    border: 1px solid transparent;
+    border-radius: 2px;
 }
-.swatch-item {
+.palette-row-label {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+    overflow: hidden;
+}
+.palette-row-desc {
+    font-size: 9px;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.palette-row-swatch {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px;
+    gap: 5px;
+}
+.palette-row-value {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.palette-font-preview {
+    color: var(--gold);
+    font-family: 'JetBrains Mono', monospace;
+    min-width: 20px;
+    text-align: center;
+    line-height: 1;
+    flex-shrink: 0;
+}
+.swatch-item {
+    cursor: pointer;
     background: var(--panel-alt);
-    border: 1px solid var(--border-lt);
+    border-color: var(--border-lt);
+}
+.swatch-item:hover { border-color: var(--bronze); background: var(--active-bg); }
+.font-swatch-item {
+    background: var(--panel-alt);
+    border-color: var(--border-lt);
 }
 .swatch-color {
-    width: 38px;
-    height: 38px;
+    width: 24px;
+    height: 24px;
     flex-shrink: 0;
     border: 1px solid var(--border);
 }
-.swatch-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.swatch-var  { font-size: 10px; color: var(--gold); letter-spacing: 0.08em; }
-.swatch-desc { font-size: 9px;  color: var(--muted); }
+.swatch-var { font-size: 10px; color: var(--gold); letter-spacing: 0.06em; }
 .swatch-hex {
     background: var(--bg);
     border: 1px solid var(--border);
     color: var(--text);
     font-family: 'JetBrains Mono', 'Courier New', monospace;
     font-size: 10px;
-    padding: 2px 5px;
-    width: 100%;
+    padding: 2px 4px;
+    width: 68px;
     outline: none;
     border-radius: 0;
 }
 .swatch-hex:focus { border-color: var(--gold); }
-
-.font-swatch-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 7px 8px;
-    background: var(--panel-alt);
-    border: 1px solid var(--border-lt);
-    margin-bottom: 6px;
-}
-.font-swatch-preview {
-    width: 38px;
-    flex-shrink: 0;
-    color: var(--gold);
-    font-family: 'JetBrains Mono', monospace;
-    text-align: center;
-    line-height: 1;
-}
-.font-swatch-meta {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
+.font-swatch-item .swatch-hex { width: 80px; }
 
 /* ============================================================
    COLOR PICKER MODAL
@@ -2904,12 +3080,7 @@ nav.sidebar-nav {
 }
 .cp-apply-btn:hover { background: var(--bronze) !important; border-color: var(--bronze) !important; }
 
-/* Swatch hover affordance */
-.swatch-item {
-    cursor: pointer;
-    transition: border-color 0.12s, background 0.12s;
-}
-.swatch-item:hover { border-color: var(--bronze); background: var(--active-bg); }
+.swatch-item { transition: border-color 0.12s, background 0.12s; }
 
 
 /* Col-stack panels can grow to fill remaining vertical space */
