@@ -1,0 +1,46 @@
+[
+  {
+    "date": "2023-02-14",
+    "title": "Born",
+    "label": "Feb 14 · 3.4 kg",
+    "description": "Stella arrived on Valentine's Day, weighing 3.4 kg.",
+    "photo": null
+  },
+  {
+    "date": "2024-04",
+    "title": "First steps",
+    "label": "Apr · 13 months",
+    "description": "Took her first independent steps at 13 months.",
+    "photo": null
+  },
+  {
+    "date": "2024-09",
+    "title": "First words",
+    "label": "Sep · \"mama\" / \"dada\"",
+    "description": "Started saying \"mama\" and \"dada\" clearly.",
+    "photo": null
+  },
+  {
+    "date": "2026-01",
+    "title": "Daycare",
+    "label": "Started Jan · loves it",
+    "description": "Started daycare in January 2026. Loves it.",
+    "photo": null,
+    "isNow": true
+  },
+  {
+    "date": "2027",
+    "title": "Swim lessons",
+    "label": "Planned · summer term",
+    "description": "Planned summer swim lessons.",
+    "photo": null
+  },
+  {
+    "date": "2029-09",
+    "title": "Kindergarten",
+    "label": "Sep · starts school",
+    "description": "Starts kindergarten in September 2029.",
+    "photo": null,
+    "isGoal": true
+  }
+]

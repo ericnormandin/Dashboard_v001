@@ -19,15 +19,8 @@ let securityScanRun = false;
 
 // ================= MOCKUP DATASETS (ACCORDING TO DESIGN SPECIFICATIONS) =================
 
-// Stella timeline milestones
-const mockStellaTimeline = [
-    { date: '2023-02-14', title: 'Born',        label: 'Feb 14 · 3.4 kg',          description: 'Stella arrived on Valentine\'s Day, weighing 3.4 kg.',  photo: null },
-    { date: '2024-04',    title: 'First steps', label: 'Apr · 13 months',           description: 'Took her first independent steps at 13 months.',         photo: null },
-    { date: '2024-09',    title: 'First words', label: 'Sep · "mama" / "dada"',     description: 'Started saying "mama" and "dada" clearly.',             photo: null },
-    { date: '2026-01',    title: 'Daycare',     label: 'Started Jan · loves it',    description: 'Started daycare in January 2026. Loves it.',             photo: null, isNow: true },
-    { date: '2027',       title: 'Swim lessons',label: 'Planned · summer term',     description: 'Planned summer swim lessons.',                           photo: null },
-    { date: '2029-09',    title: 'Kindergarten',label: 'Sep · starts school',       description: 'Starts kindergarten in September 2029.',                 photo: null, isGoal: true },
-];
+// Stella timeline milestones — loaded from Stella_data/timeline.json via API
+let stellaTimeline = [];
 
 // Category breakdowns for budget.sys
 const mockBudgetCategories = [
@@ -691,9 +684,32 @@ function initColorPicker() {
 
 // ================= VIEW: STELLA =================
 function renderStellaScreen() {
-    _renderStellaTimeline();
+    _loadStellaTimeline();
     _renderStellaCalendar();
     _initStellaTodos();
+}
+
+async function _loadStellaTimeline() {
+    try {
+        const res = await fetch('http://127.0.0.1:8000/api/stella/timeline');
+        const data = await res.json();
+        if (Array.isArray(data)) stellaTimeline = data;
+    } catch {
+        // backend unavailable — stellaTimeline stays as whatever was last loaded
+    }
+    _renderStellaTimeline();
+}
+
+async function _saveStellaTimeline() {
+    try {
+        await fetch('http://127.0.0.1:8000/api/stella/timeline', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ milestones: stellaTimeline }),
+        });
+    } catch {
+        // silently fail — in-memory state is still correct
+    }
 }
 
 function _initStellaTodos() {
@@ -723,13 +739,15 @@ function _initStellaTodos() {
 function _renderStellaTimeline() {
     const track = document.getElementById('stella-timeline-track');
     if (!track) return;
-    track.innerHTML = mockStellaTimeline.map((m, i) => {
+    track.innerHTML = stellaTimeline.map((m, i) => {
         const year = m.date.slice(0, 4);
-        const isLast = i === mockStellaTimeline.length - 1;
+        const isLast = i === stellaTimeline.length - 1;
         const photo = m.photo ? `<img class="stella-tl-photo" src="${m.photo}" alt="${m.title}">` : '';
+        const thumbTip = m.photo ? `<img class="stella-tl-thumb-tip" src="${m.photo}" alt="">` : '';
         return `
-            <div class="ret-tl-col${m.isNow ? ' now' : ''}${m.isGoal ? ' goal' : ''}" style="cursor:pointer" onclick="openStellaViewMilestone(${i})">
+            <div class="ret-tl-col${m.isNow ? ' now' : ''}${m.isGoal ? ' goal' : ''}${m.photo ? ' has-thumb' : ''}" style="cursor:pointer" onclick="openStellaViewMilestone(${i})">
                 ${photo}
+                ${thumbTip}
                 <div class="ret-tl-content">
                     <div class="ret-tl-year">${m.isNow ? '<span class="ret-tl-now-badge">NOW</span>' : ''}${year}</div>
                     <div class="ret-tl-val">${m.title}</div>
@@ -753,12 +771,13 @@ function openStellaNewMilestone() {
     document.getElementById('stella-ms-date').value = '';
     document.getElementById('stella-ms-desc').value = '';
     _stellaPhotoClear();
+    document.getElementById('stella-ms-delete-btn').style.display = 'none';
     popup.dataset.mode = 'create';
     popup.classList.add('visible');
 }
 
 function openStellaViewMilestone(index) {
-    const m = mockStellaTimeline[index];
+    const m = stellaTimeline[index];
     if (!m) return;
     const popup = document.getElementById('stella-event-popup');
     document.getElementById('stella-popup-title-bar').innerHTML = `<i class="fa-solid fa-timeline"></i> ${m.title}`;
@@ -772,6 +791,7 @@ function openStellaViewMilestone(index) {
         preview.style.display = 'block';
         document.getElementById('stella-photo-drop').dataset.photo = m.photo;
     }
+    document.getElementById('stella-ms-delete-btn').style.display = '';
     popup.dataset.mode = 'view';
     popup.dataset.editIndex = index;
     popup.classList.add('visible');
@@ -806,12 +826,23 @@ function saveStellaNewMilestone() {
         label = parts[2] ? `${mName} ${parseInt(parts[2], 10)}` : mName;
     }
 
-    mockStellaTimeline.push({ date, title, label, description: desc, photo });
-    // Sort by date string (lexicographic, works for YYYY-MM-DD and YYYY-MM)
-    mockStellaTimeline.sort((a, b) => a.date.localeCompare(b.date));
+    document.getElementById('stella-event-popup').classList.remove('visible');
+
+    stellaTimeline.push({ date, title, label, description: desc, photo });
+    stellaTimeline.sort((a, b) => a.date.localeCompare(b.date));
 
     _renderStellaTimeline();
-    document.getElementById('stella-event-popup').classList.remove('visible');
+    _saveStellaTimeline();
+}
+
+function deleteStellaMilestone() {
+    const popup = document.getElementById('stella-event-popup');
+    const idx = parseInt(popup.dataset.editIndex, 10);
+    if (isNaN(idx) || idx < 0 || idx >= stellaTimeline.length) return;
+    popup.classList.remove('visible');
+    stellaTimeline.splice(idx, 1);
+    _renderStellaTimeline();
+    _saveStellaTimeline();
 }
 
 function stellaPhotoDragOver(e) {

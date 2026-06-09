@@ -35,6 +35,8 @@ Then stop.
 
 ## Step 2 — Show selection menu
 
+**Always present this menu every time the skill runs — even if a layout was just applied moments ago.** The user iterates on the same mockup repeatedly with small changes each time; never skip or infer the selection.
+
 Use the `AskUserQuestion` tool to present a single-select question. Build the options list dynamically from the filenames found in Step 1:
 
 - **question**: `"Which mockup would you like to apply?"`
@@ -85,6 +87,19 @@ Study the mockup carefully:
 - **Proportions** — column ratios (e.g. 2:1:1), row heights, which panels span multiple columns
 - **Any new elements** not currently present in the HTML
 
+### Annotation conventions
+
+Mockups may use the following visual markup to communicate intent — treat these as **strict, authoritative layout instructions**:
+
+- **Red outline boxes** — define the exact position AND size of each panel. The box boundary is the ground truth for both width and height. You MUST translate box proportions into `grid-template-rows` and `grid-template-columns` fractions accurately:
+  - Measure the pixel height of each row of boxes relative to the total content height. Convert to `fr` units that match those ratios (e.g. if row 1 is twice as tall as row 2, use `2fr 1fr`).
+  - Measure the pixel width of each column relative to total width and express as `fr` units.
+  - A box that spans two rows means that grid area uses `grid-row: span 2` — implement it that way.
+  - Do not default to equal rows/columns (`1fr 1fr`) unless the boxes are visually equal in the mockup. Always derive the actual ratios from the image.
+- **White text labels** — identify the panel by name (usually matches a `*.sys` identifier). Use this name to map the box to the correct existing panel or to name a new one.
+
+After reading the image, explicitly state the row height ratios and column width ratios you measured before writing any CSS.
+
 ---
 
 ## Step 6 — Diff mockup against current layout
@@ -97,15 +112,17 @@ Compare what you see in the image against the current `#view-{tabname}` HTML and
 - Panels that have been removed
 - Content within panels that has changed (new charts, different data, etc.)
 
-State your findings in one compact block before touching any code:
+State your findings in one compact block before touching any code. Always include the measured row/column ratios:
 
 ```
 LAYOUT DIFF — Crypto
 ────────────────────────────────────────
-  MOVED   : fear_greed.sys — was bottom-left, now top-right
-  RESIZED : trading_view.sys — now spans 2 cols
-  NEW     : alerts.sys panel (bottom strip, full width)
-  REMOVED : (none)
+  COLUMNS  : 1fr 2fr 1fr 1fr  (measured from box widths)
+  ROWS     : 1.8fr 1fr        (row 1 ~64% of height, row 2 ~36%)
+  MOVED    : fear_greed.sys — was bottom-left, now top-right
+  RESIZED  : trading_view.sys — now spans 2 cols
+  NEW      : alerts.sys panel (bottom strip, full width)
+  REMOVED  : (none)
 ────────────────────────────────────────
 Applying changes...
 ```

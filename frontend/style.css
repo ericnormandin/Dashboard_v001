@@ -1802,7 +1802,7 @@ nav.sidebar-nav {
     gap: var(--grid-gap);
     grid-template-areas:
         "basicinfo photos   photos   health  aiinsights"
-        "budget    calendar news     health  todo"
+        "calendar  budget   news     health  todo"
         "timeline  timeline timeline timeline timeline";
     align-items: stretch;
 }
@@ -1817,6 +1817,34 @@ nav.sidebar-nav {
     flex: 1;
     min-height: 0;
     overflow-y: auto;
+}
+
+/* ── large top news panel ── */
+.stella-bignews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 6px 10px 10px;
+}
+.stella-bignews-featured {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+}
+.stella-bignews-featured .news-headline {
+    font-size: 14px;
+    color: var(--slate);
+}
+.stella-bignews-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.stella-bignews-grid .news-item {
+    border: none;
+    padding: 0;
 }
 
 #panel-stella-timeline .ret-tl-scroll {
@@ -1846,6 +1874,24 @@ nav.sidebar-nav {
     margin-bottom: 4px;
     align-self: center;
 }
+
+/* hover thumbnail tooltip */
+.stella-tl-thumb-tip {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 90px;
+    object-fit: cover;
+    border: 1px solid var(--gold);
+    background: var(--panel);
+    z-index: 20;
+    pointer-events: none;
+}
+.ret-tl-col.has-thumb { position: relative; }
+.ret-tl-col.has-thumb:hover .stella-tl-thumb-tip { display: block; }
 
 /* ── Stella event popup overlay ── */
 .stella-popup-overlay {
@@ -1979,6 +2025,18 @@ nav.sidebar-nav {
     cursor: pointer;
 }
 .stella-popup-cancel:hover { border-color: var(--muted); color: var(--text); }
+
+.stella-popup-delete {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    padding: 6px 14px;
+    background: rgba(237, 71, 60, 0.10);
+    border: 1px solid rgba(237, 71, 60, 0.35);
+    color: var(--red);
+    cursor: pointer;
+}
+.stella-popup-delete:hover { background: rgba(237, 71, 60, 0.22); }
 
 .stella-photo-frame {
     aspect-ratio: 1;
