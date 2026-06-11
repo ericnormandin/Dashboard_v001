@@ -1,11 +1,16 @@
 ---
 name: layout
-description: Layout updater for Dashboard_v001. Scans Design_Mockup/Layout for PNG mockups, lets the user pick one, reads the image, then updates the matching dashboard tab to match the design.
+description: Layout updater for Dashboard_v001. Scans Design_Mockup/Layout for PNG mockups, lets the user pick one, then asks whether to apply the grid layout, update content inside specific panels, or both.
 ---
 
 ## Overview
 
-This skill reads mockup images from `G:\Dashboard\Dashboard_v001\Design_Mockup\Layout` and applies their layout to the corresponding dashboard tab. The image filename maps directly to the tab name (e.g. `Crypto.png` → the Crypto tab).
+This skill reads mockup images from `G:\Dashboard\Dashboard_v001\Design_Mockup\Layout` and applies their design to the corresponding dashboard tab. It operates in two modes:
+
+- **Layout mode** — updates the CSS grid (panel positions and sizes) based on red outline boxes in the mockup.
+- **Panel content mode** — updates the HTML/JS/CSS content *inside* selected panels to match what the mockup shows inside them.
+
+Both modes can be applied in a single run.
 
 ---
 
@@ -17,7 +22,7 @@ Use the Glob tool to list all `.png` (and `.jpg`, `.jpeg`, `.webp`) files under:
 G:\Dashboard\Dashboard_v001\Design_Mockup\Layout
 ```
 
-Extract just the base filename (without extension) for each file — that is the layout name. Sort alphabetically.
+Extract just the base filename (without extension) for each file — that is the layout name. Sort alphabetically. Ignore files inside sub-folders for this list (sub-folder files are per-panel mockups, handled separately).
 
 If the folder is empty or contains no image files, tell the user:
 
@@ -33,37 +38,99 @@ Then stop.
 
 ---
 
-## Step 2 — Show selection menu
+## Step 2 — Show mockup selection
 
-**Always present this menu every time the skill runs — even if a layout was just applied moments ago.** The user iterates on the same mockup repeatedly with small changes each time; never skip or infer the selection.
+**Always present this menu every time the skill runs.** The user iterates on the same mockup repeatedly; never skip or infer the selection.
 
-Use the `AskUserQuestion` tool to present a single-select question. Build the options list dynamically from the filenames found in Step 1:
+Use `AskUserQuestion` — single select:
 
 - **question**: `"Which mockup would you like to apply?"`
 - **header**: `"Mockup"`
 - **multiSelect**: `false`
-- **options**: one entry per file, with `label` = filename stem (e.g. `"Crypto"`) and `description` = the relative path (e.g. `"Design_Mockup/Layout/Crypto.png"`)
-
-Wait for the user to select an option. The selected label is the layout name; proceed to Step 3.
+- **options**: one per file, `label` = filename stem, `description` = relative path
 
 ---
 
-## Step 3 — Confirm selection
+## Step 3 — Extract panels and ask for scope
 
-Echo back the chosen layout name so the user knows what was selected:
+After the mockup is selected, determine the tab name (lowercase filename stem, e.g. `"stella"`).
+
+### 3a — Extract panel names from the HTML
+
+Use Grep to find all panel labels inside `#view-{tabname}` in `frontend/index.html`:
 
 ```
-► Selected: Crypto  (Design_Mockup/Layout/Crypto.png)
-  Reading mockup image and current tab files...
+pattern:  panel-label
+path:     frontend/index.html
+output:   content
+```
+
+From the matching lines, extract the `*.sys` names (strip icon HTML, keep the `something.sys` text). Also collect the panel element IDs (e.g. `panel-stella-photos` → `photos.sys`). Build a deduplicated list of panel names in the order they appear.
+
+### 3b — Ask for scope (paginated)
+
+The `AskUserQuestion` tool is capped at 4 options. Use the following pagination strategy so all panels are reachable:
+
+**Page 1** — always the same structure:
+- Option 1: `"Only layout"` — `"Apply grid positions and sizes only — ignore panel content"`
+- Options 2–4: panels 1–3 from your extracted list (in DOM order)
+
+```
+question:    "What should be applied? (page 1 of N)"
+header:      "Scope"
+multiSelect: true
+options:     [ "Only layout", panel1, panel2, panel3 ]
+```
+
+**After page 1**, check: did the user select anything from this page? Then ask follow-up pages for the remaining panels, 3 at a time, until all panels have been offered. Each follow-up page looks like:
+
+```
+question:    "Any more panels? (page 2 of N)"
+header:      "More panels"
+multiSelect: true
+options:     [ "Done — no more panels", panel4, panel5, panel6 ]
+```
+
+Keep asking until either the user selects `"Done — no more panels"` or all panels have been shown. Accumulate all selected panel labels across all pages into a single set.
+
+**Tip**: If the tab has ≤ 3 panels, only one page is needed — no follow-up required.
+
+After all pages, interpret the accumulated selections as follows:
+
+| Accumulated selection | Mode |
+|---|---|
+| "Only layout" selected (panel selections ignored) | **Layout-only mode** |
+| One or more panels, "Only layout" NOT selected | **Panel content mode** |
+| One or more panels AND "Only layout" selected | **Combined mode** — layout first, then panel content |
+| Nothing selected / unclear | Default to layout-only mode |
+
+---
+
+## Step 4 — Confirm selection
+
+Echo back the chosen mockup and mode so the user knows what will happen:
+
+```
+► Mockup : Stella  (Design_Mockup/Layout/Stella.png)
+► Mode   : Panel content  →  photos.sys, health.sys
+  Reading files...
+```
+
+or
+
+```
+► Mockup : Stella  (Design_Mockup/Layout/Stella.png)
+► Mode   : Layout only
+  Reading files...
 ```
 
 ---
 
-## Step 4 — Map filename to tab context
+## Step 5 — Read source files
 
-Convert the filename stem to lowercase to get the **tab name** (`crypto`, `stella`, `overview`, etc.).
+Convert the filename stem to lowercase to get the **tab name**.
 
-This determines which files to read and modify:
+Read all three source files in full:
 
 | File | Scope |
 |---|---|
@@ -71,89 +138,106 @@ This determines which files to read and modify:
 | `frontend/app.js` | The `render{Tabname}Screen()` function and any helpers it calls |
 | `frontend/style.css` | CSS classes used exclusively in that view |
 
-Read all three files in full — they are large but needed for context.
+---
+
+## Step 6 — Read the mockup image
+
+Use the Read tool to open the image at its full path. The tool renders images visually.
+
+### In Layout-only mode or Combined mode — study for grid structure:
+
+- **Red outline boxes** — ground truth for panel position and size. Measure pixel proportions and convert to `fr` units.
+  - Measure each row height relative to total content height → `grid-template-rows`
+  - Measure each column width relative to total content width → `grid-template-columns`
+  - Note any panels that span multiple rows or columns
+  - Do NOT default to equal fractions — always derive actual ratios from the image
+- **White text labels** — identify which panel each box corresponds to
+
+After reading, explicitly state the measured row and column ratios before writing any CSS.
+
+### In Panel content mode or Combined mode — study selected panel interiors:
+
+For each selected panel, zoom your attention to that panel's area in the mockup:
+
+- Identify every visible UI element inside the panel: stat rows, charts, progress bars, buttons, labels, images, lists, grids, tables, etc.
+- Note the visual order and grouping of elements (top to bottom, left to right)
+- Note any elements that are present in the mockup but missing from the current HTML, or vice versa
+- Note layout within the panel: is it a flex column? a two-column grid? stacked sections?
+- Note any new text labels, section headers, or data categories shown
+
+Do this analysis per selected panel before writing any code.
 
 ---
 
-## Step 5 — Read the mockup image
+## Step 7 — Diff mockup against current state
 
-Use the Read tool to open the image file at its full path (e.g. `G:\Dashboard\Dashboard_v001\Design_Mockup\Layout\Crypto.png`). The tool renders images visually for multimodal inspection.
-
-Study the mockup carefully:
-
-- **Panel arrangement** — count panels, their grid positions, relative sizes (wide/narrow, tall/short)
-- **Panel labels** — the `*.sys` header names shown in each panel
-- **Content within panels** — charts, tables, lists, gauges, ticker rows, text blocks
-- **Proportions** — column ratios (e.g. 2:1:1), row heights, which panels span multiple columns
-- **Any new elements** not currently present in the HTML
-
-### Annotation conventions
-
-Mockups may use the following visual markup to communicate intent — treat these as **strict, authoritative layout instructions**:
-
-- **Red outline boxes** — define the exact position AND size of each panel. The box boundary is the ground truth for both width and height. You MUST translate box proportions into `grid-template-rows` and `grid-template-columns` fractions accurately:
-  - Measure the pixel height of each row of boxes relative to the total content height. Convert to `fr` units that match those ratios (e.g. if row 1 is twice as tall as row 2, use `2fr 1fr`).
-  - Measure the pixel width of each column relative to total width and express as `fr` units.
-  - A box that spans two rows means that grid area uses `grid-row: span 2` — implement it that way.
-  - Do not default to equal rows/columns (`1fr 1fr`) unless the boxes are visually equal in the mockup. Always derive the actual ratios from the image.
-- **White text labels** — identify the panel by name (usually matches a `*.sys` identifier). Use this name to map the box to the correct existing panel or to name a new one.
-
-After reading the image, explicitly state the row height ratios and column width ratios you measured before writing any CSS.
-
----
-
-## Step 6 — Diff mockup against current layout
-
-Compare what you see in the image against the current `#view-{tabname}` HTML and CSS grid. Identify specifically:
-
-- Panels that have moved to a different grid area
-- Panels that have been resized (wider, taller, split, merged)
-- New panels that don't exist yet
-- Panels that have been removed
-- Content within panels that has changed (new charts, different data, etc.)
-
-State your findings in one compact block before touching any code. Always include the measured row/column ratios:
+### Layout-only or Combined mode — grid diff:
 
 ```
-LAYOUT DIFF — Crypto
+LAYOUT DIFF — Stella
 ────────────────────────────────────────
-  COLUMNS  : 1fr 2fr 1fr 1fr  (measured from box widths)
-  ROWS     : 1.8fr 1fr        (row 1 ~64% of height, row 2 ~36%)
-  MOVED    : fear_greed.sys — was bottom-left, now top-right
-  RESIZED  : trading_view.sys — now spans 2 cols
-  NEW      : alerts.sys panel (bottom strip, full width)
+  COLUMNS  : 2.4fr 2fr 2fr 1.6fr 1fr  (measured from box widths)
+  ROWS     : 1fr 1.25fr auto           (row 2 ~25% taller than row 1)
+  MOVED    : (none)
+  RESIZED  : health.sys — wider in col 4
+  NEW      : (none)
   REMOVED  : (none)
 ────────────────────────────────────────
-Applying changes...
 ```
 
+### Panel content mode or Combined mode — per-panel content diff:
+
+For each selected panel, output a compact diff block:
+
+```
+PANEL DIFF — photos.sys
+────────────────────────────────────────
+  ADDED    : album filter tabs (ALL / RECENT / STARRED)
+  CHANGED  : photo grid from 4-col to 3-col
+  REMOVED  : "42 PHOTOS · 6 ALBUMS" count in header
+────────────────────────────────────────
+```
+
+State all findings before touching any code.
+
 ---
 
-## Step 7 — Implement the layout changes
+## Step 8 — Implement the changes
 
-Apply only what differs. Follow all project rules:
+Apply only what the diff identified. Follow all project rules at all times.
 
-- **HTML**: modify only the `#view-{tabname}` section in `frontend/index.html`. Adjust `grid-area` inline styles and panel structure. Do not touch other tabs.
-- **CSS**: update the `#view-{tabname}` grid definition (`grid-template-areas`, `grid-template-columns`, `grid-template-rows`) in `frontend/style.css`. Add new CSS classes only for new UI elements; keep them scoped to this view.
-- **JS**: if new panels need data rendered, update `render{Tabname}Screen()` in `frontend/app.js`. Do not add backend endpoints unless the mockup clearly implies new data that doesn't exist — use mock data for new panels.
-- **No Python changes** unless the mockup shows a brand-new data source. If Python changes are needed, follow the router-per-domain rule and run `ruff format backend/` + `ruff check backend/` before finishing.
-- Do not add features, abstractions, or cleanup beyond what the mockup shows.
-- Keep the retro terminal aesthetic: JetBrains Mono, dark background, bronze/gold accents, square panel corners. Do not introduce flat/modern design patterns.
+### Layout changes (Layout-only or Combined mode):
+
+- **CSS**: update `#view-{tabname}` grid definition in `frontend/style.css` — `grid-template-areas`, `grid-template-columns`, `grid-template-rows`
+- **HTML**: update `grid-area` inline styles on panels in `frontend/index.html` if areas were renamed or panels moved
+
+### Panel content changes (Panel content mode or Combined mode):
+
+For each selected panel:
+
+- **HTML**: modify only the content *inside* that panel's `<div class="panel" id="panel-{tabname}-{name}">`. Do not change the panel's `grid-area`, `id`, or outer wrapper. Add, remove, or reorder child elements to match what the mockup shows.
+- **JS**: if the panel's content is rendered dynamically (by a JS function), update that render function in `frontend/app.js` to match the new structure. Use mock data for any new data fields not yet backed by an API.
+- **CSS**: add new CSS classes only for new UI elements introduced in this panel. Scope them to this panel (prefix with `#panel-{tabname}-{name}` or a panel-specific class).
+
+### Always:
+
+- Do not add features, abstractions, or cleanup beyond what the mockup shows
+- Keep the retro terminal aesthetic: JetBrains Mono, dark background, bronze/gold accents, square corners — never introduce flat/modern design patterns
+- No Python changes unless the mockup shows a brand-new data source. If needed, follow the router-per-domain rule and run `ruff format backend/` + `ruff check backend/` before finishing
 
 ---
 
-## Step 8 — Report completion
-
-After all changes are applied, summarize in this format:
+## Step 9 — Report completion
 
 ```
 LAYOUT_TOOL — Done  ✓
 ────────────────────────────────────────
-Applied mockup: Design_Mockup/Layout/Crypto.png
+Applied mockup: Design_Mockup/Layout/Stella.png
+Mode: Combined (layout + photos.sys, health.sys)
 
-  CHANGED  frontend/index.html  — grid-area assignments, new alerts.sys panel
-  CHANGED  frontend/style.css   — updated grid-template-areas (4-col → 3-col)
-  CHANGED  frontend/app.js      — renderCryptoScreen() renders alerts list
+  CHANGED  frontend/style.css   — grid-template-columns updated
+  CHANGED  frontend/index.html  — photos.sys: 3-col grid, album tabs added
+  CHANGED  frontend/app.js      — _renderStellaPhotos() updated
 ────────────────────────────────────────
 Reload the frontend to see changes.
 ```

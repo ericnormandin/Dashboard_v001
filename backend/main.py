@@ -1,5 +1,6 @@
 import logging
 import os
+import pathlib
 from typing import Any, List
 
 import ccxt
@@ -37,6 +38,10 @@ app.add_middleware(
 
 # Serve static frontend files
 app.mount("/frontend", StaticFiles(directory="frontend"), name="frontend")
+
+# Serve Stella media uploads (photos / videos saved to Stella_data/media/)
+pathlib.Path("Stella_data/media").mkdir(parents=True, exist_ok=True)
+app.mount("/stella-media", StaticFiles(directory="Stella_data/media"), name="stella-media")
 
 # Routers
 app.include_router(retirement_router)

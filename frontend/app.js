@@ -684,32 +684,215 @@ function initColorPicker() {
 
 // ================= VIEW: STELLA =================
 function renderStellaScreen() {
+    _loadStellaProfile();
     _loadStellaTimeline();
     _renderStellaCalendar();
     _initStellaTodos();
+    _loadStellaHealth();
+}
+
+// ── Stella profile ─────────────────────────────────────────────────────────
+
+let stellaProfile = {};
+let _stellaProfileEditMode = false;
+
+function _calcStellaAge(birthday) {
+    if (!birthday) return '—';
+    const birth = new Date(birthday + 'T00:00:00');
+    const now = new Date();
+    let years = now.getFullYear() - birth.getFullYear();
+    let months = now.getMonth() - birth.getMonth();
+    if (now.getDate() < birth.getDate()) months--;
+    if (months < 0) { years--; months += 12; }
+    if (years === 0) return `${months} mo`;
+    if (months === 0) return `${years} yrs`;
+    return `${years} yrs, ${months} mo`;
+}
+
+function _fmtBirthday(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+async function _loadStellaProfile() {
+    const dot = document.querySelector('#panel-stella-basic-info .panel-status-dot');
+    try {
+        const res = await fetch('http://127.0.0.1:8000/api/stella/profile');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        stellaProfile = await res.json();
+        if (dot) dot.className = 'panel-status-dot dot-status-live';
+    } catch {
+        stellaProfile = { name: 'Stella Normandin', birthday: '2023-02-14', height: '98 cm', weight: '14.2 kg', eye_color: 'Brown', hair_color: 'Brown', photo: null };
+        if (dot) dot.className = 'panel-status-dot dot-status-offline';
+    }
+    _renderStellaProfile();
+}
+
+function _renderStellaProfile() {
+    const rows = document.getElementById('stella-profile-rows');
+    if (!rows) return;
+
+    // photo
+    const img = document.getElementById('stella-profile-photo-img');
+    const placeholder = document.getElementById('stella-profile-photo-placeholder');
+    if (stellaProfile.photo) {
+        img.src = stellaProfile.photo;
+        img.style.display = 'block';
+        if (placeholder) placeholder.style.display = 'none';
+    } else {
+        img.style.display = 'none';
+        if (placeholder) placeholder.style.display = 'flex';
+    }
+
+    const btn = document.getElementById('stella-profile-edit-btn');
+
+    if (_stellaProfileEditMode) {
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> SAVE';
+        rows.innerHTML = `
+            <div class="breakdown-row"><span class="breakdown-name">NAME</span><input class="stella-profile-input" id="sp-name" value="${stellaProfile.name || ''}"></div>
+            <div class="breakdown-row"><span class="breakdown-name">AGE</span><span class="breakdown-amounts text-muted" style="font-size:11px">auto from birthday</span></div>
+            <div class="breakdown-row"><span class="breakdown-name">BIRTHDAY</span><input class="stella-profile-input" id="sp-birthday" value="${stellaProfile.birthday || ''}" placeholder="YYYY-MM-DD"></div>
+            <div class="breakdown-row"><span class="breakdown-name">HEIGHT</span><input class="stella-profile-input" id="sp-height" value="${stellaProfile.height || ''}"></div>
+            <div class="breakdown-row"><span class="breakdown-name">WEIGHT</span><input class="stella-profile-input" id="sp-weight" value="${stellaProfile.weight || ''}"></div>
+            <div class="breakdown-row"><span class="breakdown-name">EYE COLOR</span><input class="stella-profile-input" id="sp-eye-color" value="${stellaProfile.eye_color || ''}"></div>
+            <div class="breakdown-row"><span class="breakdown-name">HAIR COLOR</span><input class="stella-profile-input" id="sp-hair-color" value="${stellaProfile.hair_color || ''}"></div>
+            <div style="display:flex;gap:6px;margin-top:8px">
+                <button class="stella-add-btn" onclick="_saveProfile()"><i class="fa-solid fa-floppy-disk"></i> SAVE</button>
+                <button class="stella-add-btn" onclick="stellaProfileCancelEdit()" style="color:var(--muted)">CANCEL</button>
+            </div>`;
+    } else {
+        if (btn) btn.innerHTML = '<i class="fa-solid fa-pen"></i> EDIT';
+        rows.innerHTML = `
+            <div class="breakdown-row"><span class="breakdown-name">NAME</span><span class="breakdown-amounts">${stellaProfile.name || '—'}</span></div>
+            <div class="breakdown-row"><span class="breakdown-name">AGE</span><span class="breakdown-amounts">${_calcStellaAge(stellaProfile.birthday)}</span></div>
+            <div class="breakdown-row"><span class="breakdown-name">BIRTHDAY</span><span class="breakdown-amounts">${_fmtBirthday(stellaProfile.birthday)}</span></div>
+            <div class="breakdown-row"><span class="breakdown-name">HEIGHT</span><span class="breakdown-amounts">${stellaProfile.height || '—'}</span></div>
+            <div class="breakdown-row"><span class="breakdown-name">WEIGHT</span><span class="breakdown-amounts">${stellaProfile.weight || '—'}</span></div>
+            <div class="breakdown-row"><span class="breakdown-name">EYE COLOR</span><span class="breakdown-amounts">${stellaProfile.eye_color || '—'}</span></div>
+            <div class="breakdown-row"><span class="breakdown-name">HAIR COLOR</span><span class="breakdown-amounts">${stellaProfile.hair_color || '—'}</span></div>`;
+    }
+}
+
+function stellaProfileToggleEdit() {
+    if (_stellaProfileEditMode) {
+        _saveProfile();
+    } else {
+        _stellaProfileEditMode = true;
+        _renderStellaProfile();
+    }
+}
+
+function stellaProfileCancelEdit() {
+    _stellaProfileEditMode = false;
+    _renderStellaProfile();
+}
+
+async function _saveProfile() {
+    const name     = document.getElementById('sp-name')?.value.trim()     ?? stellaProfile.name;
+    const birthday = document.getElementById('sp-birthday')?.value.trim() ?? stellaProfile.birthday;
+    const height   = document.getElementById('sp-height')?.value.trim()   ?? stellaProfile.height;
+    const weight   = document.getElementById('sp-weight')?.value.trim()   ?? stellaProfile.weight;
+    const eyeColor  = document.getElementById('sp-eye-color')?.value.trim()  ?? stellaProfile.eye_color;
+    const hairColor = document.getElementById('sp-hair-color')?.value.trim() ?? stellaProfile.hair_color;
+
+    stellaProfile = { ...stellaProfile, name, birthday, height, weight, eye_color: eyeColor, hair_color: hairColor };
+    _stellaProfileEditMode = false;
+    _renderStellaProfile();
+
+    try {
+        const res = await fetch('http://127.0.0.1:8000/api/stella/profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(stellaProfile),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const dot = document.querySelector('#panel-stella-basic-info .panel-status-dot');
+        if (dot) dot.className = 'panel-status-dot dot-status-live';
+    } catch (err) {
+        console.error('[stella] profile save failed:', err);
+    }
+}
+
+function stellaProfilePhotoDragOver(e) {
+    e.preventDefault();
+    document.getElementById('stella-profile-photo-frame').classList.add('drag-over');
+}
+
+function stellaProfilePhotoDrop(e) {
+    e.preventDefault();
+    document.getElementById('stella-profile-photo-frame').classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) _stellaProfilePhotoUpload(file);
+}
+
+function stellaProfilePhotoFile(e) {
+    const file = e.target.files[0];
+    if (file) _stellaProfilePhotoUpload(file);
+}
+
+async function _stellaProfilePhotoUpload(file) {
+    const frame = document.getElementById('stella-profile-photo-frame');
+    const placeholder = document.getElementById('stella-profile-photo-placeholder');
+    if (placeholder) { placeholder.style.display = 'flex'; placeholder.querySelector('span').textContent = 'UPLOADING…'; }
+    try {
+        const fd = new FormData();
+        fd.append('file', file);
+        const res = await fetch('http://127.0.0.1:8000/api/stella/upload', { method: 'POST', body: fd });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const { url } = await res.json();
+        stellaProfile.photo = url;
+        _renderStellaProfile();
+        // persist photo change immediately
+        await fetch('http://127.0.0.1:8000/api/stella/profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(stellaProfile),
+        });
+    } catch (err) {
+        console.error('[stella] profile photo upload failed:', err);
+        if (placeholder) placeholder.querySelector('span').textContent = 'DROP PHOTO';
+    }
+    if (frame) frame.classList.remove('drag-over');
 }
 
 async function _loadStellaTimeline() {
+    const dot = document.querySelector('#panel-stella-timeline .panel-status-dot');
     try {
         const res = await fetch('http://127.0.0.1:8000/api/stella/timeline');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         if (Array.isArray(data)) stellaTimeline = data;
+        if (dot) dot.className = 'panel-status-dot dot-status-live';
     } catch {
-        // backend unavailable — stellaTimeline stays as whatever was last loaded
+        if (dot) dot.className = 'panel-status-dot dot-status-offline';
     }
     _renderStellaTimeline();
 }
 
 async function _saveStellaTimeline() {
     try {
-        await fetch('http://127.0.0.1:8000/api/stella/timeline', {
+        const res = await fetch('http://127.0.0.1:8000/api/stella/timeline', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ milestones: stellaTimeline }),
         });
-    } catch {
-        // silently fail — in-memory state is still correct
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        _stellaTimelineSaveStatus('SAVED', false);
+    } catch (err) {
+        console.error('[stella] timeline save failed:', err);
+        _stellaTimelineSaveStatus('SAVE_FAILED', true);
     }
+}
+
+function _stellaTimelineSaveStatus(msg, isError) {
+    const el = document.getElementById('stella-tl-save-status');
+    if (!el) return;
+    el.textContent = msg;
+    el.style.color = isError ? 'var(--red)' : 'var(--green)';
+    el.style.opacity = '1';
+    clearTimeout(el._fadeTimer);
+    el._fadeTimer = setTimeout(() => { el.style.opacity = '0'; }, 2000);
 }
 
 function _initStellaTodos() {
@@ -742,12 +925,26 @@ function _renderStellaTimeline() {
     track.innerHTML = stellaTimeline.map((m, i) => {
         const year = m.date.slice(0, 4);
         const isLast = i === stellaTimeline.length - 1;
-        const photo = m.photo ? `<img class="stella-tl-photo" src="${m.photo}" alt="${m.title}">` : '';
-        const thumbTip = m.photo ? `<img class="stella-tl-thumb-tip" src="${m.photo}" alt="">` : '';
+        const hasMedia = !!(m.photo || m.video);
+
+        let mediaEl = '';
+        if (m.video) {
+            // Static poster frame in the thumbnail (no autoplay); #t=0.1 forces the
+            // first frame to render. Playback happens full-res in the hover overlay.
+            mediaEl = `<video class="stella-tl-photo" src="${m.video}#t=0.1" muted playsinline preload="metadata" onerror="this.outerHTML='<div class=\\'stella-tl-video-err\\'><i class=\\'fa-solid fa-circle-exclamation\\'></i><span>FORMAT_ERR</span></div>'"></video>`;
+        } else if (m.photo) {
+            mediaEl = `<img class="stella-tl-photo" src="${m.photo}" alt="${m.title}">`;
+        }
+
+        const hoverSrc  = m.video || m.photo || '';
+        const hoverType = m.video ? 'video' : 'photo';
+
         return `
-            <div class="ret-tl-col${m.isNow ? ' now' : ''}${m.isGoal ? ' goal' : ''}${m.photo ? ' has-thumb' : ''}" style="cursor:pointer" onclick="openStellaViewMilestone(${i})">
-                ${photo}
-                ${thumbTip}
+            <div class="ret-tl-col${m.isNow ? ' now' : ''}${m.isGoal ? ' goal' : ''}${hasMedia ? ' has-thumb' : ''}"
+                 style="cursor:pointer"
+                 onclick="openStellaViewMilestone(${i})"
+                 ${hasMedia ? `onmouseenter="stellaOverlayShow('${hoverSrc}','${hoverType}')" onmouseleave="stellaOverlayHide()"` : ''}>
+                ${mediaEl}
                 <div class="ret-tl-content">
                     <div class="ret-tl-year">${m.isNow ? '<span class="ret-tl-now-badge">NOW</span>' : ''}${year}</div>
                     <div class="ret-tl-val">${m.title}</div>
@@ -759,6 +956,205 @@ function _renderStellaTimeline() {
                 </div>
             </div>`;
     }).join('');
+}
+
+function stellaOverlayShow(src, type) {
+    const overlay = document.getElementById('stella-media-overlay');
+    const img     = document.getElementById('stella-overlay-img');
+    const vid     = document.getElementById('stella-overlay-video');
+    if (!overlay || !src) return;
+    if (type === 'video') {
+        img.style.display = 'none';
+        vid.src = src;
+        vid.style.display = 'block';
+    } else {
+        vid.style.display = 'none';
+        img.src = src;
+        img.style.display = 'block';
+    }
+    overlay.style.display = 'flex';
+}
+
+function stellaOverlayHide() {
+    const overlay = document.getElementById('stella-media-overlay');
+    if (!overlay) return;
+    overlay.style.display = 'none';
+    document.getElementById('stella-overlay-video').src = '';
+}
+
+// ── Stella health tracking ─────────────────────────────────────────────────
+
+let stellaHealth = [];
+
+async function _loadStellaHealth() {
+    const dot = document.querySelector('#panel-stella-health .panel-status-dot');
+    try {
+        const res = await fetch('http://127.0.0.1:8000/api/stella/health');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        stellaHealth = await res.json();
+        if (dot) dot.className = 'panel-status-dot dot-status-live';
+    } catch {
+        stellaHealth = [{
+            date: '2026-05-02', height_cm: 98.0, weight_kg: 14.2,
+            head_circ_cm: 50.5, sleep_hrs: 10.5, height_pct: 65,
+            weight_pct: 58, head_circ_pct: 72, vaccines_done: 8,
+            vaccines_total: 9, notes: 'All clear · next in 6 months — Dr. Lafleur',
+        }];
+        if (dot) dot.className = 'panel-status-dot dot-status-offline';
+    }
+    _renderStellaHealth();
+}
+
+function _renderStellaHealth() {
+    const ageEl = document.getElementById('stella-health-age');
+    if (ageEl) ageEl.textContent = _calcStellaAge(stellaProfile.birthday);
+
+    // Latest non-null value for each field, scanning newest-first
+    const latest = {};
+    const fields = ['height_cm','weight_kg','head_circ_cm','sleep_hrs',
+                    'height_pct','weight_pct','head_circ_pct',
+                    'vaccines_done','vaccines_total'];
+    for (const f of fields) {
+        for (const e of stellaHealth) {
+            if (e[f] != null) { latest[f] = e[f]; break; }
+        }
+    }
+
+    // VITALS grid
+    const vitalsEl = document.getElementById('stella-health-vitals');
+    if (vitalsEl) {
+        const h  = latest.height_cm;
+        const w  = latest.weight_kg;
+        const s  = latest.sleep_hrs;
+        const vd = latest.vaccines_done;
+        const vt = latest.vaccines_total;
+        const vaccStr = vd != null ? `${vd}${vt != null ? '/' + vt : ''}` : '—';
+        vitalsEl.innerHTML = `
+            <div class="health-stat">
+                <div class="stat-label"><i class="fa-solid fa-ruler-vertical" style="color:var(--gold)"></i>HEIGHT</div>
+                <div class="stat-val text-slate">${h != null ? h : '—'}${h != null ? ' <span style="font-size:12px;font-weight:400;color:var(--muted)">cm</span>' : ''}</div>
+            </div>
+            <div class="health-stat">
+                <div class="stat-label"><i class="fa-solid fa-weight-scale" style="color:var(--bronze)"></i>WEIGHT</div>
+                <div class="stat-val text-slate">${w != null ? w : '—'}${w != null ? ' <span style="font-size:12px;font-weight:400;color:var(--muted)">kg</span>' : ''}</div>
+            </div>
+            <div class="health-stat">
+                <div class="stat-label"><i class="fa-solid fa-syringe" style="color:var(--red)"></i>VACCINES</div>
+                <div class="stat-val text-slate">${vaccStr}</div>
+            </div>
+            <div class="health-stat">
+                <div class="stat-label"><i class="fa-solid fa-bed" style="color:#5bafd4"></i>SLEEP_AVG</div>
+                <div class="stat-val text-slate">${s != null ? s : '—'}${s != null ? ' <span style="font-size:12px;font-weight:400;color:var(--muted)">hrs</span>' : ''}</div>
+            </div>`;
+    }
+
+    // PERCENTILE bars — only render rows where we actually have data
+    const pctEl = document.getElementById('stella-health-percentiles');
+    if (pctEl) {
+        const rows = [
+            ['HEIGHT',    latest.height_pct],
+            ['WEIGHT',    latest.weight_pct],
+            ['HEAD_CIRC', latest.head_circ_pct],
+        ];
+        pctEl.innerHTML = rows.filter(([, v]) => v != null).map(([label, pct]) => `
+            <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
+                    <span style="color:var(--text)">${label}</span>
+                    <span style="color:var(--gold);font-weight:700">${pct}th</span>
+                </div>
+                <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+            </div>`).join('');
+    }
+
+    // RECENT LOG
+    const logEl = document.getElementById('stella-health-log');
+    if (logEl) {
+        if (!stellaHealth.length) {
+            logEl.innerHTML = '<div style="color:var(--muted);font-size:11px;padding:4px 0">No entries yet — press LOG to add one.</div>';
+            return;
+        }
+        logEl.innerHTML = stellaHealth.slice(0, 6).map(e => {
+            const parts = [];
+            if (e.height_cm  != null) parts.push(`${e.height_cm}cm`);
+            if (e.weight_kg  != null) parts.push(`${e.weight_kg}kg`);
+            if (e.sleep_hrs  != null) parts.push(`${e.sleep_hrs}h sleep`);
+            if (e.vaccines_done != null) parts.push(`${e.vaccines_done}${e.vaccines_total != null ? '/' + e.vaccines_total : ''} vax`);
+            return `
+                <div class="breakdown-row" style="align-items:flex-start;gap:6px">
+                    <span class="breakdown-name" style="min-width:90px;flex-shrink:0">${e.date}</span>
+                    <span class="breakdown-amounts" style="text-align:left;flex:1;white-space:normal">
+                        ${parts.length ? parts.join(' · ') : '<span style="color:var(--muted)">—</span>'}
+                        ${e.notes ? `<div style="font-size:10px;color:var(--muted);margin-top:1px">${e.notes}</div>` : ''}
+                    </span>
+                    <button onclick="deleteStellaHealthEntry('${e.date}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:10px;flex-shrink:0;padding:0 2px" title="Delete">✕</button>
+                </div>`;
+        }).join('');
+    }
+}
+
+function openStellaHealthLog() {
+    const today = new Date();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    document.getElementById('sh-date').value   = `${today.getFullYear()}-${mm}-${dd}`;
+    document.getElementById('sh-height').value  = '';
+    document.getElementById('sh-weight').value  = '';
+    document.getElementById('sh-head').value    = '';
+    document.getElementById('sh-hpct').value    = '';
+    document.getElementById('sh-wpct').value    = '';
+    document.getElementById('sh-hcpct').value   = '';
+    document.getElementById('sh-sleep').value   = '';
+    document.getElementById('sh-vdone').value   = '';
+    document.getElementById('sh-vtotal').value  = '';
+    document.getElementById('sh-notes').value   = '';
+    const popup = document.getElementById('stella-health-popup');
+    popup.style.display = 'flex';
+}
+
+function closeStellaHealthLog() {
+    document.getElementById('stella-health-popup').style.display = 'none';
+}
+
+async function saveStellaHealthEntry() {
+    const num = (id) => { const v = document.getElementById(id)?.value.trim(); return v !== '' ? parseFloat(v) : null; };
+    const entry = {
+        date:          document.getElementById('sh-date').value.trim(),
+        height_cm:     num('sh-height'),
+        weight_kg:     num('sh-weight'),
+        head_circ_cm:  num('sh-head'),
+        height_pct:    num('sh-hpct') != null ? Math.round(num('sh-hpct')) : null,
+        weight_pct:    num('sh-wpct') != null ? Math.round(num('sh-wpct')) : null,
+        head_circ_pct: num('sh-hcpct') != null ? Math.round(num('sh-hcpct')) : null,
+        sleep_hrs:     num('sh-sleep'),
+        vaccines_done: num('sh-vdone') != null ? Math.round(num('sh-vdone')) : null,
+        vaccines_total:num('sh-vtotal') != null ? Math.round(num('sh-vtotal')) : null,
+        notes:         document.getElementById('sh-notes').value.trim(),
+    };
+    if (!entry.date) { document.getElementById('sh-date').style.borderColor = 'var(--red)'; return; }
+
+    closeStellaHealthLog();
+    try {
+        const res = await fetch('http://127.0.0.1:8000/api/stella/health', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(entry),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const dot = document.querySelector('#panel-stella-health .panel-status-dot');
+        if (dot) dot.className = 'panel-status-dot dot-status-live';
+    } catch (err) {
+        console.error('[stella] health save failed:', err);
+    }
+    await _loadStellaHealth();
+}
+
+async function deleteStellaHealthEntry(date) {
+    try {
+        await fetch(`http://127.0.0.1:8000/api/stella/health/${encodeURIComponent(date)}`, { method: 'DELETE' });
+    } catch (err) {
+        console.error('[stella] health delete failed:', err);
+    }
+    await _loadStellaHealth();
 }
 
 // ── Stella milestone popup ─────────────────────────────────────────────────
@@ -785,10 +1181,15 @@ function openStellaViewMilestone(index) {
     document.getElementById('stella-ms-date').value = m.date;
     document.getElementById('stella-ms-desc').value = m.description || '';
     _stellaPhotoClear();
-    if (m.photo) {
-        const preview = document.getElementById('stella-photo-preview');
-        preview.src = m.photo;
-        preview.style.display = 'block';
+    if (m.video) {
+        const vidPrev = document.getElementById('stella-video-preview');
+        vidPrev.src = m.video;
+        vidPrev.style.display = 'block';
+        document.getElementById('stella-photo-drop').dataset.video = m.video;
+    } else if (m.photo) {
+        const imgPrev = document.getElementById('stella-photo-preview');
+        imgPrev.src = m.photo;
+        imgPrev.style.display = 'block';
         document.getElementById('stella-photo-drop').dataset.photo = m.photo;
     }
     document.getElementById('stella-ms-delete-btn').style.display = '';
@@ -808,6 +1209,7 @@ function saveStellaNewMilestone() {
     const date  = document.getElementById('stella-ms-date').value.trim();
     const desc  = document.getElementById('stella-ms-desc').value.trim();
     const photo = document.getElementById('stella-photo-drop').dataset.photo || null;
+    const video = document.getElementById('stella-photo-drop').dataset.video || null;
 
     if (!title || !date) {
         document.getElementById('stella-ms-title').style.borderColor = title ? '' : 'var(--red)';
@@ -816,7 +1218,6 @@ function saveStellaNewMilestone() {
     }
 
     const year = date.slice(0, 4);
-    // Build a short label from date
     const parts = date.split('-');
     const monthNames = ['','JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
     let label = year;
@@ -826,9 +1227,20 @@ function saveStellaNewMilestone() {
         label = parts[2] ? `${mName} ${parseInt(parts[2], 10)}` : mName;
     }
 
-    document.getElementById('stella-event-popup').classList.remove('visible');
+    const popup = document.getElementById('stella-event-popup');
+    popup.classList.remove('visible');
 
-    stellaTimeline.push({ date, title, label, description: desc, photo });
+    const editIdx = parseInt(popup.dataset.editIndex, 10);
+    if (popup.dataset.mode === 'view' && !isNaN(editIdx) && editIdx >= 0 && editIdx < stellaTimeline.length) {
+        // preserve flags (isNow, isGoal) from the original entry
+        const orig = stellaTimeline[editIdx];
+        stellaTimeline[editIdx] = { date, title, label, description: desc, photo, video,
+            ...(orig.isNow  ? { isNow: true }  : {}),
+            ...(orig.isGoal ? { isGoal: true } : {}),
+        };
+    } else {
+        stellaTimeline.push({ date, title, label, description: desc, photo, video });
+    }
     stellaTimeline.sort((a, b) => a.date.localeCompare(b.date));
 
     _renderStellaTimeline();
@@ -854,30 +1266,222 @@ function stellaPhotoDrop(e) {
     e.preventDefault();
     document.getElementById('stella-photo-drop').classList.remove('drag-over');
     const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) _stellaPhotoLoad(file);
+    if (file) _stellaMediaUpload(file);
 }
 
 function stellaPhotoFile(e) {
     const file = e.target.files[0];
-    if (file) _stellaPhotoLoad(file);
+    if (file) _stellaMediaUpload(file);
 }
 
-function _stellaPhotoLoad(file) {
-    const reader = new FileReader();
-    reader.onload = ev => {
-        const preview = document.getElementById('stella-photo-preview');
-        preview.src = ev.target.result;
-        preview.style.display = 'block';
-        document.getElementById('stella-photo-drop').dataset.photo = ev.target.result;
-    };
-    reader.readAsDataURL(file);
+async function _stellaMediaUpload(file) {
+    const ext     = (file.name.split('.').pop() || '').toLowerCase();
+    const isVideo = file.type.startsWith('video/') || !!_STELLA_VIDEO_MIME[ext];
+    const drop    = document.getElementById('stella-photo-drop');
+    const hint    = drop.querySelector('.stella-drop-hint');
+
+    let uploadFile = file;
+
+    // Auto-fill the milestone date from capture metadata (photo EXIF / video mvhd),
+    // but only when the field is still empty so a manual entry is never clobbered.
+    // Read from the ORIGINAL file — transcoding strips this metadata.
+    const dateField = document.getElementById('stella-ms-date');
+    if (dateField && !dateField.value.trim()) {
+        const metaDate = await _extractMediaDate(file);
+        if (metaDate) dateField.value = metaDate;
+    }
+
+    // Transcode unsupported video formats to MP4 (H.264) before uploading
+    if (isVideo && !_canBrowserPlayVideo(file)) {
+        if (hint) hint.textContent = 'LOADING DECODER…';
+        const progWrap = document.getElementById('stella-transcode-progress');
+        const progFill = document.getElementById('stella-transcode-bar-fill');
+        const progPct  = document.getElementById('stella-transcode-bar-pct');
+        // Start in indeterminate (scanning) mode — no progress events during WASM load
+        if (progFill) progFill.classList.add('indeterminate');
+        if (progPct)  progPct.textContent = '…';
+        if (progWrap) progWrap.style.display = '';
+        try {
+            const mp4Blob = await _transcodeForTimeline(file, pct => {
+                // First real progress event: switch from indeterminate to determinate
+                if (progFill && progFill.classList.contains('indeterminate')) {
+                    progFill.classList.remove('indeterminate');
+                }
+                if (hint)     hint.textContent    = `TRANSCODING… ${pct}%`;
+                if (progFill) progFill.style.width = pct + '%';
+                if (progPct)  progPct.textContent  = pct + '%';
+            });
+            uploadFile = new File([mp4Blob], file.name.replace(/\.[^.]+$/, '.mp4'), { type: 'video/mp4' });
+            if (progWrap) progWrap.style.display = 'none';
+            if (progFill) { progFill.classList.remove('indeterminate'); progFill.style.width = '0%'; }
+        } catch (err) {
+            console.error('[stella] transcode failed:', err);
+            if (progWrap) progWrap.style.display = 'none';
+            if (progFill) progFill.classList.remove('indeterminate');
+            if (hint) hint.textContent = 'TRANSCODE FAILED — ' + (err?.message || err);
+            return;
+        }
+    }
+
+    if (hint) hint.textContent = 'UPLOADING…';
+
+    try {
+        const fd = new FormData();
+        fd.append('file', uploadFile);
+        const res = await fetch('http://127.0.0.1:8000/api/stella/upload', { method: 'POST', body: fd });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const { url } = await res.json();
+
+        const imgPrev = document.getElementById('stella-photo-preview');
+        const vidPrev = document.getElementById('stella-video-preview');
+
+        if (uploadFile.type.startsWith('video/')) {
+            drop.dataset.video = url;
+            drop.dataset.photo = '';
+            imgPrev.style.display = 'none';
+            vidPrev.src = url;
+            vidPrev.style.display = 'block';
+        } else {
+            drop.dataset.photo = url;
+            drop.dataset.video = '';
+            vidPrev.style.display = 'none';
+            imgPrev.src = url;
+            imgPrev.style.display = 'block';
+        }
+        if (hint) hint.textContent = 'DROP PHOTO / VIDEO or CLICK TO BROWSE';
+    } catch (err) {
+        console.error('[stella] media upload failed:', err);
+        if (hint) hint.textContent = 'UPLOAD FAILED — check backend';
+    }
 }
 
 function _stellaPhotoClear() {
-    const drop = document.getElementById('stella-photo-drop');
-    const preview = document.getElementById('stella-photo-preview');
-    if (drop) { drop.dataset.photo = ''; drop.classList.remove('drag-over'); }
-    if (preview) { preview.src = ''; preview.style.display = 'none'; }
+    const drop    = document.getElementById('stella-photo-drop');
+    const imgPrev = document.getElementById('stella-photo-preview');
+    const vidPrev = document.getElementById('stella-video-preview');
+    if (drop)    { drop.dataset.photo = ''; drop.dataset.video = ''; drop.classList.remove('drag-over'); }
+    if (imgPrev) { imgPrev.src = ''; imgPrev.style.display = 'none'; }
+    if (vidPrev) { vidPrev.src = ''; vidPrev.style.display = 'none'; }
+    const hint = drop && drop.querySelector('.stella-drop-hint');
+    if (hint) hint.textContent = 'DROP PHOTO / VIDEO or CLICK TO BROWSE';
+}
+
+// ── Capture-date extraction from media metadata ────────────────────────────
+// Returns a YYYY-MM-DD string from photo EXIF (DateTimeOriginal) or video mvhd
+// creation time. Falls back to the file's lastModified. Returns null on failure.
+async function _extractMediaDate(file) {
+    try {
+        const ext     = (file.name.split('.').pop() || '').toLowerCase();
+        const isVideo = file.type.startsWith('video/') || !!_STELLA_VIDEO_MIME[ext];
+        const meta    = isVideo ? await _extractVideoDate(file) : await _extractExifDate(file);
+        if (meta) return meta;
+    } catch (err) {
+        console.warn('[stella] metadata date extraction failed:', err);
+    }
+    // Fallback: filesystem modification time is better than nothing.
+    if (file.lastModified) return _toISODate(new Date(file.lastModified));
+    return null;
+}
+
+function _toISODate(d) {
+    if (isNaN(d.getTime())) return null;
+    const mo  = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${d.getFullYear()}-${mo}-${day}`;
+}
+
+// Parse EXIF DateTimeOriginal (tag 0x9003), falling back to IFD0 DateTime
+// (0x0132). Only JPEG carries EXIF; other formats return null.
+async function _extractExifDate(file) {
+    const buf  = await file.slice(0, 256 * 1024).arrayBuffer();
+    const view = new DataView(buf);
+    const len  = view.byteLength;
+    if (len < 4 || view.getUint16(0) !== 0xFFD8) return null; // not JPEG
+
+    let offset = 2;
+    while (offset + 4 < len) {
+        if (view.getUint8(offset) !== 0xFF) break;
+        const marker = view.getUint8(offset + 1);
+        if (marker === 0xDA) break; // start of scan — metadata is done
+        const size = view.getUint16(offset + 2);
+        // APP1 with "Exif\0\0" signature
+        if (marker === 0xE1 && offset + 10 < len &&
+            view.getUint32(offset + 4) === 0x45786966 && view.getUint16(offset + 8) === 0x0000) {
+            return _parseExifDate(view, offset + 10);
+        }
+        offset += 2 + size;
+    }
+    return null;
+}
+
+function _parseExifDate(view, tiff) {
+    const le  = view.getUint16(tiff) === 0x4949; // 'II' little-endian, 'MM' big
+    const u16 = (o) => view.getUint16(o, le);
+    const u32 = (o) => view.getUint32(o, le);
+
+    const findTag = (ifd, tag) => {
+        const count = u16(ifd);
+        for (let i = 0; i < count; i++) {
+            const entry = ifd + 2 + i * 12;
+            if (u16(entry) === tag) return entry;
+        }
+        return -1;
+    };
+    const readAscii = (entry) => {
+        const count = u32(entry + 4);
+        const at    = count <= 4 ? entry + 8 : tiff + u32(entry + 8);
+        let s = '';
+        for (let i = 0; i < count - 1; i++) s += String.fromCharCode(view.getUint8(at + i));
+        return s;
+    };
+    const toDate = (s) => {
+        const m = s && s.match(/^(\d{4}):(\d{2}):(\d{2})/);
+        return m ? `${m[1]}-${m[2]}-${m[3]}` : null;
+    };
+
+    const ifd0 = tiff + u32(tiff + 4);
+    // Preferred: DateTimeOriginal inside the Exif sub-IFD (tag 0x8769 → 0x9003)
+    const exifPtr = findTag(ifd0, 0x8769);
+    if (exifPtr !== -1) {
+        const exifIFD = tiff + u32(exifPtr + 8);
+        const dto = findTag(exifIFD, 0x9003);
+        if (dto !== -1) { const d = toDate(readAscii(dto)); if (d) return d; }
+    }
+    // Fallback: IFD0 DateTime (0x0132)
+    const dt = findTag(ifd0, 0x0132);
+    if (dt !== -1) return toDate(readAscii(dt));
+    return null;
+}
+
+// Scan MP4/MOV (ISO base media) for the mvhd box and read its creation_time.
+// Searches the head and, if needed, the tail (moov often sits at the end of
+// non-faststart files). creation_time is seconds since 1904-01-01 UTC.
+async function _extractVideoDate(file) {
+    const CHUNK = 2 * 1024 * 1024;
+    let d = _scanMvhd(new DataView(await file.slice(0, CHUNK).arrayBuffer()));
+    if (!d && file.size > CHUNK) {
+        d = _scanMvhd(new DataView(await file.slice(Math.max(0, file.size - CHUNK)).arrayBuffer()));
+    }
+    return d;
+}
+
+function _scanMvhd(view) {
+    const len = view.byteLength;
+    for (let i = 0; i + 21 < len; i++) {
+        // 'mvhd' signature
+        if (view.getUint8(i) !== 0x6D || view.getUint8(i + 1) !== 0x76 ||
+            view.getUint8(i + 2) !== 0x68 || view.getUint8(i + 3) !== 0x64) continue;
+        const version = view.getUint8(i + 4);
+        let secs;
+        if (version === 1)      secs = view.getUint32(i + 5) * 4294967296 + view.getUint32(i + 9);
+        else if (version === 0) secs = view.getUint32(i + 5);
+        else continue;
+        if (!secs) continue;
+        const d = new Date((secs - 2082844800) * 1000); // 1904 → 1970 epoch shift
+        const y = d.getFullYear();
+        if (y >= 1990 && y <= 2100) return _toISODate(d); // sanity-guard false matches
+    }
+    return null;
 }
 
 function _renderStellaCalendar() {
@@ -919,6 +1523,102 @@ function _renderStellaCalendar() {
     grid.innerHTML = html;
 }
 
+
+// ── Stella timeline video helpers ─────────────────────────────────────────
+
+const _STELLA_VIDEO_MIME = {
+    mp4: 'video/mp4', m4v: 'video/x-m4v', m4p: 'video/mp4',
+    webm: 'video/webm',
+    ogg: 'video/ogg', ogv: 'video/ogg',
+    mov: 'video/quicktime',
+    mkv: 'video/x-matroska',
+    avi: 'video/x-msvideo',
+    wmv: 'video/x-ms-wmv',
+    flv: 'video/x-flv',
+    '3gp': 'video/3gpp', '3g2': 'video/3gpp2',
+    ts: 'video/mp2t', mts: 'video/mp2t', m2ts: 'video/mp2t',
+};
+
+function _canBrowserPlayVideo(file) {
+    const ext   = (file.name.split('.').pop() || '').toLowerCase();
+    const mime  = _STELLA_VIDEO_MIME[ext] || file.type || 'video/mp4';
+    const probe = document.createElement('video');
+    const r     = probe.canPlayType(mime);
+    return r === 'probably' || r === 'maybe';
+}
+
+async function _transcodeForTimeline(file, onProgress) {
+    // ffmpeg assets are vendored at /frontend/vendor/ffmpeg/ (served by FastAPI).
+    //
+    // Why blobify the worker but NOT coreURL:
+    //   When the page is opened as file:// its origin is null. Browsers block
+    //   `new Worker('http://...')` from null origin even for localhost. Blobifying
+    //   converts the worker to a blob: URL, which shares the page's null origin and
+    //   is therefore allowed. The vendored ffmpeg.js is also patched to create a
+    //   *classic* (non-module) worker when classWorkerURL is supplied, so the
+    //   worker can use importScripts() as the UMD bundle expects.
+    //
+    //   coreURL must NOT be blobified: blobifying from a null-origin page produces
+    //   blob:null/... URLs. Inside the worker, importScripts(blob:null/...) can
+    //   fail in some browsers, and the fallback is `await import(blob:null/...)`.
+    //   Browsers block dynamic ESM import of blob:null URLs, producing the
+    //   "Failed to fetch dynamically imported module" error. Passing the direct
+    //   HTTP URL instead lets the worker call importScripts over CORS (FastAPI
+    //   has wildcard CORS so this works from any origin including null).
+    //
+    //   wasmURL also stays as a direct localhost URL for the same reason.
+    const base = 'http://127.0.0.1:8000/frontend/vendor/ffmpeg';
+    await _ffmpegLoadScript(`${base}/ffmpeg.js`);
+
+    const workerBuf = await fetch(`${base}/814.ffmpeg.js`).then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.arrayBuffer(); });
+    const workerURL = URL.createObjectURL(new Blob([workerBuf], { type: 'text/javascript' }));
+
+    const { FFmpeg } = window.FFmpegWASM;
+    const ffmpeg = new FFmpeg();
+    ffmpeg.on('progress', ({ progress }) => onProgress(Math.round(Math.min(progress, 1) * 100)));
+
+    await ffmpeg.load({
+        classWorkerURL: workerURL,
+        coreURL: `${base}/ffmpeg-core.js`,
+        wasmURL: `${base}/ffmpeg-core.wasm`,
+    });
+
+    URL.revokeObjectURL(workerURL);
+
+    const ext       = (file.name.split('.').pop() || 'bin').toLowerCase();
+    const inputName = `input.${ext}`;
+    await ffmpeg.writeFile(inputName, new Uint8Array(await file.arrayBuffer()));
+    // Encode to H.264/MP4 rather than VP9/WebM. The single-threaded ffmpeg.wasm
+    // core OOMs ("memory access out of bounds") on libvpx-vp9 with high-res phone
+    // footage; libx264 is far lighter on the wasm heap, faster, and H.264/MP4 plays
+    // in every browser including Safari. Guards for memory safety:
+    //   - downscale so the long edge is <= 1280 (never upscales; -2 keeps the other
+    //     dimension even, required by yuv420p)
+    //   - cap to 30 fps
+    //   - yuv420p 8-bit so 10-bit HEVC sources stay broadly playable
+    await ffmpeg.exec([
+        '-i', inputName,
+        '-vf', "scale='if(gt(iw,ih),min(1280,iw),-2)':'if(gt(iw,ih),-2,min(1280,ih))',fps=30",
+        '-c:v', 'libx264', '-preset', 'veryfast', '-crf', '26', '-pix_fmt', 'yuv420p',
+        '-c:a', 'aac', '-b:a', '128k',
+        '-movflags', '+faststart',
+        'output.mp4',
+    ]);
+
+    const data = await ffmpeg.readFile('output.mp4');
+    return new Blob([data.buffer], { type: 'video/mp4' });
+}
+
+function _ffmpegLoadScript(src) {
+    return new Promise((resolve, reject) => {
+        if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
+        const s = document.createElement('script');
+        s.src = src;
+        s.onload = resolve;
+        s.onerror = () => reject(new Error(`Failed to load ${src}`));
+        document.head.appendChild(s);
+    });
+}
 
 // ================= CONSOLE STREAM DIAGNOSTIC OUTPUT LOGGER =================
 function appendConsoleLog(message, type = 'info') {

@@ -692,16 +692,26 @@
                             <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-id-card"></i>basic_infos.sys</span>
                         </div>
+                        <button class="stella-add-btn" id="stella-profile-edit-btn" onclick="stellaProfileToggleEdit()">
+                            <i class="fa-solid fa-pen"></i> EDIT
+                        </button>
                     </div>
-                    <div class="stella-photo-frame"><i class="fa-solid fa-image"></i></div>
-                    <div class="breakdown-label">PROFILE:</div>
-                    <div class="breakdown-list">
-                        <div class="breakdown-row"><span class="breakdown-name">NAME</span><span class="breakdown-amounts">Stella Normandin</span></div>
-                        <div class="breakdown-row"><span class="breakdown-name">AGE</span><span class="breakdown-amounts">3 yrs, 4 mo</span></div>
-                        <div class="breakdown-row"><span class="breakdown-name">BIRTHDAY</span><span class="breakdown-amounts">Feb 14, 2023</span></div>
-                        <div class="breakdown-row"><span class="breakdown-name">HEIGHT</span><span class="breakdown-amounts">98 cm</span></div>
-                        <div class="breakdown-row"><span class="breakdown-name">WEIGHT</span><span class="breakdown-amounts">14.2 kg</span></div>
+                    <div class="stella-basic-info-body">
+                        <div class="stella-photo-frame stella-basic-info-photo" id="stella-profile-photo-frame"
+                             ondragover="stellaProfilePhotoDragOver(event)"
+                             ondrop="stellaProfilePhotoDrop(event)"
+                             onclick="document.getElementById('stella-profile-photo-file').click()">
+                            <img id="stella-profile-photo-img" src="" alt="Stella" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+                            <div id="stella-profile-photo-placeholder" style="display:flex;flex-direction:column;align-items:center;gap:4px">
+                                <i class="fa-solid fa-image" style="font-size:28px;color:var(--border)"></i>
+                                <span style="font-size:9px;color:var(--muted);letter-spacing:0.05em">DROP PHOTO</span>
+                            </div>
+                        </div>
+                        <div class="stella-basic-info-data">
+                            <div class="breakdown-list" id="stella-profile-rows"></div>
+                        </div>
                     </div>
+                    <input type="file" id="stella-profile-photo-file" accept="image/*" style="display:none" onchange="stellaProfilePhotoFile(event)">
                 </div>
 
                 <!-- photos.sys -->
@@ -837,6 +847,7 @@
                             <span class="panel-label"><i class="fa-solid fa-timeline"></i>timeline.sys</span>
                         </div>
                         <div style="display:flex;align-items:center;gap:8px">
+                            <span id="stella-tl-save-status" style="font-size:10px;opacity:0;transition:opacity 0.4s;letter-spacing:0.05em"></span>
                             <span style="font-size:12px;color:var(--muted)">MILESTONES</span>
                             <button class="stella-add-btn" onclick="openStellaNewMilestone()"><i class="fa-solid fa-plus"></i> CREATE_MILESTONE</button>
                         </div>
@@ -884,68 +895,55 @@
                             <div class="panel-status-dot dot-status-mock"></div>
                             <span class="panel-label"><i class="fa-solid fa-heart-pulse"></i>health.sys</span>
                         </div>
-                        <span style="font-size:12px;color:var(--muted)">AGE 3Y 4MO</span>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span id="stella-health-age" style="font-size:12px;color:var(--muted)"></span>
+                            <button class="stella-add-btn" onclick="openStellaHealthLog()" style="padding:2px 8px;font-size:10px"><i class="fa-solid fa-plus"></i> LOG</button>
+                        </div>
                     </div>
                     <div style="display:flex;flex-direction:column;gap:8px;flex:1;min-height:0;overflow-y:auto">
                         <div class="breakdown-label">VITALS:</div>
-                        <div class="health-grid">
-                            <div class="health-stat">
-                                <div class="stat-label"><i class="fa-solid fa-ruler-vertical" style="color:var(--gold)"></i>HEIGHT</div>
-                                <div class="stat-val text-slate">98 <span style="font-size:12px;font-weight:400;color:var(--muted)">cm</span></div>
-                                <div class="stat-sub text-green">+2cm this month</div>
-                            </div>
-                            <div class="health-stat">
-                                <div class="stat-label"><i class="fa-solid fa-weight-scale" style="color:var(--bronze)"></i>WEIGHT</div>
-                                <div class="stat-val text-slate">14.2 <span style="font-size:12px;font-weight:400;color:var(--muted)">kg</span></div>
-                                <div class="stat-sub text-green">On track</div>
-                            </div>
-                            <div class="health-stat">
-                                <div class="stat-label"><i class="fa-solid fa-syringe" style="color:var(--red)"></i>VACCINES</div>
-                                <div class="stat-val text-slate">8/9</div>
-                                <div class="stat-sub text-gold">1 due soon</div>
-                            </div>
-                            <div class="health-stat">
-                                <div class="stat-label"><i class="fa-solid fa-bed" style="color:#5bafd4"></i>SLEEP_AVG</div>
-                                <div class="stat-val text-slate">10.5 <span style="font-size:12px;font-weight:400;color:var(--muted)">hrs</span></div>
-                                <div class="stat-sub text-muted">Goal: 11hrs</div>
-                            </div>
-                        </div>
+                        <div class="health-grid" id="stella-health-vitals"></div>
                         <div class="breakdown-label">GROWTH_PERCENTILES:</div>
-                        <div style="display:flex;flex-direction:column;gap:8px">
-                            <div>
-                                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-                                    <span style="color:var(--text)">HEIGHT</span>
-                                    <span style="color:var(--gold);font-weight:700">65th</span>
-                                </div>
-                                <div class="progress-track"><div class="progress-fill" style="width:65%"></div></div>
-                            </div>
-                            <div>
-                                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-                                    <span style="color:var(--text)">WEIGHT</span>
-                                    <span style="color:var(--gold);font-weight:700">58th</span>
-                                </div>
-                                <div class="progress-track"><div class="progress-fill" style="width:58%"></div></div>
-                            </div>
-                            <div>
-                                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px">
-                                    <span style="color:var(--text)">HEAD_CIRC</span>
-                                    <span style="color:var(--gold);font-weight:700">72nd</span>
-                                </div>
-                                <div class="progress-track"><div class="progress-fill" style="width:72%"></div></div>
-                            </div>
+                        <div style="display:flex;flex-direction:column;gap:8px" id="stella-health-percentiles"></div>
+                        <div class="breakdown-label">RECENT_LOG:</div>
+                        <div class="breakdown-list" id="stella-health-log"></div>
+                    </div>
+                </div>
+
+                <!-- Health log entry popup -->
+                <div id="stella-health-popup" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center">
+                    <div style="background:var(--panel-bg);border:1px solid var(--border);padding:20px;width:420px;max-height:80vh;overflow-y:auto;display:flex;flex-direction:column;gap:10px">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold);letter-spacing:0.08em"><i class="fa-solid fa-heart-pulse"></i> LOG_HEALTH_ENTRY</span>
+                            <button onclick="closeStellaHealthLog()" style="background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer">✕</button>
                         </div>
-                        <div class="breakdown-label">NEXT_APPOINTMENT:</div>
-                        <div class="breakdown-list">
-                            <div class="breakdown-row"><span class="breakdown-name"><i class="fa-solid fa-stethoscope"></i>Pediatrician</span><span class="breakdown-amounts text-gold">JUN 18</span></div>
-                            <div class="breakdown-row"><span class="breakdown-name"><i class="fa-solid fa-tooth"></i>Dentist</span><span class="breakdown-amounts text-muted">AUG 03</span></div>
+                        <div class="breakdown-row"><span class="breakdown-name" style="width:120px">DATE</span><input class="stella-profile-input" id="sh-date" type="text" placeholder="YYYY-MM-DD"></div>
+                        <div class="breakdown-label" style="margin:2px 0 0">GROWTH:</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+                            <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px">HEIGHT (cm)</div><input class="stella-profile-input" id="sh-height" type="number" step="0.1" placeholder="98.0"></div>
+                            <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px">WEIGHT (kg)</div><input class="stella-profile-input" id="sh-weight" type="number" step="0.1" placeholder="14.2"></div>
+                            <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px">HEAD (cm)</div><input class="stella-profile-input" id="sh-head" type="number" step="0.1" placeholder="50.5"></div>
                         </div>
-                        <div style="padding:8px;background:var(--panel-alt);border:1px solid var(--border);font-size:12px">
-                            <div style="color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:3px">LAST_CHECKUP:</div>
-                            <div style="color:var(--slate);font-weight:600">May 02, 2026 — Dr. Lafleur</div>
-                            <div style="color:var(--green);margin-top:2px"><i class="fa-solid fa-circle-check" style="font-size:11px"></i> All clear · next in 6 months</div>
+                        <div class="breakdown-label" style="margin:2px 0 0">PERCENTILES (optional):</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+                            <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px">HEIGHT %</div><input class="stella-profile-input" id="sh-hpct" type="number" min="0" max="99" placeholder="65"></div>
+                            <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px">WEIGHT %</div><input class="stella-profile-input" id="sh-wpct" type="number" min="0" max="99" placeholder="58"></div>
+                            <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px">HEAD %</div><input class="stella-profile-input" id="sh-hcpct" type="number" min="0" max="99" placeholder="72"></div>
+                        </div>
+                        <div class="breakdown-label" style="margin:2px 0 0">OTHER:</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px">
+                            <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px">SLEEP (hrs)</div><input class="stella-profile-input" id="sh-sleep" type="number" step="0.5" placeholder="10.5"></div>
+                            <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px">VACCINES DONE</div><input class="stella-profile-input" id="sh-vdone" type="number" min="0" placeholder="8"></div>
+                            <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px">VACCINES TOTAL</div><input class="stella-profile-input" id="sh-vtotal" type="number" min="0" placeholder="9"></div>
+                        </div>
+                        <div><div style="font-size:10px;color:var(--muted);margin-bottom:3px">NOTES</div><input class="stella-profile-input" id="sh-notes" type="text" placeholder="Dr. visit, observations…" style="width:100%;box-sizing:border-box"></div>
+                        <div style="display:flex;gap:8px;margin-top:4px">
+                            <button class="stella-add-btn" onclick="saveStellaHealthEntry()" style="flex:1"><i class="fa-solid fa-floppy-disk"></i> SAVE</button>
+                            <button class="stella-add-btn" onclick="closeStellaHealthLog()" style="color:var(--muted)">CANCEL</button>
                         </div>
                     </div>
                 </div>
+
 
             </div>
 
@@ -1834,16 +1832,23 @@
                 <span class="stella-form-hint">e.g. 2024-02-14 or 2024-FEB</span>
             </div>
             <div class="stella-form-row">
-                <label class="stella-form-label">PHOTO</label>
+                <label class="stella-form-label">MEDIA</label>
                 <div class="stella-photo-drop" id="stella-photo-drop"
                      ondragover="stellaPhotoDragOver(event)"
                      ondrop="stellaPhotoDrop(event)"
                      onclick="document.getElementById('stella-photo-file').click()">
-                    <i class="fa-solid fa-image" style="font-size:20px;color:var(--muted);margin-bottom:6px"></i>
-                    <div style="font-size:11px;color:var(--muted)">DROP PHOTO HERE or CLICK TO BROWSE</div>
+                    <i class="fa-solid fa-photo-film" style="font-size:20px;color:var(--muted);margin-bottom:6px"></i>
+                    <div class="stella-drop-hint" style="font-size:11px;color:var(--muted)">DROP PHOTO / VIDEO or CLICK TO BROWSE</div>
+                    <div id="stella-transcode-progress" style="display:none;width:100%;padding:6px 0 2px">
+                        <div class="stella-transcode-bar-track">
+                            <div id="stella-transcode-bar-fill" class="stella-transcode-bar-fill"></div>
+                        </div>
+                        <div id="stella-transcode-bar-pct" style="font-size:9px;color:var(--bronze);text-align:center;margin-top:3px;letter-spacing:0.08em">0%</div>
+                    </div>
                     <img id="stella-photo-preview" src="" alt="" style="display:none;max-width:100%;max-height:120px;margin-top:8px;border:1px solid var(--border)">
+                    <video id="stella-video-preview" src="" muted playsinline style="display:none;max-width:100%;max-height:120px;margin-top:8px;border:1px solid var(--border)"></video>
                 </div>
-                <input type="file" id="stella-photo-file" accept="image/*" style="display:none" onchange="stellaPhotoFile(event)">
+                <input type="file" id="stella-photo-file" accept="image/*,video/*" style="display:none" onchange="stellaPhotoFile(event)">
             </div>
             <div class="stella-form-row">
                 <label class="stella-form-label">DESCRIPTION</label>
@@ -1856,6 +1861,11 @@
             <button class="stella-popup-cancel" onclick="closeStellaPopup()">CANCEL</button>
         </div>
     </div>
+</div>
+<!-- Stella media hover overlay (full-screen, above all panels) -->
+<div id="stella-media-overlay" style="display:none;position:fixed;inset:0;z-index:99999;pointer-events:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.55);">
+    <img  id="stella-overlay-img"   src="" alt="" style="display:none;max-width:90vw;max-height:90vh;object-fit:contain;border:1px solid var(--gold);box-shadow:0 0 60px rgba(0,0,0,0.9);">
+    <video id="stella-overlay-video" src="" muted loop autoplay playsinline style="display:none;max-width:90vw;max-height:90vh;object-fit:contain;border:1px solid var(--gold);box-shadow:0 0 60px rgba(0,0,0,0.9);"></video>
 </div>
 </body>
 </html>
